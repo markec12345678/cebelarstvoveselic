@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import {
@@ -12,6 +12,7 @@ import {
   Link as LinkIcon,
   Facebook,
   Twitter,
+  ChevronLeft,
 } from 'lucide-react';
 import { useLangStore } from '@/store/language';
 
@@ -55,6 +56,7 @@ export default function VideoTestimonials() {
   const [selectedVideo, setSelectedVideo] = useState<number | null>(null);
   const [featuredId, setFeaturedId] = useState(1);
   const [copied, setCopied] = useState(false);
+  const [progressWidth, setProgressWidth] = useState(0);
 
   const featured = videos.find((v) => v.id === featuredId) || videos[0];
   const playlist = videos.filter((v) => v.id !== featuredId);
@@ -74,10 +76,56 @@ export default function VideoTestimonials() {
 
   const getVideo = (id: number) => videos.find((v) => v.id === id) || videos[0];
 
+  const navigateVideo = useCallback((direction: 'prev' | 'next') => {
+    if (selectedVideo === null) return;
+    const currentIndex = videos.findIndex((v) => v.id === selectedVideo);
+    let newIndex: number;
+    if (direction === 'next') {
+      newIndex = (currentIndex + 1) % videos.length;
+    } else {
+      newIndex = (currentIndex - 1 + videos.length) % videos.length;
+    }
+    setSelectedVideo(videos[newIndex].id);
+    setProgressWidth(0);
+  }, [selectedVideo]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (selectedVideo === null) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedVideo(null);
+        setProgressWidth(0);
+      } else if (e.key === 'ArrowRight') {
+        navigateVideo('next');
+      } else if (e.key === 'ArrowLeft') {
+        navigateVideo('prev');
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedVideo, navigateVideo]);
+
+  // Fake progress animation in modal
+  useEffect(() => {
+    if (selectedVideo === null) return;
+    // Reset progress using a callback to avoid sync setState
+    requestAnimationFrame(() => {
+      setProgressWidth(0);
+    });
+    const interval = setInterval(() => {
+      setProgressWidth((prev) => {
+        if (prev >= 35) return prev; // Stop at ~35% to simulate video not finished
+        return prev + 0.5;
+      });
+    }, 100);
+    return () => clearInterval(interval);
+  }, [selectedVideo]);
+
   return (
     <section
       ref={ref}
-      className="py-20 sm:py-28 bg-background relative overflow-hidden"
+      className="py-20 sm:py-28 bg-background relative overflow-hidden film-strip"
       id="videos"
     >
       <div className="absolute inset-0 dot-pattern opacity-[0.02] pointer-events-none" />
@@ -167,8 +215,8 @@ export default function VideoTestimonials() {
                 {t('Predstavljen', 'Featured')}
               </div>
 
-              {/* Coming soon ribbon */}
-              <div className="absolute top-4 right-4 px-3 py-1 bg-gradient-to-r from-orange-500 to-red-500/90 backdrop-blur-sm rounded-lg text-white text-[10px] font-bold uppercase tracking-wider">
+              {/* Coming Soon animated shimmer badge */}
+              <div className="absolute top-4 right-4 px-3 py-1 rounded-lg text-white text-[10px] font-bold uppercase tracking-wider coming-soon-badge">
                 {t('KMALU NA VOLJO', 'COMING SOON')}
               </div>
             </button>
@@ -189,56 +237,68 @@ export default function VideoTestimonials() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="lg:col-span-2 flex flex-col gap-4"
           >
-            {playlist.map((video) => (
-              <button
-                key={video.id}
-                onClick={() => {
-                  setFeaturedId(video.id);
-                  setSelectedVideo(video.id);
-                }}
-                className={`flex gap-4 p-3 rounded-xl border transition-all duration-300 text-left group playlist-item-hover ${
-                  featuredId === video.id
-                    ? 'border-honey-400 dark:border-honey-600 bg-honey-50/50 dark:bg-honey-900/10'
-                    : 'border-border bg-card hover:border-honey-300 dark:hover:border-honey-700 hover:shadow-lg'
-                }`}
-              >
-                {/* Thumbnail */}
-                <div className="relative w-32 sm:w-40 aspect-video rounded-lg overflow-hidden flex-shrink-0">
-                  <Image
-                    src={video.image}
-                    alt={lang === 'sl' ? video.titleSl : video.titleEn}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    sizes="160px"
-                  />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
-                  {/* Gradient sweep overlay on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center">
-                      <Play className="w-3 h-3 text-foreground ml-0.5" fill="currentColor" />
+            {playlist.map((video, idx) => {
+              const playlistIndex = videos.findIndex((v) => v.id === video.id) + 1;
+              return (
+                <button
+                  key={video.id}
+                  onClick={() => {
+                    setFeaturedId(video.id);
+                    setSelectedVideo(video.id);
+                  }}
+                  className={`flex gap-4 p-3 rounded-xl border transition-all duration-300 text-left group playlist-item-hover relative ${
+                    featuredId === video.id
+                      ? 'border-honey-400 dark:border-honey-600 bg-honey-50/50 dark:bg-honey-900/10'
+                      : 'border-border bg-card hover:border-honey-300 dark:hover:border-honey-700 hover:shadow-lg'
+                  }`}
+                >
+                  {/* Playlist item count badge */}
+                  <div className={`absolute top-2 left-2 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold z-10 ${
+                    featuredId === video.id
+                      ? 'bg-honey-500 text-white'
+                      : 'bg-muted text-muted-foreground group-hover:bg-honey-100 dark:group-hover:bg-honey-900/30 group-hover:text-honey-600 dark:group-hover:text-honey-400'
+                  } transition-colors`}>
+                    {playlistIndex}/{videos.length}
+                  </div>
+
+                  {/* Thumbnail */}
+                  <div className="relative w-32 sm:w-40 aspect-video rounded-lg overflow-hidden flex-shrink-0">
+                    <Image
+                      src={video.image}
+                      alt={lang === 'sl' ? video.titleSl : video.titleEn}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                      sizes="160px"
+                    />
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+                    {/* Gradient sweep overlay on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center">
+                        <Play className="w-3 h-3 text-foreground ml-0.5" fill="currentColor" />
+                      </div>
+                    </div>
+                    <div className="absolute bottom-1.5 right-1.5 px-1.5 py-0.5 bg-black/60 rounded text-white text-[10px] font-medium">
+                      {video.duration}
                     </div>
                   </div>
-                  <div className="absolute bottom-1.5 right-1.5 px-1.5 py-0.5 bg-black/60 rounded text-white text-[10px] font-medium">
-                    {video.duration}
-                  </div>
-                </div>
 
-                {/* Info */}
-                <div className="flex-1 min-w-0 flex flex-col justify-center">
-                  <h4 className="font-semibold text-sm sm:text-base text-foreground line-clamp-2 group-hover:text-honey-600 dark:group-hover:text-honey-400 transition-colors">
-                    {lang === 'sl' ? video.titleSl : video.titleEn}
-                  </h4>
-                  <p className="mt-1 text-xs text-muted-foreground line-clamp-2 hidden sm:block">
-                    {lang === 'sl' ? video.descSl : video.descEn}
-                  </p>
-                  <span className="mt-2 inline-flex items-center text-xs text-honey-600 dark:text-honey-400 font-medium">
-                    {t('Predvajaj', 'Watch')}
-                    <ChevronRight className="w-3 h-3 ml-0.5" />
-                  </span>
-                </div>
-              </button>
-            ))}
+                  {/* Info */}
+                  <div className="flex-1 min-w-0 flex flex-col justify-center">
+                    <h4 className="font-semibold text-sm sm:text-base text-foreground line-clamp-2 group-hover:text-honey-600 dark:group-hover:text-honey-400 transition-colors">
+                      {lang === 'sl' ? video.titleSl : video.titleEn}
+                    </h4>
+                    <p className="mt-1 text-xs text-muted-foreground line-clamp-2 hidden sm:block">
+                      {lang === 'sl' ? video.descSl : video.descEn}
+                    </p>
+                    <span className="mt-2 inline-flex items-center text-xs text-honey-600 dark:text-honey-400 font-medium">
+                      {t('Predvajaj', 'Watch')}
+                      <ChevronRight className="w-3 h-3 ml-0.5" />
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
           </motion.div>
         </div>
       </div>
@@ -251,13 +311,14 @@ export default function VideoTestimonials() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8"
-            onClick={() => setSelectedVideo(null)}
+            onClick={() => { setSelectedVideo(null); setProgressWidth(0); }}
           >
+            {/* Cinematic dark gradient overlay */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+              className="absolute inset-0 bg-gradient-to-br from-black/85 via-black/90 to-black/80 backdrop-blur-sm"
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -269,12 +330,19 @@ export default function VideoTestimonials() {
             >
               {/* Close Button */}
               <button
-                onClick={() => setSelectedVideo(null)}
+                onClick={() => { setSelectedVideo(null); setProgressWidth(0); }}
                 className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/40 text-white flex items-center justify-center hover:bg-black/60 transition-colors z-10"
                 aria-label={t('Zapri', 'Close')}
               >
                 <X className="w-5 h-5" />
               </button>
+
+              {/* Keyboard navigation hint */}
+              <div className="absolute top-4 left-4 z-10 keyboard-hint">
+                <kbd>ESC</kbd> {t('zapri', 'close')}
+                <span className="mx-1">·</span>
+                <kbd>←</kbd><kbd>→</kbd> {t('navigacija', 'navigate')}
+              </div>
 
               {/* Video Placeholder */}
               <div className="relative aspect-video bg-muted">
@@ -293,10 +361,29 @@ export default function VideoTestimonials() {
                   </p>
                 </div>
 
-                {/* Progress bar mock */}
+                {/* Animated progress bar */}
                 <div className="absolute bottom-0 left-0 right-0 h-1 bg-muted-foreground/20">
-                  <div className="h-full bg-gradient-to-r from-honey-400 to-honey-600 progress-animated rounded-r-full" />
+                  <div
+                    className="h-full bg-gradient-to-r from-honey-400 to-honey-600 rounded-r-full transition-all duration-100"
+                    style={{ width: `${progressWidth}%` }}
+                  />
                 </div>
+
+                {/* Navigation arrows */}
+                <button
+                  onClick={(e) => { e.stopPropagation(); navigateVideo('prev'); }}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/30 text-white/70 hover:bg-black/50 hover:text-white flex items-center justify-center transition-all opacity-0 hover:opacity-100 focus:opacity-100"
+                  aria-label={t('Prejšnji video', 'Previous video')}
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); navigateVideo('next'); }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/30 text-white/70 hover:bg-black/50 hover:text-white flex items-center justify-center transition-all opacity-0 hover:opacity-100 focus:opacity-100"
+                  aria-label={t('Naslednji video', 'Next video')}
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
               </div>
 
               {/* Video Info */}
@@ -361,7 +448,7 @@ export default function VideoTestimonials() {
                   </button>
                 </div>
 
-                {/* Related Videos */}
+                {/* Related Videos Carousel */}
                 <div className="mt-6 pt-4 border-t">
                   <h4 className="text-sm font-semibold text-foreground mb-3">
                     {t('Podobni videi', 'Related Videos')}
@@ -372,7 +459,7 @@ export default function VideoTestimonials() {
                       .map((rv) => (
                         <button
                           key={rv.id}
-                          onClick={() => setSelectedVideo(rv.id)}
+                          onClick={() => { setSelectedVideo(rv.id); setProgressWidth(0); }}
                           className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors text-left group"
                         >
                           <div className="relative w-20 aspect-video rounded-md overflow-hidden flex-shrink-0">

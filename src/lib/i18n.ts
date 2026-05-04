@@ -348,6 +348,26 @@ export interface TranslationStrings {
       date: string;
     }>;
   };
+  pairing: {
+    sectionTag: string;
+    title: string;
+    subtitle: string;
+    topPairing: string;
+    allPairings: string;
+    perfectMatch: string;
+    recipeSuggestion: string;
+  };
+  beeCounter: {
+    sectionTag: string;
+    title: string;
+    subtitle: string;
+    stats: Array<{
+      value: string;
+      suffix: string;
+      labelSl: string;
+      labelEn: string;
+    }>;
+  };
 }
 
 const translations: Record<Lang, TranslationStrings> = {
@@ -1003,6 +1023,28 @@ const translations: Record<Lang, TranslationStrings> = {
         },
       ],
     },
+    pairing: {
+      sectionTag: 'Kombinacije',
+      title: 'Popolne kombinacije medu in hrane',
+      subtitle: 'Odkrijte, kakšne kulinarične možnosti skriva vsaka sorta našega medu. Od preprostih zajtrkov do gourmet jedi — prava kombinacija naredi čudeže.',
+      topPairing: 'Top kombinacija',
+      allPairings: 'Vse kombinacije',
+      perfectMatch: 'Popolno ujemanje',
+      recipeSuggestion: 'Predlog recepta',
+    },
+    beeCounter: {
+      sectionTag: 'Naša čebelja družina',
+      title: 'Čebelarstvo Veselič v številkah',
+      subtitle: 'Za vsak kozarec meda stoji cesarska organizacija čebeljih družin, ki delujejo v naravi Bele krajine. Poglejte, kakšna je dejanska velikost našega čebeljstva.',
+      stats: [
+        { value: '100', suffix: '+', labelSl: 'čebeljih panjev', labelEn: 'Beehives' },
+        { value: '2000000', suffix: '+', labelSl: 'čebel (poleti)', labelEn: 'Bees in summer' },
+        { value: '6', suffix: '', labelSl: 'sort medu', labelEn: 'Honey varieties' },
+        { value: '30', suffix: '+', labelSl: 'let tradicije', labelEn: 'Years of tradition' },
+        { value: '1500', suffix: '+', labelSl: 'kg medu letno', labelEn: 'kg honey per year' },
+        { value: '15', suffix: '', labelSl: 'lokacij panjev v Beli krajini', labelEn: 'Hive locations in Bela Krajina' },
+      ],
+    },
   },
   en: {
     nav: {
@@ -1615,6 +1657,28 @@ const translations: Record<Lang, TranslationStrings> = {
           title: 'Skin & Wound Healing',
           description: 'Honey has natural antibacterial and wound-healing properties. Used in traditional Slovenian folk medicine for burns and skin conditions.',
         },
+      ],
+    },
+    pairing: {
+      sectionTag: 'Pairings',
+      title: 'Perfect Honey & Food Pairings',
+      subtitle: 'Discover the culinary possibilities hidden in each variety of our honey. From simple breakfasts to gourmet dishes — the right combination makes magic.',
+      topPairing: 'Top pairing',
+      allPairings: 'All pairings',
+      perfectMatch: 'Perfect match',
+      recipeSuggestion: 'Recipe suggestion',
+    },
+    beeCounter: {
+      sectionTag: 'Our Bee Family',
+      title: 'Čebelarstvo Veselič in Numbers',
+      subtitle: 'Behind every jar of honey is an empire of bee families working in the nature of Bela Krajina. See the true scale of our beekeeping operation.',
+      stats: [
+        { value: '100', suffix: '+', labelSl: 'čebeljih panjev', labelEn: 'Beehives' },
+        { value: '2000000', suffix: '+', labelSl: 'čebel (poleti)', labelEn: 'Bees in summer' },
+        { value: '6', suffix: '', labelSl: 'sort medu', labelEn: 'Honey varieties' },
+        { value: '30', suffix: '+', labelSl: 'let tradicije', labelEn: 'Years of tradition' },
+        { value: '1500', suffix: '+', labelSl: 'kg medu letno', labelEn: 'kg honey per year' },
+        { value: '15', suffix: '', labelSl: 'lokacij panjev v Beli krajini', labelEn: 'Hive locations in Bela Krajina' },
       ],
     },
     blog: {

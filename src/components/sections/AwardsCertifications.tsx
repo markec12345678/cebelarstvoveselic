@@ -16,7 +16,7 @@ const certifications = [
     descEn: 'Organic certified honey in accordance with Republic of Slovenia regulations for organic farming. Regular annual inspections and oversight.',
     descFullEn: 'The Eko Sklad certificate confirms that all our honey is produced in accordance with organic farming principles: no synthetic chemicals, no antibiotics for bee treatment, no added sugar during blooming, and no heating above 40 °C. Inspections are conducted annually by control bodies.',
     year: '2024',
-    badge: lang => lang === 'sl' ? 'Ekološko' : 'Organic',
+    badge: (lang: string) => lang === 'sl' ? 'Ekološko' : 'Organic',
     badgeColor: 'bg-emerald-500',
     gradient: 'from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20',
     borderColor: 'border-emerald-200 dark:border-emerald-800/40',
@@ -30,7 +30,7 @@ const certifications = [
     descEn: 'Hazard Analysis and Critical Control Points food safety system. Ensures the highest hygiene standards.',
     descFullEn: 'The HACCP system includes precise traceability of each honey batch from hive to jar, regular microbiological testing, documentation of all processes, and staff training. We ensure that every jar of honey meets the highest food safety standards.',
     year: '2020',
-    badge: lang => lang === 'sl' ? 'Varnost živil' : 'Food Safety',
+    badge: (lang: string) => lang === 'sl' ? 'Varnost živil' : 'Food Safety',
     badgeColor: 'bg-blue-500',
     gradient: 'from-blue-50 to-sky-50 dark:from-blue-950/20 dark:to-sky-950/20',
     borderColor: 'border-blue-200 dark:border-blue-800/40',
@@ -44,7 +44,7 @@ const certifications = [
     descEn: 'Compliance with EU organic farming regulations and organic food labeling for the entire European market.',
     descFullEn: 'Regulation (EU) 2018/848 governs the production, control, and labeling of organic foods throughout the European Union. Our honey meets all requirements of this regulation, allowing us to sell and distribute in all EU countries with the official organic logo.',
     year: '2024',
-    badge: lang => lang === 'sl' ? 'EU predpisi' : 'EU Compliant',
+    badge: (lang: string) => lang === 'sl' ? 'EU predpisi' : 'EU Compliant',
     badgeColor: 'bg-amber-500',
     gradient: 'from-amber-50 to-yellow-50 dark:from-amber-950/20 dark:to-yellow-950/20',
     borderColor: 'border-amber-200 dark:border-amber-800/40',
@@ -58,7 +58,7 @@ const certifications = [
     descEn: 'Certificate confirming the purity of the Apis mellifera carnica breed — the native Slovenian bee. Protected genetic heritage.',
     descFullEn: 'The certificate confirms that all bees in our apiary belong to the pure Apis mellifera carnica (Carniolan honey bee) breed. This is the only legally protected native bee breed in the world. We maintain genetic purity through regular selection work and queen bee monitoring.',
     year: '2018',
-    badge: lang => lang === 'sl' ? 'Avtohtona pasma' : 'Native Breed',
+    badge: (lang: string) => lang === 'sl' ? 'Avtohtona pasma' : 'Native Breed',
     badgeColor: 'bg-red-500',
     gradient: 'from-red-50 to-rose-50 dark:from-red-950/20 dark:to-rose-950/20',
     borderColor: 'border-red-200 dark:border-red-800/40',
@@ -68,11 +68,11 @@ const certifications = [
     titleSl: 'Kakovost Bele krajine',
     titleEn: 'Bela Krajina Quality Label',
     descSl: 'Regionalno priznanje kakovosti za izdelke iz Bele krajine. Dokaz lokalnega porekla in tradicionalne pridelave.',
-    descFullSl: 'Znak kakovosti Bele krajine je regionalno priznanje, ki ga prejmejo izdelki z dokazanim poreklom iz Bele krajine. Pridobljen je na podlagi pregleda celotnega postopka pridelave, geografskega porekla in skladnosti s tradicionalnimi praksami. Simbolizuje povezavo med izdelkom in edinstvenim terroirjem Bele krajine.',
+    descFullSl: 'Znak kakovosti Bele krajine je regionalno priznanje, ki ga prejmejo izdelki z dokazanim poreklom iz Bele krajine. Pridobljen je na podlagi pregleda celotnega postopka pridelave, geografskega porekla in skladnosti s tradicionalnimi praksami. Simbolizira povezavo med izdelkom in edinstvenim terroirjem Bele krajine.',
     descEn: 'Regional quality recognition for products from Bela Krajina. Proof of local origin and traditional production.',
     descFullEn: 'The Bela Krajina Quality Mark is a regional recognition awarded to products with proven origin from Bela Krajina. It is obtained based on a review of the entire production process, geographical origin, and compliance with traditional practices. It symbolizes the connection between the product and the unique terroir of Bela Krajina.',
     year: '2022',
-    badge: lang => lang === 'sl' ? 'Regijska oznaka' : 'Regional Label',
+    badge: (lang: string) => lang === 'sl' ? 'Regijska oznaka' : 'Regional Label',
     badgeColor: 'bg-purple-500',
     gradient: 'from-purple-50 to-violet-50 dark:from-purple-950/20 dark:to-violet-950/20',
     borderColor: 'border-purple-200 dark:border-purple-800/40',
@@ -86,7 +86,7 @@ const certifications = [
     descEn: 'From 1994 to today — three generations of beekeepers preserving tradition and knowledge. A heritage carried forward.',
     descFullEn: 'Čebelarstvo Veselič has a rich history starting in 1994 with 5 hives in Čurile. Through three generations, we have grown to 100+ hives, obtained organic certification, launched an online store, and deliver across the entire EU. Throughout, we have maintained a traditional approach to beekeeping — respect for nature and the bees.',
     year: '1990–2024',
-    badge: lang => lang === 'sl' ? 'Tradycija' : 'Heritage',
+    badge: (lang: string) => lang === 'sl' ? 'Tradycija' : 'Heritage',
     badgeColor: 'bg-orange-500',
     gradient: 'from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20',
     borderColor: 'border-orange-200 dark:border-orange-800/40',
@@ -117,14 +117,31 @@ function CertCard({ cert, index, lang, verifiedLabel }: CertCardProps) {
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`relative group rounded-2xl border ${cert.borderColor} ${cert.gradient} p-6 transition-all duration-500 hover:shadow-xl hover:-translate-y-1 overflow-hidden`}
+      className={`relative group rounded-2xl border ${cert.borderColor} ${cert.gradient} p-6 transition-all duration-500 hover:shadow-xl hover:-translate-y-1 overflow-hidden golden-border-trace cert-seal`}
     >
+      {/* Decorative corner flourish top-left */}
+      <svg className="corner-flourish-tl" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 20 C2 10 10 2 20 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="text-honey-400" />
+        <path d="M2 10 C6 6 10 2 14 2" stroke="currentColor" strokeWidth="1" strokeLinecap="round" className="text-honey-300" opacity="0.6" />
+        <circle cx="20" cy="2" r="2" fill="currentColor" className="text-honey-400" />
+      </svg>
+
+      {/* Decorative corner flourish bottom-right */}
+      <svg className="corner-flourish-br" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 20 C2 10 10 2 20 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="text-honey-400" />
+        <path d="M2 10 C6 6 10 2 14 2" stroke="currentColor" strokeWidth="1" strokeLinecap="round" className="text-honey-300" opacity="0.6" />
+        <circle cx="20" cy="2" r="2" fill="currentColor" className="text-honey-400" />
+      </svg>
+
       {/* Gold glow on hover */}
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-honey-200/20 to-amber-200/20 dark:from-honey-700/10 dark:to-amber-700/10 rounded-2xl pointer-events-none" />
 
-      {/* Year badge top-right */}
-      <div className="absolute top-4 right-4 text-xs font-semibold text-muted-foreground bg-background/60 backdrop-blur-sm px-2.5 py-1 rounded-full">
-        {cert.year}
+      {/* Year badge top-right with timeline feel */}
+      <div className="absolute top-4 right-4 flex items-center gap-2">
+        <div className="w-2 h-2 rounded-full bg-honey-400 shadow-sm" />
+        <span className="text-xs font-semibold text-muted-foreground bg-background/60 backdrop-blur-sm px-2.5 py-1 rounded-full">
+          {cert.year}
+        </span>
       </div>
 
       {/* Icon + Title */}
@@ -142,7 +159,7 @@ function CertCard({ cert, index, lang, verifiedLabel }: CertCardProps) {
         </div>
       </div>
 
-      {/* Description - changes on hover */}
+      {/* Description - changes on hover with AnimatePresence */}
       <div className="relative min-h-[4rem]">
         <AnimatePresence mode="wait">
           {!isHovered ? (
@@ -150,7 +167,7 @@ function CertCard({ cert, index, lang, verifiedLabel }: CertCardProps) {
               key="short"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              exit={{ opacity: 0, y: -5 }}
               transition={{ duration: 0.2 }}
               className="text-sm text-muted-foreground leading-relaxed"
             >
@@ -159,10 +176,10 @@ function CertCard({ cert, index, lang, verifiedLabel }: CertCardProps) {
           ) : (
             <motion.p
               key="full"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
               className="text-sm text-foreground/80 leading-relaxed"
             >
               {t(cert.descFullSl, cert.descFullEn)}
@@ -212,9 +229,23 @@ export default function AwardsCertifications() {
       {/* Subtle golden gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-honey-50/40 via-background to-honey-50/20 dark:from-honey-950/10 dark:via-background dark:to-honey-950/5 pointer-events-none" />
 
-      {/* Decorative corner elements */}
-      <div className="absolute top-8 left-8 w-20 h-20 border-t-2 border-l-2 border-honey-300/30 dark:border-honey-700/20 rounded-tl-2xl pointer-events-none" />
-      <div className="absolute bottom-8 right-8 w-20 h-20 border-b-2 border-r-2 border-honey-300/30 dark:border-honey-700/20 rounded-br-2xl pointer-events-none" />
+      {/* Enhanced decorative corner elements */}
+      <div className="absolute top-8 left-8 w-24 h-24 border-t-2 border-l-2 border-honey-300/30 dark:border-honey-700/20 rounded-tl-2xl pointer-events-none" />
+      <div className="absolute top-8 left-8 w-24 h-24">
+        <svg viewBox="0 0 96 96" fill="none" className="absolute top-0 left-0 w-full h-full opacity-[0.08]">
+          <path d="M8 30 C8 15 15 8 30 8" stroke="currentColor" strokeWidth="1.5" className="text-honey-500" />
+          <path d="M8 20 C12 12 20 8 30 8" stroke="currentColor" strokeWidth="1" className="text-honey-400" opacity="0.5" />
+          <circle cx="30" cy="8" r="3" fill="currentColor" className="text-honey-400" opacity="0.5" />
+        </svg>
+      </div>
+      <div className="absolute bottom-8 right-8 w-24 h-24 border-b-2 border-r-2 border-honey-300/30 dark:border-honey-700/20 rounded-br-2xl pointer-events-none" />
+      <div className="absolute bottom-8 right-8 w-24 h-24">
+        <svg viewBox="0 0 96 96" fill="none" className="absolute bottom-0 right-0 w-full h-full opacity-[0.08]">
+          <path d="M88 66 C88 81 81 88 66 88" stroke="currentColor" strokeWidth="1.5" className="text-honey-500" />
+          <path d="M88 76 C84 84 76 88 66 88" stroke="currentColor" strokeWidth="1" className="text-honey-400" opacity="0.5" />
+          <circle cx="66" cy="88" r="3" fill="currentColor" className="text-honey-400" opacity="0.5" />
+        </svg>
+      </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section header */}
@@ -222,7 +253,7 @@ export default function AwardsCertifications() {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, ease: 'easeOut' }}
-          className="text-center mb-12 sm:mb-16"
+          className="text-center mb-8 sm:mb-10"
         >
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-honey-100 dark:bg-honey-900/30 text-honey-700 dark:text-honey-400 text-sm font-medium mb-4">
             <Award className="w-4 h-4" />
@@ -233,6 +264,32 @@ export default function AwardsCertifications() {
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             {sectionSubtitle}
+          </p>
+        </motion.div>
+
+        {/* Trust Score Bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="max-w-md mx-auto mb-12"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium text-foreground">
+              {t('Skup zaupanja', 'Trust Score')}
+            </span>
+            <span className="text-sm font-bold text-honey-600 dark:text-honey-400">
+              6/6 {t('certifikatov', 'certifications')}
+            </span>
+          </div>
+          <div className="trust-bar" style={{ '--trust-level': '100%' } as React.CSSProperties}>
+            <div className="trust-bar-fill" />
+          </div>
+          <p className="mt-1.5 text-xs text-muted-foreground text-center">
+            {t(
+              'Vse certifikate smo pridobili in redno obnavljamo.',
+              'All certifications obtained and regularly renewed.'
+            )}
           </p>
         </motion.div>
 
@@ -261,7 +318,7 @@ export default function AwardsCertifications() {
             onClick={() => {
               document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="bg-gradient-to-r from-honey-500 to-amber-500 hover:from-honey-600 hover:to-amber-600 text-white shadow-lg hover:shadow-xl transition-all px-8 py-3 rounded-full"
+            className="bg-gradient-to-r from-honey-500 to-amber-500 hover:from-honey-600 hover:to-amber-600 text-white shadow-lg hover:shadow-xl transition-all px-8 py-3 rounded-full honey-shine-btn"
           >
             <ExternalLink className="w-4 h-4 mr-2" />
             {ctaText}

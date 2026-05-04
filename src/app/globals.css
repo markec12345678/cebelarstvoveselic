@@ -1292,6 +1292,461 @@ html {
 }
 
 /* ============================================
+   TASK 9C: NEW CSS ANIMATIONS & UTILITIES
+   ============================================ */
+
+/* Blog card image shimmer sweep */
+@keyframes blog-shimmer {
+  0% { transform: translateX(-100%) rotate(25deg); }
+  100% { transform: translateX(200%) rotate(25deg); }
+}
+.blog-card-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.blog-card-shimmer .shimmer-overlay {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+  pointer-events: none;
+  z-index: 3;
+  transition: none;
+}
+.blog-card-shimmer:hover .shimmer-overlay {
+  animation: blog-shimmer 0.8s ease-out forwards;
+}
+
+/* Animated underline on hover */
+.read-more-underline {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.read-more-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #D4A017, #F5D76E);
+  border-radius: 1px;
+  transition: width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.read-more-underline:hover::after {
+  width: 100%;
+}
+
+/* Avatar ring animation (rotating gradient border) */
+@keyframes avatar-ring-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.avatar-ring-animated {
+  position: relative;
+  display: inline-flex;
+}
+.avatar-ring-animated::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: conic-gradient(#D4A017, #F5D76E, #B8860B, #5A8A3C, #D4A017);
+  animation: avatar-ring-rotate 4s linear infinite;
+  z-index: 0;
+}
+.avatar-ring-animated > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Film strip decoration */
+.film-strip {
+  position: relative;
+  padding: 12px 0;
+}
+.film-strip::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: repeating-linear-gradient(
+    90deg,
+    #1a1a1a 0px,
+    #1a1a1a 20px,
+    transparent 20px,
+    transparent 28px
+  );
+  border-bottom: 2px solid rgba(212, 160, 23, 0.3);
+}
+.film-strip::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: repeating-linear-gradient(
+    90deg,
+    #1a1a1a 0px,
+    #1a1a1a 20px,
+    transparent 20px,
+    transparent 28px
+  );
+  border-top: 2px solid rgba(212, 160, 23, 0.3);
+}
+.dark .film-strip::before,
+.dark .film-strip::after {
+  background: repeating-linear-gradient(
+    90deg,
+    #0a0a0a 0px,
+    #0a0a0a 20px,
+    transparent 20px,
+    transparent 28px
+  );
+  border-color: rgba(212, 160, 23, 0.15);
+}
+
+/* Floating bee animation with wandering path */
+@keyframes float-bee-path {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  10% { transform: translate(15px, -20px) rotate(5deg); }
+  20% { transform: translate(30px, -10px) rotate(-3deg); }
+  30% { transform: translate(20px, 15px) rotate(8deg); }
+  40% { transform: translate(-10px, 25px) rotate(-5deg); }
+  50% { transform: translate(-25px, 10px) rotate(3deg); }
+  60% { transform: translate(-15px, -15px) rotate(-8deg); }
+  70% { transform: translate(10px, -25px) rotate(5deg); }
+  80% { transform: translate(25px, -5px) rotate(-3deg); }
+  90% { transform: translate(5px, 20px) rotate(6deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+.floating-bee {
+  animation: float-bee-path 20s ease-in-out infinite;
+  will-change: transform;
+}
+.floating-bee-slow {
+  animation: float-bee-path 28s ease-in-out infinite;
+  animation-delay: -5s;
+  will-change: transform;
+}
+.floating-bee-fast {
+  animation: float-bee-path 15s ease-in-out infinite;
+  animation-delay: -10s;
+  will-change: transform;
+}
+
+/* Golden trace border animation (traces around card on hover) */
+@keyframes golden-trace {
+  0% { background-position: 0% 0%; }
+  25% { background-position: 100% 0%; }
+  50% { background-position: 100% 100%; }
+  75% { background-position: 0% 100%; }
+  100% { background-position: 0% 0%; }
+}
+.golden-border-trace {
+  position: relative;
+  overflow: hidden;
+}
+.golden-border-trace::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(45deg, #D4A017, #F5D76E, #B8860B, transparent, #D4A017);
+  background-size: 300% 300%;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 5;
+}
+.golden-border-trace:hover::before {
+  opacity: 1;
+  animation: golden-trace 3s linear infinite;
+}
+
+/* Certificate seal / stamp decoration */
+.cert-seal {
+  position: relative;
+}
+.cert-seal::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #D4A017, #B8860B);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.5) rotate(-45deg);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+  box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.2);
+}
+.cert-seal:hover::after {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+/* Trust score bar */
+.trust-bar {
+  position: relative;
+  height: 8px;
+  background: rgba(212, 160, 23, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.trust-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #D4A017, #F5D76E, #D4A017);
+  background-size: 200% 100%;
+  animation: trust-fill 2s ease-out forwards, trust-shimmer 2s ease-in-out infinite 2s;
+}
+@keyframes trust-fill {
+  0% { width: 0%; }
+  100% { width: var(--trust-level, 95%); }
+}
+@keyframes trust-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Card number badge (circular) */
+.card-number-badge {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.75rem;
+  color: white;
+  background: linear-gradient(135deg, #D4A017, #B8860B);
+  box-shadow: 0 2px 8px rgba(212, 160, 23, 0.3);
+  z-index: 10;
+}
+
+/* Section wave divider (top + bottom) */
+.section-wave-divider-top {
+  position: relative;
+}
+.section-wave-divider-top::before {
+  content: '';
+  position: absolute;
+  top: -30px;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,15 C300,30 600,0 900,15 C1050,22 1200,10 1200,15 L1200,30 L0,30 Z' fill='%23FEFCF0'/%3E%3C/svg%3E") no-repeat center;
+  background-size: cover;
+  pointer-events: none;
+}
+.dark .section-wave-divider-top::before {
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,15 C300,30 600,0 900,15 C1050,22 1200,10 1200,15 L1200,30 L0,30 Z' fill='%23293A1F'/%3E%3C/svg%3E") no-repeat center;
+  background-size: cover;
+}
+
+/* Honey drip decoration (SVG between header and content) */
+.honey-drip-decoration-between {
+  position: relative;
+  width: 100%;
+  height: 30px;
+  overflow: visible;
+}
+.honey-drip-decoration-between::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 30px;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 120 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0 C30 0 25 15 20 22 C17 27 14 30 18 30 L102 30 C106 30 103 27 100 22 C95 15 90 0 90 0 Z' fill='%23D4A017' opacity='0.3'/%3E%3Ccircle cx='50' cy='28' r='3' fill='%23D4A017' opacity='0.4'/%3E%3Ccircle cx='70' cy='26' r='2' fill='%23D4A017' opacity='0.3'/%3E%3C/svg%3E") no-repeat center;
+  background-size: contain;
+  pointer-events: none;
+}
+
+/* Benefit icon glow pulse */
+@keyframes benefit-glow {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(212, 160, 23, 0.15), 0 0 16px rgba(212, 160, 23, 0.05);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(212, 160, 23, 0.25), 0 0 32px rgba(212, 160, 23, 0.1);
+  }
+}
+.benefit-glow {
+  animation: benefit-glow 3s ease-in-out infinite;
+}
+
+/* Flip card bounce on flip */
+@keyframes flip-bounce-in {
+  0% { transform: rotateY(90deg) scale(0.9); }
+  50% { transform: rotateY(180deg) scale(1.03); }
+  100% { transform: rotateY(180deg) scale(1); }
+}
+
+/* Coming Soon shimmer badge */
+@keyframes coming-soon-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.coming-soon-badge {
+  background: linear-gradient(90deg, #f97316 0%, #ef4444 25%, #f59e0b 50%, #ef4444 75%, #f97316 100%);
+  background-size: 200% 100%;
+  animation: coming-soon-shimmer 3s linear infinite;
+}
+
+/* 3D tilt perspective container */
+.tilt-3d {
+  transform-style: preserve-3d;
+  perspective: 800px;
+}
+.tilt-3d-inner {
+  transition: transform 0.3s ease;
+}
+.tilt-3d:hover .tilt-3d-inner {
+  transform: perspective(800px) rotateY(-2deg) rotateX(2deg) scale(1.01);
+}
+
+/* Keyboard navigation hint */
+.keyboard-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.5);
+}
+.keyboard-hint kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 5px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 3px;
+  background: rgba(255,255,255,0.1);
+  font-size: 0.6rem;
+  font-family: monospace;
+  min-width: 18px;
+  line-height: 1.4;
+}
+
+/* Did you know tooltip / info callout */
+.did-you-know-callout {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(212, 160, 23, 0.06);
+  border: 1px solid rgba(212, 160, 23, 0.12);
+  font-size: 0.75rem;
+  color: #8B6914;
+  cursor: help;
+  transition: all 0.3s ease;
+}
+.dark .did-you-know-callout {
+  background: rgba(212, 160, 23, 0.08);
+  border-color: rgba(212, 160, 23, 0.15);
+  color: #F5D76E;
+}
+.did-you-know-callout:hover {
+  background: rgba(212, 160, 23, 0.1);
+  border-color: rgba(212, 160, 23, 0.2);
+  box-shadow: 0 2px 8px rgba(212, 160, 23, 0.1);
+}
+
+/* Emoji floating animation for benefit cards */
+@keyframes emoji-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-6px) rotate(5deg); }
+  75% { transform: translateY(3px) rotate(-3deg); }
+}
+.emoji-float {
+  display: inline-block;
+  animation: emoji-float 3s ease-in-out infinite;
+}
+
+/* Decorative corner flourishes for awards */
+.corner-flourish-tl {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 40px;
+  height: 40px;
+  pointer-events: none;
+  opacity: 0.15;
+}
+.corner-flourish-br {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  pointer-events: none;
+  opacity: 0.15;
+  transform: rotate(180deg);
+}
+
+/* Confetti explosion */
+@keyframes confetti-explode {
+  0% { opacity: 1; transform: translateY(0) translateX(0) rotate(0deg) scale(1); }
+  100% { opacity: 0; transform: translateY(-200px) translateX(var(--confetti-x, 50px)) rotate(var(--confetti-r, 720deg)) scale(0.3); }
+}
+.confetti-piece {
+  position: absolute;
+  animation: confetti-explode 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  pointer-events: none;
+}
+
+/* Card glow matching gradient on hover */
+.card-glow-amber:hover { box-shadow: 0 0 30px rgba(245, 158, 11, 0.2), 0 8px 24px rgba(0,0,0,0.08); }
+.card-glow-pink:hover { box-shadow: 0 0 30px rgba(236, 72, 153, 0.15), 0 8px 24px rgba(0,0,0,0.08); }
+.card-glow-yellow:hover { box-shadow: 0 0 30px rgba(234, 179, 8, 0.2), 0 8px 24px rgba(0,0,0,0.08); }
+.card-glow-sky:hover { box-shadow: 0 0 30px rgba(56, 189, 248, 0.15), 0 8px 24px rgba(0,0,0,0.08); }
+.card-glow-violet:hover { box-shadow: 0 0 30px rgba(139, 92, 246, 0.15), 0 8px 24px rgba(0,0,0,0.08); }
+.card-glow-emerald:hover { box-shadow: 0 0 30px rgba(52, 211, 153, 0.15), 0 8px 24px rgba(0,0,0,0.08); }
+.card-glow-teal:hover { box-shadow: 0 0 30px rgba(20, 184, 166, 0.15), 0 8px 24px rgba(0,0,0,0.08); }
+.card-glow-red:hover { box-shadow: 0 0 30px rgba(239, 68, 68, 0.15), 0 8px 24px rgba(0,0,0,0.08); }
+
+/* Animated timeline connector for awards */
+.awards-timeline {
+  position: relative;
+}
+.awards-timeline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  background: linear-gradient(to bottom, transparent, rgba(212, 160, 23, 0.3), rgba(90, 138, 60, 0.3), transparent);
+  transform: translateX(-50%);
+}
+@media (max-width: 640px) {
+  .awards-timeline::before {
+    left: 16px;
+  }
+}
+
+/* ============================================
    REDUCED MOTION
    ============================================ */
 
@@ -1304,7 +1759,10 @@ html {
   }
   .bee-float, .fly-bee, .pulse-glow, .breathe, .shimmer, .marquee, .wing-flutter, .sparkle, .float-gentle, .float-delayed, .typing, .drip, .scroll-bounce, .reveal-up, .strike-through, .counter-flip, .badge-ping, .dot-pulse, .gradient-shift, .text-gradient-animated, .magnetic-hover, .honey-drip, .scroll-indicator, .reveal-up, .float-badge, .cta-glow,
   .toggle-switch::after, .input-glow:focus, .honey-shine-btn::after, .typing-cursor::after, .float-gentle-variation, .notification-pulse, .toggle-pulse, .lock-pulse, .checkmark-svg-animated,
-  .play-pulse-ring, .card-shimmer-sweep::after, .scroll-hint, .progress-animated {
+  .play-pulse-ring, .card-shimmer-sweep::after, .scroll-hint, .progress-animated,
+  .blog-card-shimmer .shimmer-overlay, .avatar-ring-animated::before, .floating-bee,
+  .floating-bee-slow, .floating-bee-fast, .golden-border-trace::before, .trust-bar-fill,
+  .benefit-glow, .emoji-float, .confetti-piece, .coming-soon-badge, .cert-seal::after {
     animation: none !important;
   }
   .benefit-expand {

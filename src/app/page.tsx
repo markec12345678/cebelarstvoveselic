@@ -10,6 +10,8 @@ import HoneyQuality from '@/components/sections/HoneyQuality';
 import Sustainability from '@/components/sections/Sustainability';
 import Products from '@/components/sections/Products';
 import HoneyComparison from '@/components/sections/HoneyComparison';
+import HoneyCalendar from '@/components/sections/HoneyCalendar';
+import HoneyPairing from '@/components/sections/HoneyPairing';
 import Recipes from '@/components/sections/Recipes';
 import Process from '@/components/sections/Process';
 import StatsBar from '@/components/sections/StatsBar';
@@ -21,6 +23,7 @@ import AwardsCertifications from '@/components/sections/AwardsCertifications';
 import Blog from '@/components/sections/Blog';
 import VideoTestimonials from '@/components/sections/VideoTestimonials';
 import HoneyBenefits from '@/components/sections/HoneyBenefits';
+import BeeCounter from '@/components/sections/BeeCounter';
 import FAQ from '@/components/sections/FAQ';
 import Newsletter from '@/components/sections/Newsletter';
 import OrderForm from '@/components/sections/OrderForm';
@@ -56,6 +59,8 @@ export default function Home() {
         <Sustainability />
         <Products />
         <HoneyComparison />
+        <HoneyCalendar />
+        <HoneyPairing />
         <Recipes />
         <Process />
         <StatsBar />
@@ -65,6 +70,7 @@ export default function Home() {
         <Blog />
         <VideoTestimonials />
         <HoneyBenefits />
+        <BeeCounter />
         <BeeFacts />
         <AwardsCertifications />
         <FAQ />

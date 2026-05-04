@@ -53,7 +53,7 @@ export default function Blog() {
     'Iz čebeljnjaka': 'Iz čebeljnjaka',
     'From the Apiary': 'Iz čebeljnjaka',
     'Trajnostnost': 'Trajnostnost',
-    'Sustainability': 'Trajnostnost',
+    Sustainability: 'Trajnostnost',
   };
 
   // Filter posts by active category
@@ -135,6 +135,16 @@ export default function Blog() {
             <BookOpen className="w-3 h-3 mr-1.5" />
             {b.sectionTag}
           </Badge>
+
+          {/* Decorative floating book icon */}
+          <motion.span
+            className="absolute top-16 right-[10%] text-4xl opacity-10 pointer-events-none hidden lg:block"
+            animate={{ y: [0, -10, 0], rotate: [0, 5, -5, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            📖
+          </motion.span>
+
           <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
             {b.title}
           </h2>
@@ -185,75 +195,100 @@ export default function Blog() {
                 <motion.div
                   key={post.slug}
                   layout
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                  initial={{ opacity: 0, y: 30, rotate: -2 }}
+                  animate={isInView ? { opacity: 1, y: 0, rotate: 0 } : {}}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.35, delay: i * 0.1 }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 200,
+                    damping: 20,
+                    delay: i * 0.12,
+                  }}
                 >
-                  <Card className="overflow-hidden group hover-lift h-full flex flex-col card-shine card-shimmer-sweep">
-                    {/* Image */}
-                    <div className="relative h-48 overflow-hidden">
-                      <Image
-                        src={post.image}
-                        alt={post.title}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-110"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+                  {/* 3D tilt card wrapper */}
+                  <div className="tilt-3d">
+                    <Card className="overflow-hidden group hover-lift h-full flex flex-col card-shine blog-card-shimmer tilt-3d-inner">
+                      {/* Image with shimmer overlay */}
+                      <div className="relative h-48 overflow-hidden">
+                        <Image
+                          src={post.image}
+                          alt={post.title}
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-110"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+                        {/* Shimmer light sweep on hover */}
+                        <div className="shimmer-overlay" />
 
-                      {/* Category badge */}
-                      <div className="absolute top-3 left-3">
-                        <span
-                          className={`text-[10px] font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm ${categoryColor(post.category)}`}
-                        >
-                          <Tag className="w-2.5 h-2.5 mr-1 inline-block" />
-                          {post.category}
-                        </span>
-                      </div>
-
-                      {/* Date badge + Reading time */}
-                      <div className="absolute top-3 right-3 flex items-center gap-1.5">
-                        <span className="text-[10px] font-medium px-2 py-1 rounded-full bg-black/50 text-white backdrop-blur-sm">
-                          <Calendar className="w-2.5 h-2.5 mr-1 inline-block" />
-                          {post.date}
-                        </span>
-                        <span className="text-[10px] font-medium px-2 py-1 rounded-full bg-black/50 text-white backdrop-blur-sm flex items-center gap-1">
-                          <Clock className="w-2.5 h-2.5" />
-                          {readingTime} {tText('min', 'min')}
-                        </span>
-                      </div>
-
-                      {/* Trending badge on first post */}
-                      {originalIndex === 0 && (
-                        <div className="absolute bottom-3 right-3">
-                          <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-orange-500/90 text-white backdrop-blur-sm flex items-center gap-1">
-                            🔥 {tText('Priljubljeno', 'Trending')}
+                        {/* Category badge */}
+                        <div className="absolute top-3 left-3">
+                          <span
+                            className={`text-[10px] font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm ${categoryColor(post.category)}`}
+                          >
+                            <Tag className="w-2.5 h-2.5 mr-1 inline-block" />
+                            {post.category}
                           </span>
                         </div>
-                      )}
-                    </div>
 
-                    {/* Content */}
-                    <CardContent className="p-5 flex-1 flex flex-col">
-                      <h3 className="font-bold text-base leading-tight mb-2 group-hover:text-honey-600 dark:group-hover:text-honey-400 transition-colors">
-                        {post.title}
-                      </h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed flex-1 line-clamp-3">
-                        {post.excerpt}
-                      </p>
+                        {/* Date badge + Reading time */}
+                        <div className="absolute top-3 right-3 flex items-center gap-1.5">
+                          <span className="text-[10px] font-medium px-2 py-1 rounded-full bg-black/50 text-white backdrop-blur-sm">
+                            <Calendar className="w-2.5 h-2.5 mr-1 inline-block" />
+                            {post.date}
+                          </span>
+                          <span className="text-[10px] font-medium px-2 py-1 rounded-full bg-black/50 text-white backdrop-blur-sm flex items-center gap-1">
+                            <Clock className="w-2.5 h-2.5" />
+                            {readingTime} {tText('min', 'min')}
+                          </span>
+                        </div>
 
-                      {/* Read more button */}
-                      <Button
-                        variant="outline"
-                        className="w-full mt-4 text-xs h-9 border-honey-200 dark:border-honey-800 hover:bg-honey-50 dark:hover:bg-honey-900/10"
-                        onClick={() => setExpandedPost(originalIndex)}
-                      >
-                        {b.readMore}
-                        <ArrowRight className="w-3 h-3 ml-1.5" />
-                      </Button>
-                    </CardContent>
-                  </Card>
+                        {/* "New" ribbon badge on first post */}
+                        {originalIndex === 0 && (
+                          <div className="absolute top-0 right-6 z-10">
+                            <div
+                              className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white"
+                              style={{
+                                background: 'linear-gradient(135deg, #D4A017, #B8860B)',
+                                clipPath: 'polygon(0 0, 100% 0, 100% 75%, 50% 100%, 0 75%)',
+                              }}
+                            >
+                              {tText('Novo', 'New')}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Trending badge on first post */}
+                        {originalIndex === 0 && (
+                          <div className="absolute bottom-3 right-3">
+                            <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-orange-500/90 text-white backdrop-blur-sm flex items-center gap-1">
+                              🔥 {tText('Priljubljeno', 'Trending')}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Content */}
+                      <CardContent className="p-5 flex-1 flex flex-col">
+                        <h3 className="font-bold text-base leading-tight mb-2 group-hover:text-honey-600 dark:group-hover:text-honey-400 transition-colors">
+                          {post.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed flex-1 line-clamp-3">
+                          {post.excerpt}
+                        </p>
+
+                        {/* Read more button with animated underline */}
+                        <Button
+                          variant="outline"
+                          className="w-full mt-4 text-xs h-9 border-honey-200 dark:border-honey-800 hover:bg-honey-50 dark:hover:bg-honey-900/10 read-more-underline"
+                          onClick={() => setExpandedPost(originalIndex)}
+                        >
+                          {b.readMore}
+                          <ArrowRight className="w-3 h-3 ml-1.5" />
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </motion.div>
               );
             })}
@@ -286,12 +321,12 @@ export default function Blog() {
               className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8"
               onClick={() => setExpandedPost(null)}
             >
-              {/* Backdrop */}
+              {/* Backdrop - cinematic dark gradient */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/80 to-black/60 backdrop-blur-sm"
               />
 
               {/* Modal */}
@@ -304,7 +339,7 @@ export default function Blog() {
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Hero Image */}
-                <div className="relative h-48 sm:h-72 overflow-hidden rounded-t-2xl">
+                <div className="relative h-48 sm:h-72 overflow-hidden rounded-t-2xl blog-card-shimmer">
                   <Image
                     src={b.posts[expandedPost].image}
                     alt={b.posts[expandedPost].title}
@@ -313,6 +348,7 @@ export default function Blog() {
                     sizes="(max-width: 640px) 100vw, 768px"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
+                  <div className="shimmer-overlay" />
 
                   {/* Close button */}
                   <button
@@ -348,11 +384,13 @@ export default function Blog() {
                     {b.posts[expandedPost].title}
                   </h2>
 
-                  {/* Author row with avatar */}
+                  {/* Author row with animated avatar ring */}
                   <div className="flex items-center gap-4 text-sm text-muted-foreground mb-6">
-                    {/* Author avatar */}
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-honey-400 to-honey-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-                      JV
+                    {/* Author avatar with rotating gradient ring */}
+                    <div className="avatar-ring-animated flex-shrink-0">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-honey-400 to-honey-600 flex items-center justify-center text-white text-xs font-bold">
+                        JV
+                      </div>
                     </div>
                     <span className="flex items-center gap-1.5">
                       <User className="w-3.5 h-3.5" />

@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Shield, Heart, Zap, Leaf, Moon, Sparkles, ChevronDown } from 'lucide-react';
+import { Shield, Heart, Zap, Leaf, Moon, Sparkles, ChevronDown, ArrowRight, Info } from 'lucide-react';
 import { useLangStore } from '@/store/language';
 
 const benefitIcons = [Shield, Heart, Zap, Leaf, Moon, Sparkles];
@@ -14,31 +14,37 @@ const benefits = {
       title: 'Okrepitev imunskega sistema',
       description:
         'Med vsebuje antioksidante, encime in antibakterijske snovi, ki okrepijo naravno imunost. Slovenski gozdni med je še posebej bogat s temi snovmi.',
+      funFact: 'Med vsebuje več kot 180 naravnih snovi, vključno s flavonoidi in fenolnimi kislinami.',
     },
     {
       title: 'Olajšanje bolečega grla',
       description:
         'Lipov med se že stoletja tradicionalno uporablja v Sloveniji kot naravno sredstvo proti kašlju in bolečemu grlu.',
+      funFact: 'Svetovna zdravstvena organizacija priporoča med kot naravno zdravilo za kašelj pri otrocih.',
     },
     {
       title: 'Energija in zmogljivost',
       description:
         'Naravni sladkorji v medu (glukoza + fruktoza) zagotavljajo trajno energijo brez zdrsa, ki ga povzroča rafiniran sladkor. Primeren za športnike.',
+      funFact: 'Številni profesionalni športniki porabijo med kot naravni vir hitre energije.',
     },
     {
       title: 'Zdrav prebavni sistem',
       description:
         'Med pomaga pri prebavi, blaži želodčne težave in lahko pomaga pri blagih prebavnih težavah. Žlička pred obrokom je tradicionalen domači recept.',
+      funFact: 'Med vsebuje oligosaharide, ki delujejo kot prebiotiki in podpirajo zdravo črevesno floro.',
     },
     {
       title: 'Boljše spanje',
       description:
         'Toplo mleko z medom pred spanjem spodbuja sproščanje in boljšo kakovost spanja. Med pomaga pri regulaciji proizvodnje melatonina.',
+      funFact: 'Študija je pokazala, da med izboljša kakovost spanja za do 20% pri odraslih z nespavnostjo.',
     },
     {
       title: 'Koža in celjenje ran',
       description:
         'Med ima naravne antibakterijske in celjenjske lastnosti. V tradicionalni slovenski ljudski medicini se uporablja za opekline in težave s kožo.',
+      funFact: 'Manuka med iz Nove Zelandije se uporablja v bolnišnicah za zdravljenje hudih ran in opeklin.',
     },
   ],
   en: [
@@ -46,31 +52,37 @@ const benefits = {
       title: 'Immune System Boost',
       description:
         'Honey contains antioxidants, enzymes, and antibacterial properties that strengthen natural immunity. Slovenian forest honey is especially rich in these compounds.',
+      funFact: 'Honey contains over 180 natural substances, including flavonoids and phenolic acids.',
     },
     {
       title: 'Sore Throat Relief',
       description:
         'Linden honey has been traditionally used for centuries in Slovenia as a natural remedy for coughs and sore throats.',
+      funFact: 'The WHO recommends honey as a natural cough remedy for children.',
     },
     {
       title: 'Energy & Performance',
       description:
         'Natural sugars in honey (glucose + fructose) provide sustained energy without the crash of refined sugar. Ideal for athletes.',
+      funFact: 'Many professional athletes use honey as a natural source of quick energy.',
     },
     {
       title: 'Digestive Health',
       description:
         'Honey aids digestion, soothes stomach irritation, and can help with mild digestive issues. A teaspoon before meals is a traditional remedy.',
+      funFact: 'Honey contains oligosaccharides that act as prebiotics, supporting healthy gut flora.',
     },
     {
       title: 'Better Sleep',
       description:
         'A warm glass of milk with honey before bed promotes relaxation and better sleep quality. Honey helps regulate melatonin production.',
+      funFact: 'A study showed honey improves sleep quality by up to 20% in adults with insomnia.',
     },
     {
       title: 'Skin & Wound Healing',
       description:
         'Honey has natural antibacterial and wound-healing properties. Used in traditional Slovenian folk medicine for burns and skin conditions.',
+      funFact: 'Manuka honey from New Zealand is used in hospitals to treat severe wounds and burns.',
     },
   ],
 };
@@ -132,18 +144,8 @@ export default function HoneyBenefits() {
           </p>
         </motion.div>
 
-        {/* Scroll to explore hint */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="flex flex-col items-center mb-10 sm:mb-14"
-        >
-          <span className="text-xs text-muted-foreground mb-1 scroll-hint inline-flex items-center gap-1">
-            {t('Pomaknite se za več', 'Scroll to explore')}
-          </span>
-          <ChevronDown className="w-4 h-4 text-muted-foreground scroll-hint" />
-        </motion.div>
+        {/* Decorative honey drip SVG between header and cards */}
+        <div className="honey-drip-decoration-between" />
 
         {/* Benefits Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -152,23 +154,29 @@ export default function HoneyBenefits() {
             return (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 30 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className={`group relative rounded-2xl border border-border bg-gradient-to-br ${benefitGradients[index]} p-6 sm:p-8 hover-lift card-border-glow transition-all duration-500 hover:shadow-lg hover:bg-gradient-to-br ${benefitGradientsHover[index]}`}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-60px' }}
+                transition={{
+                  type: 'spring',
+                  stiffness: 150,
+                  damping: 20,
+                  delay: index * 0.1,
+                }}
+                className={`group relative rounded-2xl border border-border bg-gradient-to-br ${benefitGradients[index]} p-6 sm:p-8 hover-lift card-border-glow transition-all duration-500 hover:shadow-lg hover:bg-gradient-to-br ${benefitGradientsHover[index]} golden-border-trace`}
               >
                 {/* Benefit number indicator */}
                 <div className="absolute -top-3 -left-3 w-7 h-7 rounded-full bg-gradient-to-br from-honey-400 to-honey-600 flex items-center justify-center text-white text-xs font-bold shadow-md z-10">
                   {index + 1}
                 </div>
 
-                {/* Emoji + Icon with bounce animation */}
+                {/* Emoji + Icon with glow pulse animation */}
                 <div className="flex items-center gap-4 mb-4">
-                  <span className="text-4xl" role="img" aria-hidden="true">
+                  <span className="text-4xl emoji-float" role="img" aria-hidden="true" style={{ animationDelay: `${index * 0.5}s` }}>
                     {benefitEmojis[index]}
                   </span>
                   <motion.div
-                    className="w-12 h-12 rounded-xl bg-card dark:bg-card border border-border flex items-center justify-center group-hover:scale-110 transition-transform duration-300"
+                    className="w-12 h-12 rounded-xl bg-card dark:bg-card border border-border flex items-center justify-center group-hover:scale-110 transition-transform duration-300 benefit-glow"
                     animate={
                       isInView
                         ? {
@@ -197,6 +205,15 @@ export default function HoneyBenefits() {
                 <p className="text-muted-foreground text-sm sm:text-base leading-relaxed benefit-expand">
                   {benefit.description}
                 </p>
+
+                {/* "Did you know?" callout */}
+                <div className="mt-4">
+                  <div className="did-you-know-callout" title={benefit.funFact}>
+                    <Info className="w-3.5 h-3.5 flex-shrink-0" />
+                    <span>{t('Ali ste vedeli?', 'Did you know?')}</span>
+                    <span className="hidden sm:inline opacity-70">— {benefit.funFact.slice(0, 60)}...</span>
+                  </div>
+                </div>
 
                 {/* Source citation */}
                 <p className="text-[10px] text-muted-foreground/60 mt-3 italic">
@@ -230,12 +247,12 @@ export default function HoneyBenefits() {
           <div className="honey-drip-decoration inline-block">
             <a
               href="#products"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-honey-500 to-honey-600 text-white font-semibold shadow-lg hover:shadow-xl hover:from-honey-600 hover:to-honey-700 transition-all duration-300 cta-glow"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-honey-500 to-honey-600 text-white font-semibold shadow-lg hover:shadow-xl hover:from-honey-600 hover:to-honey-700 transition-all duration-300 cta-glow honey-shine-btn"
             >
               <span className="bg-gradient-to-r from-white to-honey-100 bg-clip-text text-transparent">
                 {t('Izberite med', 'Choose Your Honey')}
               </span>
-              <span className="text-lg">🍯</span>
+              <ArrowRight className="w-4 h-4" />
             </a>
           </div>
         </motion.div>
