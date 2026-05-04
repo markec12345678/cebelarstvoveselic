@@ -98,7 +98,7 @@ export default function Navigation() {
         transition={{ duration: 0.6, ease: 'easeOut' }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
-            ? `bg-background/95 backdrop-blur-md border-b border-border/50 ${shadowClass}`
+            ? `bg-background/95 ${scrollProgress > 15 ? 'backdrop-blur-xl' : 'backdrop-blur-md'} border-b-2 border-honey-300/40 dark:border-honey-600/30 ${shadowClass}`
             : 'bg-transparent shadow-none'
         }`}
       >
@@ -124,6 +124,8 @@ export default function Navigation() {
               }}
               className="flex items-center gap-2 group relative"
             >
+              {/* Breathing glow behind logo on hover */}
+              <span className="absolute -inset-2 rounded-full bg-honey-400/0 group-hover:bg-honey-400/10 transition-all duration-500 breathe pointer-events-none" />
               {/* Subtle hexagon outline behind logo */}
               <svg
                 className="absolute -inset-1.5 w-[calc(100%+12px)] h-[calc(100%+12px)] opacity-[0.08] pointer-events-none"
@@ -257,6 +259,13 @@ export default function Navigation() {
 
               {/* CTA with pulse badge */}
               <div className="relative hidden sm:block">
+                {/* "New" ping badge */}
+                <span className="absolute -top-2 -right-2 z-20 flex h-4 w-4 items-center justify-center">
+                  <span className="badge-ping absolute inline-flex h-full w-full rounded-full bg-honey-400 opacity-75" />
+                  <span className="relative inline-flex h-3 w-3 items-center justify-center rounded-full bg-honey-500">
+                    <span className="text-[7px] font-bold text-white leading-none">N</span>
+                  </span>
+                </span>
                 <Button
                   size="sm"
                   className="bg-gradient-to-r from-honey-500 to-honey-600 hover:from-honey-600 hover:to-honey-700 text-white shadow-md hover:shadow-lg transition-all"
@@ -265,31 +274,6 @@ export default function Navigation() {
                   <ShoppingBag className="w-3.5 h-3.5 mr-1.5" />
                   {t.nav.order}
                 </Button>
-                {/* Attention pulse dot */}
-                <motion.span
-                  className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-red-500 border-2 border-background"
-                  animate={{
-                    scale: [1, 1.3, 1],
-                    opacity: [1, 0.7, 1],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                />
-                <motion.span
-                  className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-red-500"
-                  animate={{
-                    scale: [1, 2, 1],
-                    opacity: [0.5, 0, 0.5],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                />
               </div>
 
               {/* Mobile menu button */}
@@ -326,12 +310,13 @@ export default function Navigation() {
               onClick={closeMobileMenu}
             />
 
-            {/* Slide-in panel */}
+            {/* Slide-in panel with smooth height transition */}
             <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: mobileClosing ? '100%' : 0 }}
-              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-              className="absolute top-0 right-0 w-80 max-w-[85vw] h-full bg-background/95 backdrop-blur-xl shadow-2xl border-l border-border/50"
+              initial={{ x: '100%', opacity: 0 }}
+              animate={{ x: mobileClosing ? '100%' : 0, opacity: mobileClosing ? 0 : 1 }}
+              exit={{ x: '100%', opacity: 0 }}
+              transition={{ type: 'spring', damping: 28, stiffness: 280, opacity: { duration: 0.2 } }}
+              className="absolute top-0 right-0 w-80 max-w-[85vw] h-full bg-background/95 backdrop-blur-xl shadow-2xl border-l border-honey-200/30 dark:border-honey-800/20"
             >
               {/* Top bar */}
               <div className="flex items-center justify-between px-5 h-16 border-b border-border/50">

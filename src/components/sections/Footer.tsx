@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Facebook, Instagram, MapPin, Phone, Mail, ArrowUp, ArrowRight, Truck, Shield, CreditCard, Loader2, CheckCircle } from 'lucide-react';
+import { Facebook, Instagram, MapPin, Phone, Mail, ArrowUp, ArrowRight, Truck, Shield, CreditCard, Loader2, CheckCircle, ChevronUp } from 'lucide-react';
 import { useLangStore } from '@/store/language';
 import { getTranslations } from '@/lib/i18n';
 import { toast } from 'sonner';
@@ -36,10 +36,17 @@ export default function Footer() {
   const [footerSubmitting, setFooterSubmitting] = useState(false);
   const [footerSubscribed, setFooterSubscribed] = useState(false);
   const [yearVisible, setYearVisible] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setYearVisible(true), 500);
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => setShowScrollTop(window.scrollY > 400);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleFooterNewsletter = async (e: React.FormEvent) => {
@@ -87,7 +94,18 @@ export default function Footer() {
       {/* Animated border at top */}
       <div className="animated-border h-[3px]" />
 
-      <div className="absolute inset-0 opacity-5 hex-pattern" />
+      {/* Honeycomb SVG pattern in background (very low opacity) */}
+      <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="honeycomb-footer" width="56" height="100" patternUnits="userSpaceOnUse" patternTransform="scale(0.8)">
+              <path d="M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100" fill="none" stroke="white" strokeWidth="0.5" />
+              <path d="M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34" fill="none" stroke="white" strokeWidth="0.5" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#honeycomb-footer)" />
+        </svg>
+      </div>
 
       {/* Partner logos marquee bar */}
       <div className="relative overflow-hidden bg-bark/80 border-b border-white/5 py-3">
@@ -180,7 +198,7 @@ export default function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 border-t border-white/10 sm:border-t-0">
             <h3 className="text-xs font-bold text-white/90 mb-4 uppercase tracking-widest">
               {t.footer.quickLinks}
             </h3>
@@ -189,7 +207,7 @@ export default function Footer() {
                 <li key={key}>
                   <a
                     href={`#${key}`}
-                    className="text-sm text-white/50 hover:text-honey-400 transition-colors duration-200 flex items-center gap-1.5 group link-slide-underline"
+                    className="text-sm text-white/50 hover:text-honey-400 transition-all duration-200 flex items-center gap-1.5 group hover:translate-x-1"
                   >
                     <span className="w-1 h-1 rounded-full bg-honey-600/50 group-hover:bg-honey-400 transition-colors" />
                     {t.nav[key as keyof typeof t.nav]}
@@ -200,7 +218,7 @@ export default function Footer() {
           </div>
 
           {/* Legal */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 border-t border-white/10 sm:border-t-0">
             <h3 className="text-xs font-bold text-white/90 mb-4 uppercase tracking-widest">
               {t.footer.legal}
             </h3>
@@ -213,7 +231,7 @@ export default function Footer() {
                 };
                 return (
                   <li key={key}>
-                    <a href="#" className="text-sm text-white/50 hover:text-honey-400 transition-colors flex items-center gap-1.5 group link-slide-underline">
+                    <a href="#" className="text-sm text-white/50 hover:text-honey-400 transition-all duration-200 flex items-center gap-1.5 group hover:translate-x-1">
                       <span className="w-1 h-1 rounded-full bg-honey-600/50 group-hover:bg-honey-400 transition-colors" />
                       {labels[key]}
                     </a>
@@ -242,7 +260,7 @@ export default function Footer() {
           </div>
 
           {/* Contact */}
-          <div className="sm:col-span-2 lg:col-span-4">
+          <div className="sm:col-span-2 lg:col-span-4 border-t border-white/10 sm:border-t-0">
             <h3 className="text-xs font-bold text-white/90 mb-4 uppercase tracking-widest">
               {t.footer.contact}
             </h3>
@@ -253,13 +271,13 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="w-3.5 h-3.5 text-honey-500/60 flex-shrink-0" />
-                <a href="tel:+38641234567" className="text-sm text-white/50 hover:text-honey-400 transition-colors">
+                <a href="tel:+38641234567" className="text-sm text-white/50 hover:text-honey-400 transition-all duration-200 hover:translate-x-1">
                   {t.contact.phone}
                 </a>
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail className="w-3.5 h-3.5 text-honey-500/60 flex-shrink-0" />
-                <a href="mailto:info@cebelarstvo-veselic.si" className="text-sm text-white/50 hover:text-honey-400 transition-colors">
+                <a href="mailto:info@cebelarstvo-veselic.si" className="text-sm text-white/50 hover:text-honey-400 transition-all duration-200 hover:translate-x-1">
                   {t.contact.email}
                 </a>
               </li>
@@ -291,7 +309,7 @@ export default function Footer() {
                     value={footerEmail}
                     onChange={(e) => setFooterEmail(e.target.value)}
                     placeholder={lang === 'sl' ? 'vaša@e-pošta.si' : 'your@email.com'}
-                    className="h-8 text-xs bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-honey-500/50 focus:ring-honey-500/10 flex-1"
+                    className="h-9 text-xs bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-honey-500 focus:ring-2 focus:ring-honey-500/20 flex-1 transition-all duration-200"
                     required
                     aria-label="Newsletter email"
                   />
@@ -342,17 +360,29 @@ export default function Footer() {
               ))}
             </select>
             <span className="text-white/10">|</span>
-            {/* Back to top */}
-            <button
-              onClick={scrollToTop}
-              className="flex items-center gap-1 text-white/30 hover:text-honey-400 transition-colors group"
-              aria-label={lang === 'sl' ? 'Nazaj na vrh' : 'Back to top'}
-            >
-              <ArrowUp className="w-3 h-3 group-hover:-translate-y-0.5 transition-transform" />
-              <span className="text-xs">
-                {lang === 'sl' ? 'Na vrh' : 'Back to top'}
-              </span>
-            </button>
+            {/* Back to top animated arrow */}
+            <AnimatePresence>
+              {showScrollTop && (
+                <motion.button
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  onClick={scrollToTop}
+                  className="flex items-center gap-1.5 text-white/30 hover:text-honey-400 transition-colors group px-2.5 py-1 rounded-md hover:bg-honey-500/10"
+                  aria-label={lang === 'sl' ? 'Nazaj na vrh' : 'Back to top'}
+                >
+                  <motion.div
+                    animate={{ y: [-2, 2, -2] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                  >
+                    <ChevronUp className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
+                  </motion.div>
+                  <span className="text-xs">
+                    {lang === 'sl' ? 'Na vrh' : 'Back to top'}
+                  </span>
+                </motion.button>
+              )}
+            </AnimatePresence>
             <span className="text-white/10">|</span>
             <div className="flex items-center gap-2">
               <button

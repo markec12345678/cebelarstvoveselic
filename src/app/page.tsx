@@ -5,7 +5,9 @@ import Navigation from '@/components/sections/Navigation';
 import SeasonalPromoBanner from '@/components/sections/SeasonalPromoBanner';
 import Hero from '@/components/sections/Hero';
 import About from '@/components/sections/About';
+import Heritage from '@/components/sections/Heritage';
 import HoneyQuality from '@/components/sections/HoneyQuality';
+import Sustainability from '@/components/sections/Sustainability';
 import Products from '@/components/sections/Products';
 import HoneyComparison from '@/components/sections/HoneyComparison';
 import Recipes from '@/components/sections/Recipes';
@@ -44,7 +46,9 @@ export default function Home() {
         <SeasonalPromoBanner />
         <Hero />
         <About />
+        <Heritage />
         <HoneyQuality />
+        <Sustainability />
         <Products />
         <HoneyComparison />
         <Recipes />

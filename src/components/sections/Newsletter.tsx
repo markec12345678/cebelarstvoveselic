@@ -2,7 +2,7 @@
 
 import { useRef, useState, useMemo, useEffect } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { Mail, ArrowRight, Loader2, CheckCircle, Sparkles, Gift, BookOpen, Users, Shield, ChevronDown } from 'lucide-react';
+import { Mail, ArrowRight, Loader2, CheckCircle, Sparkles, Gift, BookOpen, Users, Shield, ChevronDown, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLangStore } from '@/store/language';
@@ -152,9 +152,45 @@ export default function Newsletter() {
       <div className="absolute inset-0 bg-gradient-to-br from-honey-50 via-amber-50 to-orange-50 dark:from-honey-950/30 dark:via-honey-900/10 dark:to-amber-950/20" />
       <div className="absolute inset-0 hex-pattern opacity-10" />
 
+      {/* Honey-drip SVG decoration at the top */}
+      <div className="absolute top-0 left-0 right-0 overflow-hidden pointer-events-none">
+        <svg className="w-full" viewBox="0 0 1200 40" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+          <path d="M0 40 L0 20 Q60 35 120 20 Q180 5 240 20 Q300 35 360 20 Q420 5 480 20 Q540 35 600 20 Q660 5 720 20 Q780 35 840 20 Q900 5 960 20 Q1020 35 1080 20 Q1140 5 1200 20 L1200 40 Z" className="fill-honey-50 dark:fill-honey-950/30" />
+        </svg>
+      </div>
+
       {/* Decorative elements */}
       <div className="absolute top-4 left-8 w-20 h-20 bg-honey-200/30 rounded-full blur-2xl" />
       <div className="absolute bottom-4 right-8 w-32 h-32 bg-amber-200/20 rounded-full blur-3xl" />
+
+      {/* Floating honeycomb shapes */}
+      <motion.div
+        className="absolute top-12 right-12 w-16 h-16 opacity-[0.08] pointer-events-none"
+        animate={{ y: [0, -12, 0], rotate: [0, 8, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+      >
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 5L90 27.5V72.5L50 95L10 72.5V27.5L50 5Z" fill="none" stroke="#D4A017" strokeWidth="3" />
+        </svg>
+      </motion.div>
+      <motion.div
+        className="absolute bottom-16 left-16 w-12 h-12 opacity-[0.06] pointer-events-none"
+        animate={{ y: [0, -8, 0], rotate: [0, -5, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+      >
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 5L90 27.5V72.5L50 95L10 72.5V27.5L50 5Z" fill="none" stroke="#D4A017" strokeWidth="3" />
+        </svg>
+      </motion.div>
+      <motion.div
+        className="absolute top-1/2 right-1/4 w-10 h-10 opacity-[0.05] pointer-events-none"
+        animate={{ y: [0, -6, 0], rotate: [0, 10, 0] }}
+        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+      >
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 5L90 27.5V72.5L50 95L10 72.5V27.5L50 5Z" fill="none" stroke="#D4A017" strokeWidth="4" />
+        </svg>
+      </motion.div>
 
       <div ref={ref} className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -186,7 +222,7 @@ export default function Newsletter() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={isInView ? { opacity: 1, y: 0 } : {}}
                       transition={{ duration: 0.4, delay: 0.3 + i * 0.1 }}
-                      className="p-2.5 rounded-lg bg-honey-50/60 dark:bg-honey-900/10 border border-honey-100/60 dark:border-honey-800/20"
+                      className="p-2.5 rounded-lg bg-honey-50/60 dark:bg-honey-900/10 border border-honey-100/60 dark:border-honey-800/20 card-shine relative overflow-hidden"
                     >
                       <benefit.icon className="w-3.5 h-3.5 text-honey-500 mb-1.5" />
                       <div className="text-xs font-semibold text-foreground">{benefit.title}</div>
@@ -313,6 +349,13 @@ export default function Newsletter() {
                         </>
                       )}
                     </Button>
+                    {/* No spam note */}
+                    <div className="flex items-center justify-center gap-1.5 text-[10px] text-muted-foreground/60">
+                      <Lock className="w-3 h-3" />
+                      {lang === 'sl'
+                        ? 'Brez spam-a, kadarkoli se odjavite'
+                        : 'No spam, unsubscribe anytime'}
+                    </div>
                     {/* Privacy toggle link with popover */}
                     <div className="relative">
                       <button

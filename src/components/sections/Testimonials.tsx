@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { Star, ChevronLeft, ChevronRight, Quote, Hand } from 'lucide-react';
+import { Star, ChevronLeft, ChevronRight, Quote, Hand, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -11,10 +11,17 @@ import { getTranslations } from '@/lib/i18n';
 
 function TestimonialCard({ item, isMobile = false }: { item: { quote: string; name: string; location: string; type: string; rating: number }; isMobile?: boolean }) {
   return (
-    <Card className="h-full border-border/50 hover:border-honey-200 dark:hover:border-honey-800 transition-all duration-300 hover:shadow-lg hover:shadow-honey-900/5 hover:-translate-y-1">
-      <CardContent className="p-6">
-        {/* Quote icon */}
-        <Quote className="w-8 h-8 text-honey-300 dark:text-honey-700 mb-4" />
+    <Card className="h-full border-border/50 hover:border-honey-200 dark:hover:border-honey-800 transition-all duration-300 hover:shadow-lg hover:shadow-honey-900/5 hover:-translate-y-1 hover:[transform:perspective(600px)_rotateY(-1deg)] group relative overflow-hidden">
+      {/* Animated gradient border on hover */}
+      <div className="absolute inset-0 rounded-[var(--radius)] p-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+        <div className="animated-border rounded-[calc(var(--radius)-1px)] w-full h-full" />
+      </div>
+      <CardContent className="p-6 relative z-10">
+        {/* Large decorative quote mark */}
+        <div className="relative mb-2">
+          <span className="absolute -top-3 -left-1 text-5xl text-honey-200/60 dark:text-honey-700/30 select-none pointer-events-none font-serif leading-none">&#10077;</span>
+          <Quote className="w-8 h-8 text-honey-300 dark:text-honey-700 relative" />
+        </div>
 
         {/* Stars */}
         <div className="flex gap-0.5 mb-4">
@@ -48,12 +55,19 @@ function TestimonialCard({ item, isMobile = false }: { item: { quote: string; na
               </div>
             </div>
           </div>
-          <Badge
-            variant="outline"
-            className="text-xs border-honey-200 dark:border-honey-800 text-honey-700 dark:text-honey-400"
-          >
-            {item.type}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge
+              variant="outline"
+              className="text-xs border-honey-200 dark:border-honey-800 text-honey-700 dark:text-honey-400"
+            >
+              {item.type}
+            </Badge>
+            {/* Verified purchase badge */}
+            <span className="inline-flex items-center gap-1 text-[10px] text-green-600 dark:text-green-400 font-medium">
+              <ShieldCheck className="w-3 h-3" />
+              ✓
+            </span>
+          </div>
         </div>
       </CardContent>
     </Card>

@@ -283,6 +283,30 @@ export interface TranslationStrings {
     serves: string;
     minutes: string;
   };
+  sustainability: {
+    sectionTag: string;
+    title: string;
+    subtitle: string;
+    items: Array<{
+      title: string;
+      description: string;
+    }>;
+    impactTitle: string;
+    impactStats: Array<{
+      value: string;
+      label: string;
+    }>;
+  };
+  heritage: {
+    sectionTag: string;
+    title: string;
+    subtitle: string;
+    milestones: Array<{
+      year: string;
+      title: string;
+      description: string;
+    }>;
+  };
 }
 
 const translations: Record<Lang, TranslationStrings> = {
@@ -766,6 +790,76 @@ const translations: Record<Lang, TranslationStrings> = {
       serves: 'Za',
       minutes: 'min',
     },
+    sustainability: {
+      sectionTag: 'Trajnostnost',
+      title: 'Skrb za naravo, od cveta do kozarca',
+      subtitle: 'Naše čebelarstvo temelji na spoštovanju do okolja. Vsaka odločitev, ki jo sprejmemo, je usmerjena v ohranjanje biodiverznosti, zmanjševanje vpliva na okolje in ohranjanje čiste Bele krajine za prihodnje generacije.',
+      items: [
+        {
+          title: 'Zaščita biodiverznosti',
+          description: 'Ščitimo divje cvetoče travnike, vzdržujemo žive meje in sadimo čebele prijazna rastlinja ob reki Kolpi. Sodelujemo pri lokalnih projektih ohranjanja habitata divjih čebel in drugih opraševalcev.',
+        },
+        {
+          title: 'Filozofija brez odpadkov',
+          description: 'Uporabljamo steklene kozarce, recikliramo embalažo in iz preostalega voska izdelujemo čebelje sveče. Naša embalaža ne vsebuje plastike — ves material je bio-razgradljiv ali v celoti reciklirljiv.',
+        },
+        {
+          title: 'Ogljikovo pozitivno poslovanje',
+          description: 'Na strehi čebeljaka smo namestili sončne celice za pogon naprav. Za lokalne dostave uporabljamo električno vozilo, naš ogljikov odtis pa je bil merjeno zmanjšan na minimum.',
+        },
+        {
+          title: 'Varčevanje z vodo',
+          description: 'Zbiramo deževnico za namakanje okoli panjev in vzdrževanje cvetličnih vrtov. Naše čebele imajo dostop do naravnih izvirov pitne vode — brez umetnih napajalnih sistemov.',
+        },
+        {
+          title: 'Ekološka certifikacija',
+          description: 'Certificirani po shemi Eko Sklad — brez sintetičnih kemikalij, brez antibiotikov. Varroa pršico zdravimo izključno z mravljinčno kislino in organskimi kislinami, v skladu z ekološkimi smernicami EU.',
+        },
+        {
+          title: 'Izobraževanje skupnosti',
+          description: 'Organiziramo delavnice za šole, gostimo tečaje čebelarstva za začetnike in podpiramo lokalne projekte ohranjanja biodiverznosti. Verjamemo, da je znanje ključ do boljše prihodnosti.',
+        },
+      ],
+      impactTitle: 'Naš vpliv v številkah',
+      impactStats: [
+        { value: '0', label: 'kg CO2 izpustov' },
+        { value: '100', label: '% reciklirna embalaža' },
+        { value: '500', label: '+ izobraženih učencev' },
+        { value: '0', label: 'uporabljenih kemikalij' },
+      ],
+    },
+    heritage: {
+      sectionTag: 'Naša dediščina',
+      title: 'Tri generacije, ena strast',
+      subtitle: 'Čebelarstvo Veselič je zgodba o prenašanju znanja od očeta na sina — od starega deda Franca do današnje tretje generacije. Vsako desetletje je prineslo novo pogumnost, a spoštovanje do tradicije je ostalo nespremenjeno.',
+      milestones: [
+        {
+          year: '1990',
+          title: 'Začetki',
+          description: 'Ded Franc Veselič začne s 5 panji v Čurelah. Uči se tradicionalnih belokranjskih čebelarskih metod od starejših sosedov in bere knjige o Apis mellifera carnica.',
+        },
+        {
+          year: '1998',
+          title: 'Rast',
+          description: 'Druga generacija: Jožef Veselič prevzame čebeljnjak in ga razširi na 30 panjev. Uvede moderne metode izločanja medu, hkrati pa ohranja tradicionalen pristop k negi čebel.',
+        },
+        {
+          year: '2005',
+          title: 'Ekološka certifikacija',
+          description: 'Dosežena certifikacija Eko Sklad — čebeljnjak Veselič postane eden prvih ekološko certificiranih čebeljnjakov v Beli krajini. Vso proizvodnjo prilagodijo ekološkim smernicam EU.',
+        },
+        {
+          year: '2015',
+          title: 'Inovacije',
+          description: 'Lansiran sistem sledljivosti s QR kodami, nova ekstrakcijska naprava po HACCP standardih in preboj na 100+ panjev. Med Veselič postane prepoznaven izven regije.',
+        },
+        {
+          year: '2024',
+          title: 'Dediščina se nadaljuje',
+          description: 'Tretja generacija se začne učiti čebelarstva. Lansiran spletni trgovina, 6 sort medu, dostava po celotni EU. Tradicija se povezuje z moderno.',
+        },
+      ],
+    },
   },
   en: {
     nav: {
@@ -1246,6 +1340,76 @@ const translations: Record<Lang, TranslationStrings> = {
       closeRecipe: 'Close',
       serves: 'Serves',
       minutes: 'min',
+    },
+    sustainability: {
+      sectionTag: 'Sustainability',
+      title: 'Caring for Nature — From Flower to Jar',
+      subtitle: 'Our beekeeping is rooted in respect for the environment. Every decision we make is guided by preserving biodiversity, reducing our environmental footprint, and keeping Bela Krajina pristine for generations to come.',
+      items: [
+        {
+          title: 'Biodiversity Protection',
+          description: 'We protect wildflower meadows, maintain hedgerows, and plant bee-friendly flora along the Kolpa River. We participate in local projects to conserve habitats for wild bees and other pollinators.',
+        },
+        {
+          title: 'Zero-Waste Philosophy',
+          description: 'We use glass jars, recyclable packaging, and craft beeswax candles from leftover wax. Our packaging contains zero plastic — every material is biodegradable or fully recyclable.',
+        },
+        {
+          title: 'Carbon-Positive Operations',
+          description: 'Solar panels on the apiary roof power our equipment. We use an electric vehicle for local deliveries, and our carbon footprint has been measured and minimised.',
+        },
+        {
+          title: 'Water Conservation',
+          description: 'We collect rainwater for irrigating the gardens around our hives. Our bees have access to natural spring water — no artificial feeding systems.',
+        },
+        {
+          title: 'Organic Certification',
+          description: 'Certified under the Eko Sklad scheme — no synthetic chemicals, no antibiotics. We treat Varroa mites exclusively with formic acid and organic acids, in line with EU organic guidelines.',
+        },
+        {
+          title: 'Community Education',
+          description: 'We organise workshops for schools, host beginner beekeeping courses, and support local biodiversity projects. We believe that knowledge is the key to a better future.',
+        },
+      ],
+      impactTitle: 'Our Impact in Numbers',
+      impactStats: [
+        { value: '0', label: 'kg CO2 emissions' },
+        { value: '100', label: '% recyclable packaging' },
+        { value: '500', label: '+ students educated' },
+        { value: '0', label: 'chemicals used' },
+      ],
+    },
+    heritage: {
+      sectionTag: 'Our Heritage',
+      title: 'Three Generations, One Passion',
+      subtitle: 'Čebelarstvo Veselič is a story of knowledge passed from father to son — from grandfather Franc to today\'s third generation. Each decade brought new ambition, but respect for tradition remained unchanged.',
+      milestones: [
+        {
+          year: '1990',
+          title: 'Beginnings',
+          description: 'Grandfather Franc Veselič starts with 5 hives in Čurile, learning traditional Bela Krajina beekeeping methods from older neighbours and studying books on Apis mellifera carnica.',
+        },
+        {
+          year: '1998',
+          title: 'Growth',
+          description: 'Second generation: Jožef Veselič takes over and expands to 30 hives. He introduces modern honey extraction while preserving the traditional approach to bee care.',
+        },
+        {
+          year: '2005',
+          title: 'Organic Certification',
+          description: 'Achieves Eko Sklad organic certification — becoming one of the first certified organic apiaries in Bela Krajina. All production adapts to EU organic guidelines.',
+        },
+        {
+          year: '2015',
+          title: 'Innovation',
+          description: 'QR code traceability system launched, new extraction facility with HACCP standards, and surpassing 100+ hives. Med Veselič becomes recognised beyond the region.',
+        },
+        {
+          year: '2024',
+          title: 'Legacy Continues',
+          description: 'Third generation begins learning beekeeping. Online store launched, 6 honey varieties, shipping across the EU. Tradition meets modernity.',
+        },
+      ],
     },
   },
 };

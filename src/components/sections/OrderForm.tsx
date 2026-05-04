@@ -115,12 +115,49 @@ export default function OrderForm() {
   const handleSubmit = async () => {
     if (!validateForm() || selectedItems.length === 0) return;
     setSubmitting(true);
-    // Simulate order submission
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    const num = `VES-${Date.now().toString(36).toUpperCase()}`;
-    setOrderNumber(num);
-    setSubmitting(false);
-    setStep('success');
+
+    try {
+      const items = selectedItems.map((item) => ({
+        productId: item.index,
+        name: lang === 'en' ? item.nameEn : item.name,
+        quantity: item.qty,
+        price: parsePrice(item.price),
+      }));
+
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: fullName.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
+          street: street.trim(),
+          city: city.trim(),
+          postalCode: postalCode.trim(),
+          notes: notes.trim(),
+          paymentMethod: payment === 'cod' ? 'cash_on_delivery' : 'bank_transfer',
+          items,
+          subtotal,
+          shippingCost: shipping,
+          total,
+          lang,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Order submission failed.');
+      }
+
+      setOrderNumber(data.orderNumber);
+      setStep('success');
+    } catch {
+      // On error, stay on the details step and let user retry
+      alert(lang === 'sl' ? 'Prišlo je do napake. Poskusite znova.' : 'An error occurred. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleReset = () => {

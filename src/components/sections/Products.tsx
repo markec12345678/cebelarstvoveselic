@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { MapPin, Palette, ChefHat, Star, Droplets, Plus } from 'lucide-react';
+import { MapPin, Palette, ChefHat, Star, Droplets, Plus, Eye } from 'lucide-react';
 import { useLangStore } from '@/store/language';
 import { getTranslations } from '@/lib/i18n';
 
@@ -41,6 +41,7 @@ export default function Products() {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
   const [selectedProduct, setSelectedProduct] = useState<number | null>(null);
   const [quantity, setQuantity] = useState(1);
+  const [dialogTab, setDialogTab] = useState<'desc' | 'origin' | 'usage'>('desc');
 
   const selected = selectedProduct !== null ? t.products.items[selectedProduct] : null;
 
@@ -61,6 +62,7 @@ export default function Products() {
   const handleQuickAdd = (e: React.MouseEvent, index: number) => {
     e.stopPropagation();
     setQuantity(1);
+    setDialogTab('desc');
     setSelectedProduct(index);
   };
 
@@ -125,11 +127,11 @@ export default function Products() {
               }}
             >
               <Card
-                className="product-card group cursor-pointer border-border/50 hover:border-honey-300 dark:hover:border-honey-700 overflow-hidden h-full relative"
-                onClick={() => { setSelectedProduct(i); setQuantity(1); }}
+                className="product-card card-shine group cursor-pointer border-border/50 hover:border-honey-300 dark:hover:border-honey-700 overflow-hidden h-full relative hover:shadow-[0_0_20px_rgba(212,160,23,0.15)] transition-all duration-300"
+                onClick={() => { setSelectedProduct(i); setQuantity(1); setDialogTab('desc'); }}
                 role="button"
                 tabIndex={0}
-                onKeyDown={(e) => { if (e.key === 'Enter') { setSelectedProduct(i); setQuantity(1); } }}
+                onKeyDown={(e) => { if (e.key === 'Enter') { setSelectedProduct(i); setQuantity(1); setDialogTab('desc'); } }}
                 aria-label={`${product.name} — ${product.price}`}
               >
                 {/* Product image */}
@@ -140,7 +142,7 @@ export default function Products() {
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
                   {/* Honey color bar */}
                   <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${honeyColors[i]}`} />
                   {/* Badge overlay */}
@@ -151,14 +153,28 @@ export default function Products() {
                       {product.badge}
                     </Badge>
                   )}
-                  {/* "Most Popular" ribbon on first product */}
+                  {/* "Most Popular" ribbon with floating animation */}
                   {i === 0 && (
-                    <div className="absolute top-3 right-[-32px] w-[120px] text-center overflow-hidden">
+                    <motion.div
+                      className="absolute top-3 right-[-32px] w-[120px] text-center overflow-hidden"
+                      animate={{ y: [0, -3, 0] }}
+                      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                    >
                       <div className="bg-gradient-to-r from-honey-500 to-honey-600 text-white text-[10px] font-bold uppercase tracking-wider py-1 rotate-45 shadow-md">
                         {lang === 'sl' ? '⭐ Najbolj priljubljen' : '⭐ Most Popular'}
                       </div>
-                    </div>
+                    </motion.div>
                   )}
+                  {/* Quick View eye button */}
+                  <motion.button
+                    className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/80 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 hover:scale-110"
+                    whileHover={{ scale: 1.15 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={(e) => { e.stopPropagation(); setSelectedProduct(i); setQuantity(1); setDialogTab('desc'); }}
+                    aria-label={lang === 'sl' ? 'Hitri pogled' : 'Quick view'}
+                  >
+                    <Eye className="w-4 h-4 text-honey-700 dark:text-honey-400" />
+                  </motion.button>
                   {/* Quick Add button overlay */}
                   <motion.button
                     className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-gradient-to-br from-honey-400 to-honey-600 flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 hover:scale-110"
@@ -291,27 +307,110 @@ export default function Products() {
                   </Badge>
                 )}
 
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {selected.description}
-                </p>
+                {/* Content Tabs */}
+                <div className="flex gap-1 p-1 rounded-lg bg-muted/50">
+                  {([
+                    { key: 'desc' as const, label: lang === 'sl' ? 'Opis' : 'Description', icon: Star },
+                    { key: 'origin' as const, label: lang === 'sl' ? 'Izvor' : 'Origin', icon: MapPin },
+                    { key: 'usage' as const, label: lang === 'sl' ? 'Uporaba' : 'Usage', icon: ChefHat },
+                  ]).map((tab) => (
+                    <button
+                      key={tab.key}
+                      onClick={() => setDialogTab(tab.key)}
+                      className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-md text-xs font-medium transition-all duration-200 ${
+                        dialogTab === tab.key
+                          ? 'bg-card text-foreground shadow-sm'
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      <tab.icon className="w-3.5 h-3.5" />
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
 
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="p-3 rounded-lg bg-muted/50 text-center">
-                    <Palette className="w-4 h-4 mx-auto mb-1 text-honey-600" />
-                    <span className="text-xs text-muted-foreground block">{selected.color}</span>
-                  </div>
-                  <div className="p-3 rounded-lg bg-muted/50 text-center">
-                    <Star className="w-4 h-4 mx-auto mb-1 text-honey-600" />
-                    <span className="text-xs text-muted-foreground block line-clamp-2">
-                      {selected.taste}
-                    </span>
-                  </div>
-                  <div className="p-3 rounded-lg bg-muted/50 text-center">
-                    <ChefHat className="w-4 h-4 mx-auto mb-1 text-honey-600" />
-                    <span className="text-xs text-muted-foreground block line-clamp-2">
-                      {selected.use}
-                    </span>
-                  </div>
+                {/* Tab Content */}
+                <div className="min-h-[80px]">
+                  {dialogTab === 'desc' && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {selected.description}
+                      </p>
+                      <div className="mt-3 flex items-center gap-2">
+                        <div className={`w-5 h-5 rounded-full bg-gradient-to-br ${honeyColors[selectedProduct!]} shadow-sm`} />
+                        <span className="text-xs text-muted-foreground">{selected.color}</span>
+                      </div>
+                    </motion.div>
+                  )}
+                  {dialogTab === 'origin' && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="space-y-3"
+                    >
+                      <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
+                        <MapPin className="w-4 h-4 text-honey-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <span className="text-sm font-medium">{selected.origin}</span>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {lang === 'sl'
+                              ? 'Natančna lokacija čebelnjaka v Beli krajini, kjer čebele nabirajo nektar iz naravnih cvetnih pašnikov.'
+                              : 'Precise apiary location in Bela Krajina, where bees forage nectar from natural floral pastures.'}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
+                        <Palette className="w-4 h-4 text-honey-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <span className="text-sm font-medium">{selected.taste}</span>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {lang === 'sl'
+                              ? 'Edinstven okusni profil, značilen za to sorto medu.'
+                              : 'A unique taste profile characteristic of this honey variety.'}
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                  {dialogTab === 'usage' && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="space-y-3"
+                    >
+                      <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
+                        <ChefHat className="w-4 h-4 text-honey-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <span className="text-sm font-medium">{selected.use}</span>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {lang === 'sl'
+                              ? 'Priporočeni načini uporabe za optimalen užitek in zdravilstvene učinke.'
+                              : 'Recommended ways to use for optimal enjoyment and health benefits.'}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        <div className="p-2 rounded-lg bg-muted/50 text-center">
+                          <span className="text-lg" role="img">🥞</span>
+                          <span className="text-[10px] text-muted-foreground block mt-0.5">{lang === 'sl' ? 'Zajtrk' : 'Breakfast'}</span>
+                        </div>
+                        <div className="p-2 rounded-lg bg-muted/50 text-center">
+                          <span className="text-lg" role="img">🍵</span>
+                          <span className="text-[10px] text-muted-foreground block mt-0.5">{lang === 'sl' ? 'Čaj' : 'Tea'}</span>
+                        </div>
+                        <div className="p-2 rounded-lg bg-muted/50 text-center">
+                          <span className="text-lg" role="img">🥗</span>
+                          <span className="text-[10px] text-muted-foreground block mt-0.5">{lang === 'sl' ? 'Kuhinja' : 'Cooking'}</span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
                 </div>
 
                 {/* Quantity mini-selector */}

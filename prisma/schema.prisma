@@ -25,3 +25,23 @@ model NewsletterSubscriber {
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
 }
+
+model HoneyOrder {
+  id            String   @id @default(cuid())
+  orderNumber   String   @unique
+  name          String
+  email         String
+  phone         String
+  street        String
+  city          String
+  postalCode    String
+  notes         String   @default("")
+  paymentMethod String
+  items         String
+  subtotal      Float
+  shippingCost  Float
+  total         Float
+  status        String   @default("new")
+  lang          String   @default("sl")
+  createdAt     DateTime @default(now())
+}

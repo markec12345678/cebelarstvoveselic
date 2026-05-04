@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { ChevronDown, ArrowRight, ShieldCheck, MapPin, Flower2 } from 'lucide-react';
+import { ChevronDown, ArrowRight, ShieldCheck, MapPin, Flower2, MousePointer2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLangStore } from '@/store/language';
 import { getTranslations } from '@/lib/i18n';
@@ -137,6 +137,67 @@ function TrustBadge({
 }
 
 /* ============================================
+   Golden Sparkle / Star Particle
+   ============================================ */
+function GoldenSparkle({
+  style,
+  delay,
+  duration,
+  size,
+}: {
+  style: React.CSSProperties;
+  delay: number;
+  duration: number;
+  size: number;
+}) {
+  return (
+    <motion.div
+      className="absolute pointer-events-none"
+      style={style}
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ opacity: [0, 0.8, 0.4, 0.9, 0], scale: [0, 1, 0.6, 1.1, 0] }}
+      transition={{
+        duration,
+        repeat: Infinity,
+        ease: 'easeInOut',
+        delay,
+      }}
+    >
+      <Sparkles
+        className="text-honey-300"
+        style={{ width: size, height: size, opacity: 0.6 }}
+      />
+    </motion.div>
+  );
+}
+
+/* ============================================
+   Mouse Scroll Indicator
+   ============================================ */
+function MouseScrollIndicator({ onClick, label }: { onClick: () => void; label: string }) {
+  return (
+    <motion.button
+      animate={{ y: [0, 8, 0] }}
+      transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+      onClick={onClick}
+      className="flex flex-col items-center gap-2 text-white/50 hover:text-white/70 transition-colors group"
+      aria-label={label}
+    >
+      <span className="text-xs tracking-widest uppercase mb-1">{label}</span>
+      {/* Mouse icon */}
+      <div className="relative w-6 h-10 rounded-full border-2 border-white/30 group-hover:border-white/50 transition-colors">
+        <motion.div
+          animate={{ y: [2, 14, 2] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute left-1/2 -translate-x-1/2 top-1.5 w-1 h-2.5 rounded-full bg-white/50 group-hover:bg-white/70 transition-colors"
+        />
+      </div>
+      <ChevronDown className="w-4 h-4" />
+    </motion.button>
+  );
+}
+
+/* ============================================
    Hero Component
    ============================================ */
 export default function Hero() {
@@ -186,6 +247,29 @@ export default function Hero() {
     },
   } as const;
 
+  // Sparkle positions
+  const sparkles = useMemo(
+    () => [
+      { top: '15%', left: '8%', size: 14, delay: 0.5, duration: 5 },
+      { top: '35%', right: '12%', size: 10, delay: 1.2, duration: 6 },
+      { top: '60%', left: '18%', size: 12, delay: 0.8, duration: 4.5 },
+      { top: '22%', right: '22%', size: 8, delay: 2.0, duration: 5.5 },
+      { top: '70%', right: '8%', size: 16, delay: 1.5, duration: 7 },
+      { top: '45%', left: '5%', size: 10, delay: 3.0, duration: 6.5 },
+      { top: '55%', left: '40%', size: 8, delay: 2.5, duration: 5 },
+      { top: '80%', left: '60%', size: 12, delay: 0.3, duration: 4 },
+    ],
+    []
+  );
+
+  // Trusted-by badges
+  const trustedBadges = [
+    { label: 'Eko Sklad', icon: ShieldCheck, delay: 1.3 },
+    { label: 'HACCP', icon: ShieldCheck, delay: 1.4 },
+    { label: 'Apis mellifera carnica', icon: Flower2, delay: 1.5 },
+    { label: 'EU Organic', icon: ShieldCheck, delay: 1.6 },
+  ];
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden" id="hero">
       {/* Background image with parallax */}
@@ -211,6 +295,16 @@ export default function Hero() {
 
       {/* Hex pattern overlay */}
       <div className="absolute inset-0 hex-pattern opacity-30" />
+
+      {/* Grain texture overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none z-[2] mix-blend-overlay opacity-[0.35]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E")`,
+          backgroundRepeat: 'repeat',
+          backgroundSize: '180px 180px',
+        }}
+      />
 
       {/* ============================================
           Floating Honeycomb Decorations
@@ -256,6 +350,19 @@ export default function Hero() {
           Animated Flying Bee
           ============================================ */}
       <FlyingBee />
+
+      {/* ============================================
+          Parallax Golden Sparkles
+          ============================================ */}
+      {sparkles.map((sparkle, i) => (
+        <GoldenSparkle
+          key={i}
+          style={{ top: sparkle.top, left: 'left' in sparkle ? sparkle.left : undefined, right: 'right' in sparkle ? sparkle.right : undefined }}
+          delay={sparkle.delay}
+          duration={sparkle.duration}
+          size={sparkle.size}
+        />
+      ))}
 
       {/* ============================================
           Hero Content with parallax fade
@@ -339,12 +446,12 @@ export default function Hero() {
           </Button>
         </motion.div>
 
-        {/* Trust indicators as pill badges */}
+        {/* Original trust indicators as pill badges */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.2 }}
-          className="mt-10 sm:mt-14 flex flex-wrap items-center justify-center gap-3 sm:gap-4"
+          className="mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4"
         >
           <TrustBadge icon={ShieldCheck} delay={1.3}>
             Eko Sklad Certified
@@ -356,26 +463,101 @@ export default function Hero() {
             100% Bela krajina
           </TrustBadge>
         </motion.div>
+
+        {/* ============================================
+            Trusted By Row - compact badge strip
+            ============================================ */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.8 }}
+          className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4"
+        >
+          <span className="text-white/30 text-[10px] sm:text-xs uppercase tracking-widest font-medium">
+            {lang === 'sl' ? 'Preverjeno' : 'Trusted by'}:
+          </span>
+          {trustedBadges.map((badge) => (
+            <motion.div
+              key={badge.label}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, delay: badge.delay }}
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-white/10 bg-white/5 text-white/50 text-[10px] sm:text-xs font-medium"
+            >
+              <badge.icon className="w-3 h-3 text-honey-400/70" />
+              {badge.label}
+            </motion.div>
+          ))}
+        </motion.div>
       </motion.div>
 
-      {/* Scroll hint */}
+      {/* ============================================
+          Scroll hint with mouse icon
+          ============================================ */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 1.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
+        transition={{ duration: 1, delay: 2.0 }}
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10"
       >
-        <motion.button
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          onClick={scrollToProducts}
-          className="flex flex-col items-center gap-1 text-white/50 hover:text-white/70 transition-colors"
-          aria-label={t.hero.scrollHint}
-        >
-          <span className="text-xs tracking-widest uppercase">{t.hero.scrollHint}</span>
-          <ChevronDown className="w-5 h-5" />
-        </motion.button>
+        <MouseScrollIndicator onClick={scrollToProducts} label={t.hero.scrollHint} />
       </motion.div>
+
+      {/* ============================================
+          Gradient Wave Divider at bottom
+          ============================================ */}
+      <div className="absolute bottom-0 left-0 right-0 z-[3] pointer-events-none">
+        <svg
+          viewBox="0 0 1440 120"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full h-[60px] sm:h-[80px] md:h-[100px] lg:h-[120px]"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <linearGradient id="wave-gradient-hero" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="var(--color-honey-200)" stopOpacity="0.3" />
+              <stop offset="50%" stopColor="var(--color-honey-400)" stopOpacity="0.2" />
+              <stop offset="100%" stopColor="var(--color-honey-200)" stopOpacity="0.3" />
+            </linearGradient>
+            <linearGradient id="wave-fill" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="transparent" />
+              <stop offset="100%" stopColor="hsl(45, 20%, 97%)" />
+            </linearGradient>
+            <linearGradient id="wave-fill-dark" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="transparent" />
+              <stop offset="100%" stopColor="hsl(45, 10%, 16%)" />
+            </linearGradient>
+          </defs>
+          {/* Primary wave */}
+          <path
+            d="M0,60 C360,120 720,0 1080,60 C1260,90 1380,40 1440,60 L1440,120 L0,120 Z"
+            fill="url(#wave-fill)"
+            className="dark:hidden"
+          />
+          <path
+            d="M0,60 C360,120 720,0 1080,60 C1260,90 1380,40 1440,60 L1440,120 L0,120 Z"
+            fill="url(#wave-fill-dark)"
+            className="hidden dark:block"
+          />
+          {/* Decorative thin wave line */}
+          <path
+            d="M0,60 C360,120 720,0 1080,60 C1260,90 1380,40 1440,60"
+            fill="none"
+            stroke="url(#wave-gradient-hero)"
+            strokeWidth="1.5"
+            opacity="0.6"
+          />
+          {/* Secondary thinner wave */}
+          <path
+            d="M0,75 C240,40 480,100 720,70 C960,40 1200,90 1440,65"
+            fill="none"
+            stroke="url(#wave-gradient-hero)"
+            strokeWidth="1"
+            opacity="0.3"
+          />
+        </svg>
+      </div>
     </section>
   );
 }

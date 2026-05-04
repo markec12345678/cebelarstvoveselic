@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
-import { Shield, Leaf, Award, Hexagon, Quote } from 'lucide-react';
+import { Shield, Leaf, Award, Hexagon, Quote, CalendarDays, Leaf as LeafIcon } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -83,6 +83,69 @@ const certificationBadges = [
   },
 ];
 
+/* ============================================
+   Floating Leaf / Honeycomb Dot Decoration
+   ============================================ */
+function FloatingDecoration({
+  style,
+  delay,
+  duration,
+  type,
+}: {
+  style: React.CSSProperties;
+  delay: number;
+  duration: number;
+  type: 'leaf' | 'hex' | 'dot';
+}) {
+  if (type === 'leaf') {
+    return (
+      <motion.div
+        className="absolute pointer-events-none"
+        style={style}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0, 0.15, 0.08, 0.12, 0], rotate: [0, 15, -10, 20, 5] }}
+        transition={{ duration, repeat: Infinity, ease: 'easeInOut', delay }}
+      >
+        <LeafIcon className="w-5 h-5 text-forest" />
+      </motion.div>
+    );
+  }
+
+  if (type === 'hex') {
+    return (
+      <motion.div
+        className="absolute pointer-events-none"
+        style={style}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0, 0.12, 0.06, 0.1, 0], rotate: [0, 30, -15, 10, 0], scale: [0.8, 1, 0.9, 1.1, 0.8] }}
+        transition={{ duration, repeat: Infinity, ease: 'easeInOut', delay }}
+      >
+        <svg width="24" height="24" viewBox="0 0 100 100" fill="none">
+          <path
+            d="M50 5L91 27.5V72.5L50 95L9 72.5V27.5L50 5Z"
+            stroke="rgba(212, 160, 23, 0.3)"
+            strokeWidth="2"
+            fill="rgba(212, 160, 23, 0.05)"
+          />
+        </svg>
+      </motion.div>
+    );
+  }
+
+  // dot
+  return (
+    <motion.div
+      className="absolute pointer-events-none"
+      style={style}
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ opacity: [0, 0.25, 0.1, 0.2, 0], scale: [0, 1, 0.8, 1.2, 0] }}
+      transition={{ duration, repeat: Infinity, ease: 'easeInOut', delay }}
+    >
+      <div className="w-2 h-2 rounded-full bg-honey-400/40" />
+    </motion.div>
+  );
+}
+
 export default function About() {
   const { lang } = useLangStore();
   const t = getTranslations(lang);
@@ -108,6 +171,10 @@ export default function About() {
     ? 'Brez antibiotikov. Brez dodanega sladkorja. Brez segrevanja nad 40 °C.'
     : 'No antibiotics. No added sugar. No heating above 40 °C.';
 
+  const commitmentText = lang === 'sl'
+    ? 'Naša obljuba: vsak kozarec medu nosi celotno zgodbo svojega izvora — od posebnega panja do sezonskega cvetja.'
+    : 'Our promise: every jar of honey carries the full story of its origin — from the specific hive to the seasonal bloom.';
+
   return (
     <section id="story" className="py-20 sm:py-28 lg:py-32 relative overflow-hidden">
       {/* Background */}
@@ -115,6 +182,17 @@ export default function About() {
       <div className="absolute top-0 right-0 w-96 h-96 bg-honey-200/20 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-forest/5 rounded-full blur-3xl" />
       <div className="section-divider absolute top-0 left-0 right-0" />
+
+      {/* ============================================
+          Floating Decoration Elements
+          ============================================ */}
+      <FloatingDecoration style={{ top: '12%', right: '6%' }} delay={0.5} duration={8} type="leaf" />
+      <FloatingDecoration style={{ top: '30%', left: '3%' }} delay={1.0} duration={10} type="hex" />
+      <FloatingDecoration style={{ bottom: '20%', right: '10%' }} delay={1.5} duration={7} type="dot" />
+      <FloatingDecoration style={{ top: '60%', left: '8%' }} delay={2.0} duration={9} type="leaf" />
+      <FloatingDecoration style={{ bottom: '35%', right: '4%' }} delay={0.8} duration={11} type="dot" />
+      <FloatingDecoration style={{ top: '8%', left: '15%' }} delay={2.5} duration={6} type="hex" />
+      <FloatingDecoration style={{ bottom: '10%', left: '20%' }} delay={1.2} duration={8.5} type="dot" />
 
       <div ref={ref} className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section tag */}
@@ -148,6 +226,30 @@ export default function About() {
                 style={{ y: imageY, scale: imageScale }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+
+              {/* ============================================
+                  "Since 1990" Ribbon Badge
+                  ============================================ */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: 0.6, delay: 0.8 }}
+                className="absolute top-5 right-5 z-10"
+              >
+                <div className="relative">
+                  {/* Ribbon shape using CSS */}
+                  <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-honey-500 to-honey-600 text-white rounded-lg shadow-lg">
+                    <CalendarDays className="w-4 h-4" />
+                    <span className="text-sm font-bold tracking-wide">
+                      {lang === 'sl' ? 'OD LETA 1990' : 'SINCE 1990'}
+                    </span>
+                  </div>
+                  {/* Ribbon tail */}
+                  <div className="absolute -bottom-1.5 right-3 w-2 h-3 bg-honey-700 rotate-[25deg] origin-top-left" />
+                  <div className="absolute -bottom-1.5 right-7 w-2 h-3 bg-honey-700 -rotate-[25deg] origin-top-right" />
+                </div>
+              </motion.div>
+
               {/* Experience badge with pulse animation */}
               <motion.div
                 animate={{ scale: [1, 1.03, 1] }}
@@ -205,6 +307,28 @@ export default function About() {
               <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
                 {t.about.paragraph3}
               </p>
+
+              {/* ============================================
+                  Key Commitment Callout Block
+                  ============================================ */}
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.7, delay: 0.8 }}
+                className="relative my-6 rounded-xl border border-honey-200/60 dark:border-honey-800/30 bg-gradient-to-br from-honey-50/80 via-background to-honey-100/40 dark:from-honey-900/15 dark:via-background dark:to-honey-900/10 p-5 sm:p-6"
+              >
+                {/* Quote icon */}
+                <div className="absolute -top-3 -left-1 w-7 h-7 rounded-full bg-honey-500 flex items-center justify-center shadow-md">
+                  <Quote className="w-3.5 h-3.5 text-white" />
+                </div>
+                {/* Honey left border accent */}
+                <div className="absolute left-0 top-4 bottom-4 w-1 rounded-r-full bg-gradient-to-b from-honey-300 via-honey-500 to-honey-300" />
+                <div className="pl-5">
+                  <p className="text-sm sm:text-base font-medium text-foreground/80 dark:text-foreground/70 leading-relaxed italic">
+                    &ldquo;{commitmentText}&rdquo;
+                  </p>
+                </div>
+              </motion.div>
             </div>
 
             {/* Certification badges as mini cards with tooltips */}
@@ -261,6 +385,11 @@ export default function About() {
           </motion.div>
         </div>
       </div>
+
+      {/* ============================================
+          Bottom Gradient Transition to Next Section
+          ============================================ */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none bg-gradient-to-b from-transparent via-transparent to-honey-50/30 dark:to-honey-950/10" />
     </section>
   );
 }
