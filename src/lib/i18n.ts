@@ -193,6 +193,36 @@ export interface TranslationStrings {
     reviews: string;
     reviewsLabel: string;
   };
+  promo: {
+    spring: string;
+    summer: string;
+    autumn: string;
+    winter: string;
+    cta: string;
+    dismiss: string;
+  };
+  gallery: {
+    sectionTag: string;
+    title: string;
+    subtitle: string;
+    imageOf: string;
+    closeGallery: string;
+    prev: string;
+    next: string;
+  };
+  quality: {
+    sectionTag: string;
+    title: string;
+    subtitle: string;
+    pillars: Array<{
+      title: string;
+      description: string;
+      details: string[];
+    }>;
+  };
+  whatsapp: {
+    tooltip: string;
+  };
 }
 
 const translations: Record<Lang, TranslationStrings> = {
@@ -542,6 +572,48 @@ const translations: Record<Lang, TranslationStrings> = {
       reviews: '127',
       reviewsLabel: 'odgovorov strank',
     },
+    promo: {
+      spring: 'Pomladno čiščenje s čebeljim medom',
+      summer: 'Poletna sezona obiskov čebeljaka!',
+      autumn: 'Jesenski med brstov smreke je prispel!',
+      winter: 'Božično podarilno pakiranje medu',
+      cta: 'Razišči',
+      dismiss: 'Zapri',
+    },
+    gallery: {
+      sectionTag: 'Galerija',
+      title: 'Tako izgleda naš čebeljarski svet',
+      subtitle: 'Uživajte v pogledu na naš čebeljnjak, mede in čebelarsko domačijo v Beli krajini.',
+      imageOf: 'Slika {current} od {total}',
+      closeGallery: 'Zapri galerijo',
+      prev: 'Prejšnja',
+      next: 'Naslednja',
+    },
+    quality: {
+      sectionTag: 'Kakovost',
+      title: 'Zakaj je naš med drugačen',
+      subtitle: 'Tri temelji naše kakovosti, ki ločijo naš med od vseh ostalih.',
+      pillars: [
+        {
+          title: 'Surov in nepredelaven',
+          description: 'Nikoli ne toplimo medu nad 40 °C. Ohranjamo vse naravne encime, antioksidante in arome — tako, kot jih je ustvarila narava.',
+          details: ['Brez segrevanja nad 40 °C', 'Ohranjeni vsi naravni encimi', 'Brez dodanih sladkorjev ali konzervansov'],
+        },
+        {
+          title: 'Certificiran ekološko',
+          description: 'Naš med je certificiran po shemi Eko Sklad v skladu z EU uredbami o ekološkem kmetijstvu (EU) 2018/848.',
+          details: ['Eko Sklad certifikat', 'EU regulativa (EU) 2018/848', 'Redna letna preverjanja kakovosti'],
+        },
+        {
+          title: 'Eno izvorno poreklo',
+          description: 'Ves med izhaja iz čistih kraskih pašnikov Bele krajine — regije s submediteranskim podnebjem in edinstveno cvetno raznolikostjo.',
+          details: ['Bela krajina — Slovenija', 'Submediteransko podnebje', 'GPS sledljivost do panja'],
+        },
+      ],
+    },
+    whatsapp: {
+      tooltip: 'Pišite nam na WhatsApp — odgovorimo v roku 1 ure',
+    },
   },
   en: {
     nav: {
@@ -888,6 +960,48 @@ const translations: Record<Lang, TranslationStrings> = {
       ratingLabel: 'Average Rating',
       reviews: '127',
       reviewsLabel: 'Customer Reviews',
+    },
+    promo: {
+      spring: 'Spring cleanse with honey',
+      summer: 'Summer apiary visit season!',
+      autumn: 'Fir honeydew honey has arrived!',
+      winter: 'Christmas honey gift packaging',
+      cta: 'Explore',
+      dismiss: 'Close',
+    },
+    gallery: {
+      sectionTag: 'Gallery',
+      title: 'A Glimpse Into Our Beekeeping World',
+      subtitle: 'Enjoy the views of our apiary, honey varieties, and beekeeping farm in Bela Krajina.',
+      imageOf: 'Image {current} of {total}',
+      closeGallery: 'Close gallery',
+      prev: 'Previous',
+      next: 'Next',
+    },
+    quality: {
+      sectionTag: 'Quality',
+      title: 'Why Our Honey is Different',
+      subtitle: 'Three pillars of quality that set our honey apart from all others.',
+      pillars: [
+        {
+          title: 'Raw & Unprocessed',
+          description: 'We never heat honey above 40 °C. All natural enzymes, antioxidants, and aromas are preserved — exactly as nature created them.',
+          details: ['No heating above 40 °C', 'All natural enzymes preserved', 'No added sugars or preservatives'],
+        },
+        {
+          title: 'Certified Organic',
+          description: 'Our honey is certified under the Eko Sklad scheme in compliance with EU organic farming regulations (EU) 2018/848.',
+          details: ['Eko Sklad certificate', 'EU Regulation (EU) 2018/848', 'Regular annual quality audits'],
+        },
+        {
+          title: 'Single-Origin',
+          description: 'All honey comes from the pristine karst pastures of Bela Krajina — a region with sub-Mediterranean climate and unique floral diversity.',
+          details: ['Bela Krajina — Slovenia', 'Sub-Mediterranean climate', 'GPS traceability to the hive'],
+        },
+      ],
+    },
+    whatsapp: {
+      tooltip: 'Message us on WhatsApp — we reply within 1 hour',
     },
   },
 };

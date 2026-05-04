@@ -2,18 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import Navigation from '@/components/sections/Navigation';
+import SeasonalPromoBanner from '@/components/sections/SeasonalPromoBanner';
 import Hero from '@/components/sections/Hero';
 import About from '@/components/sections/About';
+import HoneyQuality from '@/components/sections/HoneyQuality';
 import Products from '@/components/sections/Products';
 import HoneyComparison from '@/components/sections/HoneyComparison';
 import Process from '@/components/sections/Process';
+import StatsBar from '@/components/sections/StatsBar';
 import Testimonials from '@/components/sections/Testimonials';
 import Visit from '@/components/sections/Visit';
+import ImageGallery from '@/components/sections/ImageGallery';
 import FAQ from '@/components/sections/FAQ';
-import Contact from '@/components/sections/Contact';
 import Newsletter from '@/components/sections/Newsletter';
+import Contact from '@/components/sections/Contact';
 import Footer from '@/components/sections/Footer';
-import StatsBar from '@/components/sections/StatsBar';
 import CookieConsent from '@/components/sections/CookieConsent';
 import BackToTop from '@/components/sections/BackToTop';
 import WhatsAppButton from '@/components/sections/WhatsAppButton';
@@ -36,14 +39,17 @@ export default function Home() {
       </a>
       <Navigation />
       <main id="main-content" className="flex-1">
+        <SeasonalPromoBanner />
         <Hero />
         <About />
+        <HoneyQuality />
         <Products />
         <HoneyComparison />
         <Process />
         <StatsBar />
         <Testimonials />
         <Visit />
+        <ImageGallery />
         <FAQ />
         <Newsletter />
         <Contact />

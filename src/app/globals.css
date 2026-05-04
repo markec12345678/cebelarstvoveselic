@@ -480,3 +480,227 @@ html {
 .ring-ripple {
   animation: ring-scale 0.8s ease-out;
 }
+
+/* ============================================
+   ENHANCED UTILITIES & MICRO-INTERACTIONS
+   ============================================ */
+
+/* Smooth image loading placeholder */
+@keyframes shimmer-bg {
+  0% { background-position: 200% 200%; }
+  100% { background-position: -200% 200%; }
+}
+
+.img-loading {
+  background: linear-gradient(135deg, var(--color-honey-100) 0%, var(--color-honey-200) 100%);
+  background-size: 200% 200%;
+  animation: shimmer-bg 1.5s ease-in-out infinite;
+}
+
+/* Glassmorphism card - elevated variant */
+.glass-card-elevated {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* Hover lift effect */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(212, 160, 23, 0.15);
+}
+
+/* Gradient text - forest variant */
+.text-gradient-forest {
+  background: linear-gradient(135deg, #2D5016 0%, #5A8A3C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Decorative dot pattern */
+.dot-pattern {
+  background-image: radial-gradient(circle, rgba(212, 160, 23, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Animated gradient border */
+@keyframes gradient-rotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animated-border {
+  background: linear-gradient(270deg, #D4A017, #5A8A3C, #8B6914, #F5D76E, #D4A017);
+  background-size: 400% 400%;
+  animation: gradient-rotate 6s ease infinite;
+}
+
+/* Typewriter cursor effect */
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.cursor-blink::after {
+  content: '|';
+  animation: blink-cursor 1s step-end infinite;
+  color: var(--color-honey-500);
+  font-weight: 300;
+}
+
+/* Subtle breathing animation */
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.05); opacity: 1; }
+}
+
+.breathe {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+/* Scroll-triggered fade in up */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Marquee / scrolling text */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee {
+  animation: marquee 30s linear infinite;
+}
+
+/* Improved focus styles for accessibility (overrides earlier rule) */
+*:focus-visible {
+  outline: 2px solid oklch(0.68 0.14 85);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+}
+.dark ::-webkit-scrollbar-track {
+  background: oklch(0.20 0.01 50);
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: oklch(0.45 0.08 85);
+  border-radius: 4px;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.55 0.10 85);
+}
+
+/* Smooth page transitions */
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-enter {
+  animation: page-enter 0.6s ease-out;
+}
+
+/* Card shine effect on hover */
+.card-shine {
+  position: relative;
+  overflow: hidden;
+}
+.card-shine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  transition: left 0.6s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+.card-shine:hover::before {
+  left: 100%;
+}
+
+/* ============================================
+   DARK MODE ENHANCEMENTS
+   ============================================ */
+
+/* Dark mode card borders */
+.dark .border-border\/50 {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Dark mode image overlays */
+.dark img {
+  border-radius: inherit;
+}
+
+/* Dark mode honey gradient text - warmer/brighter */
+.dark .honey-text-gradient {
+  background: linear-gradient(135deg, #F5D76E 0%, #E8B830 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Dark mode honey background tint */
+.dark .bg-honey-50\/50 {
+  background-color: rgba(212, 160, 23, 0.04);
+}
+
+/* Dark mode honey glow - warmer */
+.dark .honey-glow {
+  box-shadow: 0 0 40px rgba(212, 160, 23, 0.06), 0 0 80px rgba(212, 160, 23, 0.03);
+}
+
+/* Dark mode glass card */
+.dark .glass-card {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Dark mode glass card elevated */
+.dark .glass-card-elevated {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: white !important; color: black !important; }
+  section { page-break-inside: avoid; }
+  img { max-width: 100% !important; }
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .bee-float, .fly-bee, .pulse-glow, .breathe, .shimmer, .marquee, .wing-flutter {
+    animation: none !important;
+  }
+}
