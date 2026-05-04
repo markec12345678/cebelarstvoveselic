@@ -25,6 +25,15 @@ const honeyColors = [
   'from-amber-950 to-stone-900',
 ];
 
+const honeyImages = [
+  '/images/honey/acacia.jpg',
+  '/images/honey/linden.jpg',
+  '/images/honey/chestnut.jpg',
+  '/images/honey/wildflower.jpg',
+  '/images/honey/forest.jpg',
+  '/images/honey/fir.jpg',
+];
+
 export default function Products() {
   const { lang } = useLangStore();
   const t = getTranslations(lang);
@@ -97,32 +106,40 @@ export default function Products() {
                 onKeyDown={(e) => e.key === 'Enter' && setSelectedProduct(i)}
                 aria-label={`${product.name} — ${product.price}`}
               >
-                {/* Honey color bar */}
-                <div className={`h-2 bg-gradient-to-r ${honeyColors[i]}`} />
-
-                <CardContent className="p-6 flex flex-col h-full">
-                  {/* Badge */}
+                {/* Product image */}
+                <div className="relative h-48 overflow-hidden">
+                  <img
+                    src={honeyImages[i]}
+                    alt={`${product.name} — Čebelarstvo Veselič`}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                  {/* Honey color bar */}
+                  <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${honeyColors[i]}`} />
+                  {/* Badge overlay */}
                   {product.badge && (
-                    <div className="flex justify-between items-start mb-3">
-                      <Badge
-                        variant="secondary"
-                        className="bg-honey-100 dark:bg-honey-900/20 text-honey-700 dark:text-honey-400 text-xs font-medium border-honey-200 dark:border-honey-800/30"
-                      >
-                        {product.badge}
-                      </Badge>
-                      <span className="text-xs text-muted-foreground font-medium">
-                        {t.products.fromPrice} {product.price}
-                      </span>
-                    </div>
+                    <Badge
+                      className="absolute top-3 left-3 bg-white/90 dark:bg-black/60 backdrop-blur-sm text-xs font-semibold border-0 shadow-sm"
+                    >
+                      {product.badge}
+                    </Badge>
                   )}
+                </div>
 
-                  {/* Product name */}
-                  <h3 className="text-xl font-bold tracking-tight group-hover:text-honey-700 dark:group-hover:text-honey-400 transition-colors">
-                    {product.name}
-                  </h3>
+                <CardContent className="p-5 flex flex-col h-full">
+                  {/* Name + Price row */}
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="text-lg font-bold tracking-tight group-hover:text-honey-700 dark:group-hover:text-honey-400 transition-colors">
+                      {product.name}
+                    </h3>
+                    <span className="text-base font-bold honey-text-gradient flex-shrink-0">
+                      {product.price}
+                    </span>
+                  </div>
 
                   {/* Color indicator */}
-                  <div className="flex items-center gap-2 mt-2">
+                  <div className="flex items-center gap-2 mt-1">
                     <div className={`w-4 h-4 rounded-full bg-gradient-to-br ${honeyColors[i]} shadow-sm`} />
                     <span className="text-xs text-muted-foreground">{product.color}</span>
                   </div>
@@ -202,6 +219,16 @@ export default function Products() {
               </DialogHeader>
 
               <div className="space-y-4 mt-4">
+                {/* Product image in dialog */}
+                <div className="relative rounded-xl overflow-hidden h-44">
+                  <img
+                    src={honeyImages[selectedProduct!]}
+                    alt={`${selected.name} — Čebelarstvo Veselič`}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${honeyColors[selectedProduct!]}`} />
+                </div>
+
                 {selected.badge && (
                   <Badge className="bg-honey-100 dark:bg-honey-900/20 text-honey-700 dark:text-honey-400 border-honey-200 dark:border-honey-800/30">
                     {selected.badge}

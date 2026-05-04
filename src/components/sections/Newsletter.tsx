@@ -25,14 +25,30 @@ export default function Newsletter() {
       return;
     }
     setSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1200));
-    setSubscribed(true);
-    setSubmitting(false);
-    toast.success(
-      lang === 'sl'
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, lang }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        toast.error(data.error || (lang === 'sl' ? 'Prišlo je do napake.' : 'An error occurred.'));
+        return;
+      }
+
+      setSubscribed(true);
+      toast.success(data.message || (lang === 'sl'
         ? 'Hvala za naročilo! Kmalu boste prejeli novice.'
         : 'Thank you for subscribing! You will receive news soon.'
-    );
+      ));
+    } catch {
+      toast.error(lang === 'sl' ? 'Prišlo je do napake.' : 'An error occurred.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const content = {

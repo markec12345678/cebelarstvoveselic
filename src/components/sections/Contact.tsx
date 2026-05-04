@@ -40,8 +40,19 @@ export default function Contact() {
 
     setSubmitting(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...form, lang }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        toast.error(data.error || t.contact.error);
+        return;
+      }
+
       toast.success(t.contact.success);
       setForm({ name: '', email: '', subject: '', message: '' });
       setErrors({});

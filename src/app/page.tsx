@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Navigation from '@/components/sections/Navigation';
 import Hero from '@/components/sections/Hero';
 import About from '@/components/sections/About';
@@ -14,8 +15,15 @@ import Footer from '@/components/sections/Footer';
 import CookieConsent from '@/components/sections/CookieConsent';
 import BackToTop from '@/components/sections/BackToTop';
 import WhatsAppButton from '@/components/sections/WhatsAppButton';
+import PageSkeleton from '@/components/sections/PageSkeleton';
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+  if (!mounted) return <PageSkeleton />;
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <a

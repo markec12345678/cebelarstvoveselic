@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Globe } from 'lucide-react';
+import { Menu, X, Globe, Sun, Moon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useTheme } from 'next-themes';
 import { useLangStore } from '@/store/language';
 import { getTranslations } from '@/lib/i18n';
 import type { Lang } from '@/lib/i18n';
@@ -23,6 +24,7 @@ export default function Navigation() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
   const { lang, toggleLang } = useLangStore();
+  const { theme, setTheme } = useTheme();
   const t = getTranslations(lang);
 
   useEffect(() => {
@@ -134,6 +136,17 @@ export default function Navigation() {
 
             {/* Right side */}
             <div className="flex items-center gap-2">
+              {/* Theme toggle */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9"
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+              >
+                {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              </Button>
+
               {/* Language toggle */}
               <Button
                 variant="ghost"

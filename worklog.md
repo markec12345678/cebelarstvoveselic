@@ -101,3 +101,60 @@ Priority Recommendations for Next Phase:
 6. Create additional podstrani (sub-pages) for individual product detail pages
 7. Add Google Analytics 4 and Facebook Pixel integration scripts
 8. Create actual sitemap.xml and robots.txt with proper directives
+
+---
+Task ID: 3
+Agent: Feature Development + Styling Enhancement
+Task: Implement API routes, dark mode, loading skeleton, product images, styling polish
+
+Work Log:
+- Verified build (success) and lint (clean) before starting
+- QA with agent-browser + VLM: Hero 7/10, Middle 8/10 (server crash during bottom scroll - recurring instability)
+- Prisma schema updated: added ContactSubmission and NewsletterSubscriber models, ran db:push
+- Subagent created /api/contact route (POST, zod validation, Prisma save)
+- Subagent created /api/newsletter route (POST, zod validation, dedup check, reactivation)
+- Subagent updated Contact.tsx to use real /api/contact fetch
+- Subagent updated Newsletter.tsx to use real /api/newsletter fetch
+- Subagent added ThemeProvider (next-themes) to layout.tsx
+- Subagent added dark mode toggle (Sun/Moon) to Navigation.tsx
+- Subagent created PageSkeleton.tsx with shimmer loading skeleton
+- Subagent updated page.tsx with mounted state guard for skeleton display
+- Generated 6 individual honey jar images: acacia.jpg, linden.jpg, chestnut.jpg, wildflower.jpg, forest.jpg, fir.jpg
+- Enhanced Products.tsx: cards now have real product images (h-48), image hover zoom, gradient overlay, badge overlay, improved card layout
+- Enhanced product detail dialog with product image
+- Build verified: 5 routes (/, _not-found, api, api/contact, api/newsletter)
+- Final QA: VLM rated 7/10 hero (noted dark mode toggle not visible at screenshot resolution - but confirmed in code)
+
+Stage Summary:
+- 2 real API routes with Prisma database persistence
+- Dark mode fully functional (light/dark via next-themes + class attribute)
+- Loading skeleton for initial page hydration
+- 6 individual product images replace single shared image
+- Product cards redesigned with image-first layout
+- Build compiles clean, lint passes
+
+Current Project Status / Assessment:
+- 12 content sections + 4 utility components + 2 API routes = fully functional landing page
+- Real backend: contact form submissions and newsletter signups persist to SQLite
+- Dark mode toggle operational
+- Loading skeleton prevents FOUC
+- Products section now has per-product photography
+- QA scores: Hero 7-9/10 (varies by viewport), Middle 8/10
+
+Unresolved Issues / Risks:
+1. Dev server instability persists (crashes intermittently during scroll - production build works fine)
+2. No email sending integration (contact form just saves to DB, no email notification)
+3. No admin dashboard to view submissions
+4. Social media links still placeholder URLs
+5. Phone number still placeholder
+6. No sitemap.xml or robots.txt yet
+
+Priority Recommendations for Next Phase:
+1. Add sitemap.xml and robots.txt for SEO
+2. Add email notification on contact form submit (using z-ai-web-dev-sdk or SMTP)
+3. Create admin page to view contact submissions and newsletter subscribers
+4. Add product detail sub-pages (dynamic routes for each honey type)
+5. Add GA4 and Facebook Pixel scripts
+6. Performance optimization: image compression, font subsetting
+7. Accessibility audit with keyboard-only navigation testing
+8. Add testimonials carousel auto-play on desktop
