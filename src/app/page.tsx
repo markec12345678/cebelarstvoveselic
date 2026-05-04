@@ -8,6 +8,7 @@ import About from '@/components/sections/About';
 import HoneyQuality from '@/components/sections/HoneyQuality';
 import Products from '@/components/sections/Products';
 import HoneyComparison from '@/components/sections/HoneyComparison';
+import Recipes from '@/components/sections/Recipes';
 import Process from '@/components/sections/Process';
 import StatsBar from '@/components/sections/StatsBar';
 import Testimonials from '@/components/sections/Testimonials';
@@ -15,6 +16,7 @@ import Visit from '@/components/sections/Visit';
 import ImageGallery from '@/components/sections/ImageGallery';
 import FAQ from '@/components/sections/FAQ';
 import Newsletter from '@/components/sections/Newsletter';
+import OrderForm from '@/components/sections/OrderForm';
 import Contact from '@/components/sections/Contact';
 import Footer from '@/components/sections/Footer';
 import CookieConsent from '@/components/sections/CookieConsent';
@@ -45,6 +47,7 @@ export default function Home() {
         <HoneyQuality />
         <Products />
         <HoneyComparison />
+        <Recipes />
         <Process />
         <StatsBar />
         <Testimonials />
@@ -52,6 +55,7 @@ export default function Home() {
         <ImageGallery />
         <FAQ />
         <Newsletter />
+        <OrderForm />
         <Contact />
       </main>
       <Footer />

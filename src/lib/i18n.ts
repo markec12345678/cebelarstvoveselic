@@ -223,6 +223,66 @@ export interface TranslationStrings {
   whatsapp: {
     tooltip: string;
   };
+  order: {
+    sectionTag: string;
+    title: string;
+    subtitle: string;
+    selectProducts: string;
+    yourSelection: string;
+    quantity: string;
+    addToSelection: string;
+    customerDetails: string;
+    fullName: string;
+    emailAddress: string;
+    phoneNumber: string;
+    deliveryAddress: string;
+    street: string;
+    city: string;
+    postalCode: string;
+    deliveryNotes: string;
+    paymentMethod: string;
+    cashOnDelivery: string;
+    bankTransfer: string;
+    orderSummary: string;
+    subtotal: string;
+    shipping: string;
+    shippingFree: string;
+    shippingCost: string;
+    total: string;
+    placeOrder: string;
+    placing: string;
+    orderSuccess: string;
+    orderNumber: string;
+    noItemsSelected: string;
+    freeShippingThreshold: string;
+    minOrderNote: string;
+    fullNamePlaceholder: string;
+    emailPlaceholder: string;
+    phonePlaceholder: string;
+    streetPlaceholder: string;
+    cityPlaceholder: string;
+    postalCodePlaceholder: string;
+    notesPlaceholder: string;
+  };
+  recipes: {
+    sectionTag: string;
+    title: string;
+    subtitle: string;
+    items: Array<{
+      name: string;
+      description: string;
+      honey: string;
+      prepTime: string;
+      difficulty: string;
+      ingredients: string[];
+      instructions: string[];
+      image: string;
+    }>;
+    viewRecipe: string;
+    closeRecipe: string;
+    serves: string;
+    minutes: string;
+  };
 }
 
 const translations: Record<Lang, TranslationStrings> = {
@@ -614,6 +674,98 @@ const translations: Record<Lang, TranslationStrings> = {
     whatsapp: {
       tooltip: 'Pišite nam na WhatsApp — odgovorimo v roku 1 ure',
     },
+    order: {
+      sectionTag: 'Naročilo',
+      title: 'Naročite naš med',
+      subtitle: 'Izberite med, določite količino in naročite. Brezplačna dostava nad 35 € po Sloveniji.',
+      selectProducts: 'Izberite izdelke',
+      yourSelection: 'Vaša izbira',
+      quantity: 'Količina',
+      addToSelection: 'Dodaj v izbiro',
+      customerDetails: 'Podatki stranke',
+      fullName: 'Ime in priimek',
+      emailAddress: 'Elektronska pošta',
+      phoneNumber: 'Telefonska številka',
+      deliveryAddress: 'Naslov za dostavo',
+      street: 'Ulica in hišna številka',
+      city: 'Kraj',
+      postalCode: 'Poštna številka',
+      deliveryNotes: 'Opombe k dostavi',
+      paymentMethod: 'Način plačila',
+      cashOnDelivery: 'Plačilo ob prevzemu',
+      bankTransfer: 'Bančno nakazilo',
+      orderSummary: 'Povzetek naročila',
+      subtotal: 'Vmesni znesek',
+      shipping: 'Dostava',
+      shippingFree: 'Brezplačno',
+      shippingCost: '4,90 €',
+      total: 'Skupaj',
+      placeOrder: 'Pošlji naročilo',
+      placing: 'Pošiljam naročilo ...',
+      orderSuccess: 'Naročilo uspešno oddano!',
+      orderNumber: 'Številka naročila',
+      noItemsSelected: 'Izberite vsaj en izdelek',
+      freeShippingThreshold: 'Brezplačna dostava nad 35 €',
+      minOrderNote: 'Vstavite količino za dodajanje v košarico',
+      fullNamePlaceholder: 'npr. Jože Novak',
+      emailPlaceholder: 'npr. joze@email.si',
+      phonePlaceholder: 'npr. +386 41 234 567',
+      streetPlaceholder: 'npr. Cvetlična 12',
+      cityPlaceholder: 'npr. Metlika',
+      postalCodePlaceholder: 'npr. 8330',
+      notesPlaceholder: 'Posebne želje za dostavo ...',
+    },
+    recipes: {
+      sectionTag: 'Recepti',
+      title: 'Kulinarični navdih z medom',
+      subtitle: 'Preprosti in okusni recepti z našimi medmi — od solatnih prelivov do zdravilnih čajev.',
+      items: [
+        {
+          name: 'Medena zalivka za solate',
+          description: 'Preprosta in okusna medena zalivka, ki bo oživila vsako solato. Svetel, cvetličen okus z nežno kislost.',
+          honey: 'Cvetlični med',
+          prepTime: '5',
+          difficulty: 'Easy',
+          image: '/images/process.jpg',
+          ingredients: ['3 žlice cvetličnega meda', '4 žlice olivnega olja', '2 žlici jabolčnega kisa', '1 žlička Dijon gorčice', 'Sol in poper po okusu'],
+          instructions: ['V skledki zmešajte med, olivno olje, jabolčni kis in gorčico.', 'Začinite s soljo in poprom po okusu.', 'Dobro pretresite, dokler se zalivka ne spoji.', 'Pocpite po solati in takoj postrežite.'],
+        },
+        {
+          name: 'Medeni smoothie z banano',
+          description: 'Kremni in hranljivi smoothie z banano, medom in mlekom. Idealen za hitro zajtrkovo malico.',
+          honey: 'Akacijev med',
+          prepTime: '3',
+          difficulty: 'Easy',
+          image: '/images/visit.jpg',
+          ingredients: ['1 zrela banana', '200 ml mleka', '1 žlica akacijevega medu', '100 g jogurta', 'Pol skodelice ledenih kock'],
+          instructions: ['Banano olupite in narežite na kose.', 'Vse sestavine dajte v mešalnik.', 'Mešajte 30 sekund, dokler ni gladko.', 'Prenesite v kozarec in takoj postrežite.'],
+        },
+        {
+          name: 'Medeni marinada za piščanca',
+          description: 'Sladko-slanata marinada z medom in sojino omako. Piščanec postane sočen in karameliziran.',
+          honey: 'Kostanjev med',
+          prepTime: '15',
+          difficulty: 'Medium',
+          image: '/images/about.jpg',
+          ingredients: ['3 žlice kostanjevega meda', '4 žlice sojine omake', '2 žlici olivnega olja', '2 česna klinčka', '1 žlička ingverja', '1 žlička limoninega soka'],
+          instructions: ['Česen in ingver drobno nasekljajte.', 'V skledi zmešajte med, sojino omako, olivno olje, česen, ingver in limonin sok.', 'Piščanca narežite na dele in prelijte z marinado.', 'Marinirajte vsaj 30 minut (najbolje čez noč).', 'Pečite na žaru ali v pečici pri 200 °C 25–30 minut.'],
+        },
+        {
+          name: 'Meden čaj za prehlad',
+          description: 'Topel, blažilni čaj z medom, limono in imbrom. Tradicionalno sredstvo za prehlad in boleče grlo.',
+          honey: 'Lipov med',
+          prepTime: '10',
+          difficulty: 'Easy',
+          image: '/images/hero.jpg',
+          ingredients: ['2 žlici lipovega medu', 'Sok pol limone', '1 cm svežega ingra', '250 ml vrele vode', 'Po želji: cimet, nageljnove žbičke'],
+          instructions: ['Vrelo vodo prelijte čez narezan ingver.', 'Pustite stati 5 minut, nato dodajte limonin sok.', 'Ko se čaj nekoliko ohladi (pod 40 °C), dodajte med.', 'Mešajte in po želji dodajte cimet ali nageljno žbičko.'],
+        },
+      ],
+      viewRecipe: 'Poglej recept',
+      closeRecipe: 'Zapri',
+      serves: 'Za',
+      minutes: 'min',
+    },
   },
   en: {
     nav: {
@@ -1002,6 +1154,98 @@ const translations: Record<Lang, TranslationStrings> = {
     },
     whatsapp: {
       tooltip: 'Message us on WhatsApp — we reply within 1 hour',
+    },
+    order: {
+      sectionTag: 'Order',
+      title: 'Order Our Honey',
+      subtitle: 'Choose your honey, set the quantity and place your order. Free delivery over €35 within Slovenia.',
+      selectProducts: 'Select Products',
+      yourSelection: 'Your Selection',
+      quantity: 'Quantity',
+      addToSelection: 'Add to Selection',
+      customerDetails: 'Customer Details',
+      fullName: 'Full Name',
+      emailAddress: 'Email Address',
+      phoneNumber: 'Phone Number',
+      deliveryAddress: 'Delivery Address',
+      street: 'Street & Number',
+      city: 'City',
+      postalCode: 'Postal Code',
+      deliveryNotes: 'Delivery Notes',
+      paymentMethod: 'Payment Method',
+      cashOnDelivery: 'Cash on Delivery',
+      bankTransfer: 'Bank Transfer',
+      orderSummary: 'Order Summary',
+      subtotal: 'Subtotal',
+      shipping: 'Shipping',
+      shippingFree: 'Free',
+      shippingCost: '€4.90',
+      total: 'Total',
+      placeOrder: 'Place Order',
+      placing: 'Placing order ...',
+      orderSuccess: 'Order Successfully Placed!',
+      orderNumber: 'Order Number',
+      noItemsSelected: 'Please select at least one item',
+      freeShippingThreshold: 'Free shipping over €35',
+      minOrderNote: 'Set a quantity to add items to your order',
+      fullNamePlaceholder: 'e.g. Jane Novak',
+      emailPlaceholder: 'e.g. jane@email.com',
+      phonePlaceholder: 'e.g. +386 41 234 567',
+      streetPlaceholder: 'e.g. Flower Street 12',
+      cityPlaceholder: 'e.g. Metlika',
+      postalCodePlaceholder: 'e.g. 8330',
+      notesPlaceholder: 'Special delivery instructions ...',
+    },
+    recipes: {
+      sectionTag: 'Recipes',
+      title: 'Culinary Inspiration with Honey',
+      subtitle: 'Simple and delicious recipes with our honeys — from salad dressings to healing teas.',
+      items: [
+        {
+          name: 'Honey Vinaigrette',
+          description: 'A simple and delicious honey dressing that will brighten any salad. Light, floral flavour with gentle acidity.',
+          honey: 'Wildflower Honey',
+          prepTime: '5',
+          difficulty: 'Easy',
+          image: '/images/process.jpg',
+          ingredients: ['3 tbsp wildflower honey', '4 tbsp olive oil', '2 tbsp apple cider vinegar', '1 tsp Dijon mustard', 'Salt and pepper to taste'],
+          instructions: ['In a bowl, mix honey, olive oil, vinegar, and mustard.', 'Season with salt and pepper to taste.', 'Whisk well until the dressing emulsifies.', 'Drizzle over salad and serve immediately.'],
+        },
+        {
+          name: 'Honey Banana Smoothie',
+          description: 'A creamy and nutritious smoothie with banana, honey, and milk. Perfect for a quick breakfast.',
+          honey: 'Acacia Honey',
+          prepTime: '3',
+          difficulty: 'Easy',
+          image: '/images/visit.jpg',
+          ingredients: ['1 ripe banana', '200 ml milk', '1 tbsp acacia honey', '100 g yogurt', 'Half a cup of ice cubes'],
+          instructions: ['Peel the banana and cut into pieces.', 'Place all ingredients in a blender.', 'Blend for 30 seconds until smooth.', 'Pour into a glass and serve immediately.'],
+        },
+        {
+          name: 'Honey Marinade for Chicken',
+          description: 'A sweet-savoury marinade with honey and soy sauce. The chicken becomes juicy and caramelised.',
+          honey: 'Chestnut Honey',
+          prepTime: '15',
+          difficulty: 'Medium',
+          image: '/images/about.jpg',
+          ingredients: ['3 tbsp chestnut honey', '4 tbsp soy sauce', '2 tbsp olive oil', '2 garlic cloves', '1 tsp ginger', '1 tsp lemon juice'],
+          instructions: ['Finely chop the garlic and ginger.', 'In a bowl, mix honey, soy sauce, olive oil, garlic, ginger, and lemon juice.', 'Cut the chicken into pieces and cover with the marinade.', 'Marinate for at least 30 minutes (ideally overnight).', 'Grill or bake at 200 °C for 25–30 minutes.'],
+        },
+        {
+          name: 'Honey Tea for Cold',
+          description: 'A warm, soothing tea with honey, lemon, and ginger. A traditional remedy for colds and sore throats.',
+          honey: 'Linden Honey',
+          prepTime: '10',
+          difficulty: 'Easy',
+          image: '/images/hero.jpg',
+          ingredients: ['2 tbsp linden honey', 'Juice of half a lemon', '1 cm fresh ginger', '250 ml hot water', 'Optional: cinnamon, cloves'],
+          instructions: ['Pour hot water over the sliced ginger.', 'Let it steep for 5 minutes, then add lemon juice.', 'Once the tea cools slightly (below 40 °C), add the honey.', 'Stir and optionally add cinnamon or cloves.'],
+        },
+      ],
+      viewRecipe: 'View Recipe',
+      closeRecipe: 'Close',
+      serves: 'Serves',
+      minutes: 'min',
     },
   },
 };

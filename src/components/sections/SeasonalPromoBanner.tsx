@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sparkles } from 'lucide-react';
+import { X, Sparkles, Hourglass } from 'lucide-react';
 import { getTranslations } from '@/lib/i18n';
 import { useLangStore } from '@/store/language';
 
@@ -55,6 +55,15 @@ export default function SeasonalPromoBanner() {
   const promoText = t.promo[season];
   const scrollTarget = getScrollTarget(season);
 
+  // Countdown timer to end of current month
+  const countdown = useMemo(() => {
+    const now = new Date();
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+    const diff = endOfMonth.getTime() - now.getTime();
+    const days = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+    return days;
+  }, []);
+
   useEffect(() => {
     if (dismissed) return;
     const timer = setTimeout(() => setVisible(true), 800);
@@ -64,7 +73,7 @@ export default function SeasonalPromoBanner() {
   const handleDismiss = () => {
     localStorage.setItem('promo-dismissed', Date.now().toString());
     setVisible(false);
-    setTimeout(() => setDismissed(true), 300);
+    setTimeout(() => setDismissed(true), 400);
   };
 
   const handleScroll = () => {
@@ -83,7 +92,7 @@ export default function SeasonalPromoBanner() {
         <motion.div
           initial={{ y: -60, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -60, opacity: 0 }}
+          exit={{ y: -40, opacity: 0, scale: 0.98 }}
           transition={{ type: 'spring', stiffness: 260, damping: 30 }}
           className="relative w-full overflow-hidden z-40"
           role="banner"
@@ -113,9 +122,20 @@ export default function SeasonalPromoBanner() {
               </defs>
               <rect width="100%" height="100%" fill="url(#promo-honeycomb)" />
             </svg>
+            {/* Shimmer effect running across banner */}
+            <motion.div
+              className="absolute inset-0 pointer-events-none"
+              initial={{ x: '-100%' }}
+              animate={{ x: '100%' }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'linear', repeatDelay: 2 }}
+            >
+              <div className="w-1/3 h-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+            </motion.div>
 
             <div className="relative max-w-7xl mx-auto flex items-center justify-between gap-3 sm:gap-4">
               <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                {/* Honey jar icon */}
+                <span className="text-lg sm:text-xl flex-shrink-0" role="img" aria-hidden="true">🍯</span>
                 <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white/90 flex-shrink-0" />
                 <p className="text-sm sm:text-base font-medium text-white truncate">
                   <span className="mr-1.5">{seasonEmojis[season]}</span>
@@ -124,6 +144,15 @@ export default function SeasonalPromoBanner() {
               </div>
 
               <div className="flex items-center gap-2 flex-shrink-0">
+                {/* Countdown timer */}
+                <div className="hidden sm:flex items-center gap-1.5 text-xs text-white/80">
+                  <Hourglass className="w-3.5 h-3.5" />
+                  <span>
+                    {lang === 'sl'
+                      ? `Še ${countdown} ${countdown === 1 ? 'dan' : countdown < 5 ? 'dni' : 'dni'} `
+                      : `${countdown} ${countdown === 1 ? 'day' : 'days'} left `}
+                  </span>
+                </div>
                 <button
                   onClick={handleScroll}
                   className="text-xs sm:text-sm font-semibold px-3 py-1 sm:px-4 sm:py-1.5 bg-white/20 hover:bg-white/30 text-white rounded-full transition-colors backdrop-blur-sm border border-white/20"

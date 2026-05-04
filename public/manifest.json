@@ -1,0 +1,21 @@
+{
+  "name": "Čebelarstvo Veselič — Ekološki med iz Bele krajine",
+  "short_name": "Veselič Med",
+  "description": "Tri generacije čebelarjev. 100+ panjev. 6 vrst ekološko certificiranega medu.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FDF8EF",
+  "theme_color": "#D4A017",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/images/hero.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["food", "shopping"],
+  "lang": "sl",
+  "dir": "ltr"
+}

@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { MapPin, Palette, ChefHat, Star, Droplets } from 'lucide-react';
+import { MapPin, Palette, ChefHat, Star, Droplets, Plus } from 'lucide-react';
 import { useLangStore } from '@/store/language';
 import { getTranslations } from '@/lib/i18n';
 
@@ -40,8 +40,29 @@ export default function Products() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
   const [selectedProduct, setSelectedProduct] = useState<number | null>(null);
+  const [quantity, setQuantity] = useState(1);
 
   const selected = selectedProduct !== null ? t.products.items[selectedProduct] : null;
+
+  // Parse price for quantity calculation
+  const parsePrice = (priceStr: string) => {
+    const cleaned = priceStr.replace(/[^0-9,]/g, '').replace(',', '.');
+    const num = parseFloat(cleaned);
+    return isNaN(num) ? 0 : num;
+  };
+
+  const formatTotal = () => {
+    if (!selected) return '';
+    const unit = parsePrice(selected.price);
+    const total = unit * quantity;
+    return total.toFixed(2).replace('.', ',') + ' €';
+  };
+
+  const handleQuickAdd = (e: React.MouseEvent, index: number) => {
+    e.stopPropagation();
+    setQuantity(1);
+    setSelectedProduct(index);
+  };
 
   return (
     <section id="products" className="py-20 sm:py-28 lg:py-32 relative">
@@ -94,16 +115,21 @@ export default function Products() {
           {t.products.items.map((product, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.2 + i * 0.1 }}
+              initial={{ opacity: 0, y: 30, rotate: i % 2 === 0 ? -1.5 : 1.5 }}
+              animate={isInView ? { opacity: 1, y: 0, rotate: 0 } : {}}
+              transition={{
+                type: 'spring',
+                stiffness: 200,
+                damping: 20,
+                delay: 0.15 + i * 0.08,
+              }}
             >
               <Card
-                className="product-card group cursor-pointer border-border/50 hover:border-honey-300 dark:hover:border-honey-700 overflow-hidden h-full"
-                onClick={() => setSelectedProduct(i)}
+                className="product-card group cursor-pointer border-border/50 hover:border-honey-300 dark:hover:border-honey-700 overflow-hidden h-full relative"
+                onClick={() => { setSelectedProduct(i); setQuantity(1); }}
                 role="button"
                 tabIndex={0}
-                onKeyDown={(e) => e.key === 'Enter' && setSelectedProduct(i)}
+                onKeyDown={(e) => { if (e.key === 'Enter') { setSelectedProduct(i); setQuantity(1); } }}
                 aria-label={`${product.name} — ${product.price}`}
               >
                 {/* Product image */}
@@ -125,6 +151,24 @@ export default function Products() {
                       {product.badge}
                     </Badge>
                   )}
+                  {/* "Most Popular" ribbon on first product */}
+                  {i === 0 && (
+                    <div className="absolute top-3 right-[-32px] w-[120px] text-center overflow-hidden">
+                      <div className="bg-gradient-to-r from-honey-500 to-honey-600 text-white text-[10px] font-bold uppercase tracking-wider py-1 rotate-45 shadow-md">
+                        {lang === 'sl' ? '⭐ Najbolj priljubljen' : '⭐ Most Popular'}
+                      </div>
+                    </div>
+                  )}
+                  {/* Quick Add button overlay */}
+                  <motion.button
+                    className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-gradient-to-br from-honey-400 to-honey-600 flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 hover:scale-110"
+                    whileHover={{ scale: 1.15 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={(e) => handleQuickAdd(e, i)}
+                    aria-label={lang === 'sl' ? 'Hitro dodaj' : 'Quick add'}
+                  >
+                    <Plus className="w-5 h-5 text-white" />
+                  </motion.button>
                 </div>
 
                 <CardContent className="p-5 flex flex-col h-full">
@@ -133,9 +177,15 @@ export default function Products() {
                     <h3 className="text-lg font-bold tracking-tight group-hover:text-honey-700 dark:group-hover:text-honey-400 transition-colors">
                       {product.name}
                     </h3>
-                    <span className="text-base font-bold honey-text-gradient flex-shrink-0">
+                    <motion.span
+                      className="text-base font-bold honey-text-gradient flex-shrink-0"
+                      animate={isInView ? {
+                        scale: [1, 1.12, 1],
+                        transition: { duration: 0.5, delay: 0.3 + i * 0.08 },
+                      } : {}}
+                    >
                       {product.price}
-                    </span>
+                    </motion.span>
                   </div>
 
                   {/* Color indicator */}
@@ -155,9 +205,15 @@ export default function Products() {
                       <MapPin className="w-3 h-3" />
                       {product.origin}
                     </div>
-                    <span className="text-lg font-bold honey-text-gradient">
+                    <motion.span
+                      className="text-lg font-bold honey-text-gradient"
+                      animate={isInView ? {
+                        scale: [1, 1.1, 1],
+                        transition: { duration: 0.5, delay: 0.4 + i * 0.08 },
+                      } : {}}
+                    >
                       {product.price}
-                    </span>
+                    </motion.span>
                   </div>
                 </CardContent>
               </Card>
@@ -254,6 +310,39 @@ export default function Products() {
                     <ChefHat className="w-4 h-4 mx-auto mb-1 text-honey-600" />
                     <span className="text-xs text-muted-foreground block line-clamp-2">
                       {selected.use}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Quantity mini-selector */}
+                <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
+                  <div>
+                    <span className="text-xs text-muted-foreground">
+                      {lang === 'sl' ? 'Količina' : 'Quantity'}:
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <motion.button
+                      className="w-8 h-8 rounded-full border border-honey-300 dark:border-honey-700 flex items-center justify-center text-honey-700 dark:text-honey-400 hover:bg-honey-100 dark:hover:bg-honey-900/20 transition-colors text-lg font-bold"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      aria-label="Decrease quantity"
+                    >
+                      −
+                    </motion.button>
+                    <span className="w-8 text-center text-lg font-bold tabular-nums">{quantity}</span>
+                    <motion.button
+                      className="w-8 h-8 rounded-full border border-honey-300 dark:border-honey-700 flex items-center justify-center text-honey-700 dark:text-honey-400 hover:bg-honey-100 dark:hover:bg-honey-900/20 transition-colors text-lg font-bold"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => setQuantity(Math.min(10, quantity + 1))}
+                      aria-label="Increase quantity"
+                    >
+                      +
+                    </motion.button>
+                    <span className="ml-3 text-xl font-bold honey-text-gradient tabular-nums min-w-[60px] text-right">
+                      {formatTotal()}
                     </span>
                   </div>
                 </div>

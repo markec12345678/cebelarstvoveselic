@@ -1,8 +1,8 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { Send, Loader2, MapPin, Phone, Mail, Clock, MessageCircle, CheckCircle2 } from 'lucide-react';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { Send, Loader2, MapPin, Phone, Mail, Clock, MessageCircle, CheckCircle2, Droplets } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -21,6 +21,8 @@ export default function Contact() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showSuccess, setShowSuccess] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const MAX_MESSAGE_LENGTH = 500;
 
@@ -60,8 +62,12 @@ export default function Contact() {
       toast.success(t.contact.success);
       setForm({ name: '', email: '', subject: '', message: '' });
       setErrors({});
+      setShowConfetti(true);
       setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 4000);
+      setTimeout(() => {
+        setShowSuccess(false);
+        setShowConfetti(false);
+      }, 4000);
     } catch {
       toast.error(t.contact.error);
     } finally {
@@ -117,6 +123,18 @@ export default function Contact() {
           <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
             {t.contact.subtitle}
           </p>
+          {/* Response time badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.4, delay: 0.4 }}
+            className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-honey-100 dark:bg-honey-900/20 border border-honey-200 dark:border-honey-800/30"
+          >
+            <span className="text-base">🍯</span>
+            <span className="text-sm font-medium text-honey-800 dark:text-honey-300">
+              {lang === 'sl' ? 'Odgovorimo vam v 2 urah' : 'We typically respond within 2 hours'}
+            </span>
+          </motion.div>
         </motion.div>
 
         <div className="mt-14 grid lg:grid-cols-5 gap-12 lg:gap-16">
@@ -127,19 +145,63 @@ export default function Contact() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="lg:col-span-3"
           >
-            {/* Success animation overlay */}
-            {showSuccess && (
+            {/* Success animation overlay with confetti */}
+            <AnimatePresence>
+            {(showSuccess || showConfetti) && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                className="absolute inset-0 z-10 flex items-center justify-center bg-background/80 backdrop-blur-sm rounded-2xl"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl overflow-hidden"
               >
+                {/* Confetti particles */}
+                {showConfetti && (
+                  <div className="absolute inset-0 pointer-events-none">
+                    {Array.from({ length: 30 }).map((_, i) => {
+                      const colors = ['#D4A017', '#F5D76E', '#E8B830', '#5A8A3C', '#2D5016', '#8B6914'];
+                      const size = 4 + Math.random() * 8;
+                      return (
+                        <motion.div
+                          key={i}
+                          className="absolute rounded-sm"
+                          style={{
+                            backgroundColor: colors[i % colors.length],
+                            width: `${size}px`,
+                            height: `${size}px`,
+                            left: `${10 + Math.random() * 80}%`,
+                            top: '50%',
+                          }}
+                          initial={{
+                            x: 0,
+                            y: 0,
+                            scale: 1,
+                            opacity: 1,
+                            rotate: 0,
+                          }}
+                          animate={{
+                            y: [0, -80 - Math.random() * 100, -140 - Math.random() * 60],
+                            x: [0, (Math.random() - 0.5) * 120],
+                            scale: [1, 1.2, 0.3],
+                            opacity: [1, 1, 0],
+                            rotate: [0, 180 + Math.random() * 360],
+                          }}
+                          transition={{
+                            duration: 1.2 + Math.random() * 0.6,
+                            ease: 'easeOut',
+                            delay: Math.random() * 0.3,
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+                )}
+                {/* Success card */}
                 <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
-                  className="text-center"
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
+                  transition={{ type: 'spring', stiffness: 200, damping: 15, delay: showConfetti ? 0.5 : 0.1 }}
+                  className="relative z-10 bg-background/90 backdrop-blur-md rounded-2xl p-8 shadow-xl text-center"
                 >
                   <div className="relative mx-auto w-20 h-20 mb-4">
                     <div className="absolute inset-0 rounded-full bg-green-100 dark:bg-green-900/20 ring-ripple" />
@@ -147,7 +209,7 @@ export default function Contact() {
                       <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
-                        transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.3 }}
+                        transition={{ type: 'spring', stiffness: 300, damping: 20, delay: showConfetti ? 0.7 : 0.3 }}
                       >
                         <CheckCircle2 className="w-10 h-10 text-green-600 dark:text-green-400" />
                       </motion.div>
@@ -157,11 +219,12 @@ export default function Contact() {
                     {lang === 'sl' ? 'Sporočilo poslano!' : 'Message sent!'}
                   </h3>
                   <p className="text-sm text-muted-foreground mt-1">
-                    {lang === 'sl' ? 'Odgovorili vam bomo v 24 urah.' : 'We will respond within 24 hours.'}
+                    {lang === 'sl' ? 'Odgovorili vam bomo v 2 urah.' : 'We will respond within 2 hours.'}
                   </p>
                 </motion.div>
               </motion.div>
             )}
+            </AnimatePresence>
 
             <form onSubmit={handleSubmit} className="space-y-5" noValidate>
               <div className="grid sm:grid-cols-2 gap-5">
@@ -252,7 +315,7 @@ export default function Contact() {
                   aria-invalid={!!errors.message}
                   aria-describedby={errors.message ? 'message-error' : undefined}
                 />
-                {/* Character count */}
+                {/* Character count with honey drop */}
                 <div className="flex justify-between items-center">
                   {errors.message ? (
                     <p id="message-error" className="text-xs text-destructive" role="alert">
@@ -261,11 +324,18 @@ export default function Contact() {
                   ) : (
                     <span />
                   )}
-                  <span className={`text-xs transition-colors ${
-                    form.message.length > MAX_MESSAGE_LENGTH * 0.9
-                      ? 'text-amber-500'
-                      : 'text-muted-foreground/50'
+                  <span className={`flex items-center gap-1 text-xs transition-colors duration-300 ${
+                    form.message.length === 0
+                      ? 'text-muted-foreground/30'
+                      : form.message.length > MAX_MESSAGE_LENGTH * 0.9
+                        ? 'text-red-500'
+                        : form.message.length > MAX_MESSAGE_LENGTH * 0.7
+                          ? 'text-amber-500'
+                          : 'text-honey-500'
                   }`}>
+                    <Droplets className={`w-3 h-3 transition-colors duration-300 ${
+                      form.message.length > MAX_MESSAGE_LENGTH * 0.8 ? 'text-red-400' : 'text-honey-400'
+                    }`} />
                     {form.message.length}/{MAX_MESSAGE_LENGTH}
                   </span>
                 </div>
@@ -323,20 +393,42 @@ export default function Contact() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="lg:col-span-2 space-y-6"
           >
-            {/* Map - larger */}
+            {/* Map - larger with loading skeleton */}
             <div className="rounded-2xl overflow-hidden shadow-lg h-[280px] bg-muted border relative">
+              {/* Shimmer skeleton while map loads */}
+              {!mapLoaded && (
+                <div className="absolute inset-0 z-10 img-loading flex items-center justify-center">
+                  <div className="text-center">
+                    <MapPin className="w-6 h-6 text-honey-400 mx-auto animate-pulse" />
+                    <span className="text-xs text-muted-foreground mt-1 block">
+                      {lang === 'sl' ? 'Nalaganje zemljevida …' : 'Loading map …'}
+                    </span>
+                  </div>
+                </div>
+              )}
               <iframe
                 title={t.contact.mapAlt}
                 src="https://www.openstreetmap.org/export/embed.html?bbox=15.30%2C45.63%2C15.35%2C45.66&layer=mapnik&marker=45.6424%2C15.3231"
                 className="w-full h-full border-0"
                 loading="lazy"
                 aria-label={t.contact.mapAlt}
+                onLoad={() => setMapLoaded(true)}
               />
               {/* Location pin overlay */}
               <div className="absolute bottom-3 left-3 bg-card/90 backdrop-blur-sm rounded-lg px-2.5 py-1.5 shadow-md flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-honey-500" />
                 <span className="text-[11px] font-medium">Čebelarstvo Veselič</span>
               </div>
+              {/* Call us FAB */}
+              <motion.a
+                href="tel:+38641234567"
+                className="absolute top-3 right-3 w-10 h-10 rounded-full bg-green-500 hover:bg-green-600 text-white shadow-lg flex items-center justify-center z-10 transition-colors"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                aria-label={lang === 'sl' ? 'Pokličite nas' : 'Call us'}
+              >
+                <Phone className="w-4 h-4" />
+              </motion.a>
             </div>
 
             {/* Contact details with stagger animation */}

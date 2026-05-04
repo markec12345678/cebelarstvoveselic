@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Globe, Sun, Moon } from 'lucide-react';
+import { Menu, X, Globe, Sun, Moon, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from 'next-themes';
 import { useLangStore } from '@/store/language';
@@ -23,6 +23,7 @@ export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileClosing, setMobileClosing] = useState(false);
   const [activeSection, setActiveSection] = useState('');
   const { lang, toggleLang } = useLangStore();
   const { theme, setTheme } = useTheme();
@@ -66,11 +67,19 @@ export default function Navigation() {
   }, [mobileOpen]);
 
   const handleNavClick = (href: string) => {
-    setMobileOpen(false);
+    closeMobileMenu();
     const el = document.querySelector(href);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const closeMobileMenu = () => {
+    setMobileClosing(true);
+    setTimeout(() => {
+      setMobileOpen(false);
+      setMobileClosing(false);
+    }, 250);
   };
 
   // Compute shadow intensity based on scroll position
@@ -106,17 +115,30 @@ export default function Navigation() {
 
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
-            {/* Logo with hover rotation */}
+            {/* Logo with hover rotation + hexagon outline */}
             <a
               href="#"
               onClick={(e) => {
                 e.preventDefault();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="flex items-center gap-2 group"
+              className="flex items-center gap-2 group relative"
             >
+              {/* Subtle hexagon outline behind logo */}
+              <svg
+                className="absolute -inset-1.5 w-[calc(100%+12px)] h-[calc(100%+12px)] opacity-[0.08] pointer-events-none"
+                viewBox="0 0 50 50"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M25 2L46 14V36L25 48L4 36V14L25 2Z"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                />
+              </svg>
               <motion.div
-                className="w-9 h-9 rounded-full bg-gradient-to-br from-honey-300 to-honey-600 flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow cursor-pointer"
+                className="w-9 h-9 rounded-full bg-gradient-to-br from-honey-300 to-honey-600 flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow cursor-pointer relative"
                 whileHover={{ rotate: 20, scale: 1.1 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 15 }}
               >
@@ -176,6 +198,22 @@ export default function Navigation() {
                         }}
                       />
                     )}
+                    {/* Glowing dot at center of active indicator */}
+                    {isActive && (
+                      <motion.span
+                        layoutId="active-nav-glow"
+                        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-honey-500"
+                        style={{
+                          zIndex: 10,
+                          boxShadow: '0 0 6px 2px rgba(212, 160, 23, 0.5), 0 0 12px 4px rgba(212, 160, 23, 0.2)',
+                        }}
+                        transition={{
+                          type: 'spring',
+                          stiffness: 380,
+                          damping: 30,
+                        }}
+                      />
+                    )}
                     <span
                       className={`relative z-10 transition-colors ${
                         isActive
@@ -217,21 +255,49 @@ export default function Navigation() {
                 <span className="uppercase">{lang === 'sl' ? 'EN' : 'SL'}</span>
               </Button>
 
-              {/* CTA */}
-              <Button
-                size="sm"
-                className="hidden sm:flex bg-gradient-to-r from-honey-500 to-honey-600 hover:from-honey-600 hover:to-honey-700 text-white shadow-md hover:shadow-lg transition-all"
-                onClick={() => handleNavClick('#contact')}
-              >
-                {t.nav.order}
-              </Button>
+              {/* CTA with pulse badge */}
+              <div className="relative hidden sm:block">
+                <Button
+                  size="sm"
+                  className="bg-gradient-to-r from-honey-500 to-honey-600 hover:from-honey-600 hover:to-honey-700 text-white shadow-md hover:shadow-lg transition-all"
+                  onClick={() => handleNavClick('#contact')}
+                >
+                  <ShoppingBag className="w-3.5 h-3.5 mr-1.5" />
+                  {t.nav.order}
+                </Button>
+                {/* Attention pulse dot */}
+                <motion.span
+                  className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-red-500 border-2 border-background"
+                  animate={{
+                    scale: [1, 1.3, 1],
+                    opacity: [1, 0.7, 1],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
+                />
+                <motion.span
+                  className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-red-500"
+                  animate={{
+                    scale: [1, 2, 1],
+                    opacity: [0.5, 0, 0.5],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
+                />
+              </div>
 
               {/* Mobile menu button */}
               <Button
                 variant="ghost"
                 size="icon"
                 className="lg:hidden"
-                onClick={() => setMobileOpen(!mobileOpen)}
+                onClick={() => mobileOpen ? closeMobileMenu() : setMobileOpen(true)}
                 aria-label={mobileOpen ? 'Zapri meni' : 'Odpri meni'}
                 aria-expanded={mobileOpen}
               >
@@ -247,25 +313,23 @@ export default function Navigation() {
         {mobileOpen && (
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            animate={{ opacity: mobileClosing ? 0 : 1 }}
             transition={{ duration: 0.3 }}
             className="fixed inset-0 z-40 lg:hidden"
           >
             {/* Backdrop with blur */}
             <motion.div
               initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              animate={{ opacity: mobileClosing ? 0 : 1 }}
+              transition={{ duration: mobileClosing ? 0.15 : 0.3 }}
               className="absolute inset-0 bg-black/50 backdrop-blur-md"
-              onClick={() => setMobileOpen(false)}
+              onClick={closeMobileMenu}
             />
 
             {/* Slide-in panel */}
             <motion.div
               initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
+              animate={{ x: mobileClosing ? '100%' : 0 }}
               transition={{ type: 'spring', damping: 30, stiffness: 300 }}
               className="absolute top-0 right-0 w-80 max-w-[85vw] h-full bg-background/95 backdrop-blur-xl shadow-2xl border-l border-border/50"
             >
@@ -278,14 +342,14 @@ export default function Navigation() {
                   variant="ghost"
                   size="icon"
                   className="h-9 w-9"
-                  onClick={() => setMobileOpen(false)}
+                  onClick={closeMobileMenu}
                   aria-label="Zapri meni"
                 >
                   <X className="w-5 h-5" />
                 </Button>
               </div>
 
-              {/* Nav items */}
+              {/* Nav items with stagger close animation */}
               <div className="p-4 overflow-y-auto h-[calc(100%-8rem)]">
                 <div className="flex flex-col gap-1">
                   {navItems.map((item, index) => {
@@ -295,8 +359,14 @@ export default function Navigation() {
                         key={item.key}
                         href={item.href}
                         initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.05, duration: 0.3 }}
+                        animate={{
+                          opacity: mobileClosing ? 0 : 1,
+                          x: mobileClosing ? 30 : 0,
+                        }}
+                        transition={{
+                          delay: mobileClosing ? index * 0.03 : index * 0.05,
+                          duration: mobileClosing ? 0.15 : 0.3,
+                        }}
                         onClick={(e) => {
                           e.preventDefault();
                           handleNavClick(item.href);

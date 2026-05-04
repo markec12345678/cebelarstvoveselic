@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import Analytics from "@/components/analytics/Analytics";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -111,6 +112,37 @@ export default function RootLayout({
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://cebelarstvo-veselic.si/#organization",
+        "name": "Čebelarstvo Veselič",
+        "alternateName": "Veselič Beekeeping",
+        "url": "https://cebelarstvo-veselic.si",
+        "logo": "https://cebelarstvo-veselic.si/images/hero.jpg",
+        "foundingDate": "1990",
+        "founder": {
+          "@type": "Person",
+          "name": "Jožef Veselič"
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Čurile 4a",
+          "addressLocality": "Metlika",
+          "addressRegion": "Bela krajina",
+          "postalCode": "8330",
+          "addressCountry": "SI"
+        },
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+386-41-234-567",
+          "contactType": "customer service",
+          "availableLanguage": ["Slovenian", "English"]
+        },
+        "sameAs": [
+          "https://facebook.com/cebelarstvoveselic",
+          "https://instagram.com/cebelarstvo_veselic"
+        ]
+      },
       {
         "@type": "LocalBusiness",
         "@id": "https://cebelarstvo-veselic.si/#business",
@@ -246,6 +278,11 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
+        <meta name="theme-color" content="#D4A017" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Veselič Med" />
+        <link rel="manifest" href="/manifest.json" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
@@ -253,6 +290,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           {children}
           <Toaster />
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>

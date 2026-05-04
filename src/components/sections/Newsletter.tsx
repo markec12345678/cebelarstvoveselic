@@ -1,13 +1,33 @@
 'use client';
 
-import { useRef, useState, useMemo } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { Mail, ArrowRight, Loader2, CheckCircle, Sparkles, Gift, BookOpen, Users } from 'lucide-react';
+import { useRef, useState, useMemo, useEffect } from 'react';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { Mail, ArrowRight, Loader2, CheckCircle, Sparkles, Gift, BookOpen, Users, Shield, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLangStore } from '@/store/language';
 import { getTranslations } from '@/lib/i18n';
 import { toast } from 'sonner';
+
+function AnimatedCounter({ target, isInView }: { target: number; isInView: boolean }) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!isInView) return;
+    let current = 0;
+    const step = Math.ceil(target / 40);
+    const interval = setInterval(() => {
+      current += step;
+      if (current >= target) {
+        setCount(target);
+        clearInterval(interval);
+      } else {
+        setCount(current);
+      }
+    }, 30);
+    return () => clearInterval(interval);
+  }, [isInView, target]);
+  return <span>{count}</span>;
+}
 
 function ConfettiParticles() {
   const particles = useMemo(() => {
@@ -50,6 +70,7 @@ export default function Newsletter() {
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
 
   const isEmailValid = email.trim() !== '' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const isEmailInvalid = email.trim() !== '' && !isEmailValid;
@@ -174,7 +195,7 @@ export default function Newsletter() {
                   ))}
                 </div>
 
-                {/* Subscriber count */}
+                {/* Subscriber count with animated counter */}
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={isInView ? { opacity: 1 } : {}}
@@ -197,7 +218,11 @@ export default function Newsletter() {
                     </div>
                   </div>
                   <span className="text-xs text-muted-foreground">
-                    {content.subscriberCount}
+                    {lang === 'sl' ? 'Pridružite se ' : 'Join '}
+                    <span className="font-bold text-honey-600 dark:text-honey-400">
+                      <AnimatedCounter target={500} isInView={isInView} />+
+                    </span>
+                    {lang === 'sl' ? ' ljubiteljem medu' : ' honey lovers'}
                   </span>
                 </motion.div>
               </div>
@@ -226,13 +251,23 @@ export default function Newsletter() {
                       <label htmlFor="newsletter-email" className="sr-only">
                         Email
                       </label>
+                      {/* Envelope icon that animates on valid email */}
+                      <motion.div
+                        className="absolute left-3 top-1/2 -translate-y-1/2 z-10"
+                        animate={isEmailValid ? { scale: [1, 1.2, 1], rotate: [0, -5, 5, 0] } : {}}
+                        transition={{ duration: 0.4, type: 'spring' }}
+                      >
+                        <Mail className={`w-4 h-4 transition-colors duration-300 ${
+                          isEmailValid ? 'text-green-500' : isEmailInvalid ? 'text-red-400' : 'text-muted-foreground'
+                        }`} />
+                      </motion.div>
                       <Input
                         id="newsletter-email"
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder={content.placeholder}
-                        className="h-12 bg-background border-honey-200 dark:border-honey-800 focus:border-honey-500 focus:ring-honey-500/20 pr-10"
+                        className="h-12 bg-background border-honey-200 dark:border-honey-800 focus:border-honey-500 focus:ring-honey-500/20 pl-10 pr-10"
                         required
                         aria-label="Email"
                       />
@@ -278,9 +313,40 @@ export default function Newsletter() {
                         </>
                       )}
                     </Button>
-                    <p className="text-[11px] text-muted-foreground/70 text-center">
-                      {content.privacy}
-                    </p>
+                    {/* Privacy toggle link with popover */}
+                    <div className="relative">
+                      <button
+                        type="button"
+                        className="text-[11px] text-muted-foreground/70 hover:text-honey-600 dark:hover:text-honey-400 transition-colors flex items-center gap-1 mx-auto"
+                        onClick={() => setShowPrivacy(!showPrivacy)}
+                      >
+                        <Shield className="w-3 h-3" />
+                        {lang === 'sl' ? 'Zasebnost in odjava' : 'Privacy & unsubscribe'}
+                        <motion.span
+                          animate={{ rotate: showPrivacy ? 180 : 0 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <ChevronDown className="w-3 h-3" />
+                        </motion.span>
+                      </button>
+                      <AnimatePresence>
+                        {showPrivacy && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -5, height: 0 }}
+                            animate={{ opacity: 1, y: 0, height: 'auto' }}
+                            exit={{ opacity: 0, y: -5, height: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="mt-2 p-3 rounded-lg bg-muted/50 border border-border/50 text-[11px] text-muted-foreground leading-relaxed">
+                              {lang === 'sl'
+                                ? 'Z naročnim na newsletter se strinjate, da vam pošiljamo novice o izdelkih, akcijah in dogodkih. Vaš e-poštni naslov varno hranimo in ga nikoli ne delimo s tretjimi. Kadarkoli se lahko odjavite s klikom na povezavo v vsakem e-poštnem sporočilu. Več v naši politiki zasebnosti.'
+                                : 'By subscribing to our newsletter, you agree to receive news about products, offers, and events. We store your email address securely and never share it with third parties. You can unsubscribe at any time via the link in every email. See our privacy policy for details.'}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   </form>
                 )}
               </div>
