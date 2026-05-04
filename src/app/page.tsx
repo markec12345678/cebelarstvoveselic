@@ -9,8 +9,11 @@ import Testimonials from '@/components/sections/Testimonials';
 import Visit from '@/components/sections/Visit';
 import FAQ from '@/components/sections/FAQ';
 import Contact from '@/components/sections/Contact';
+import Newsletter from '@/components/sections/Newsletter';
 import Footer from '@/components/sections/Footer';
 import CookieConsent from '@/components/sections/CookieConsent';
+import BackToTop from '@/components/sections/BackToTop';
+import WhatsAppButton from '@/components/sections/WhatsAppButton';
 
 export default function Home() {
   return (
@@ -19,7 +22,7 @@ export default function Home() {
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg focus:shadow-lg"
       >
-        Skip to content
+        Preskoči na vsebino
       </a>
       <Navigation />
       <main id="main-content" className="flex-1">
@@ -30,10 +33,13 @@ export default function Home() {
         <Testimonials />
         <Visit />
         <FAQ />
+        <Newsletter />
         <Contact />
       </main>
       <Footer />
       <CookieConsent />
+      <BackToTop />
+      <WhatsAppButton />
     </div>
   );
 }

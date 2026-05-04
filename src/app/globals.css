@@ -215,3 +215,56 @@ html {
   transform: translateY(-4px);
   box-shadow: 0 20px 40px rgba(212, 160, 23, 0.12);
 }
+
+/* Bee flight path animation */
+@keyframes bee-float {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(10px, -15px) rotate(5deg); }
+  50% { transform: translate(20px, -5px) rotate(-3deg); }
+  75% { transform: translate(10px, 5px) rotate(3deg); }
+}
+
+.bee-float {
+  animation: bee-float 8s ease-in-out infinite;
+}
+
+/* Shimmer loading effect */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, transparent 25%, rgba(212, 160, 23, 0.08) 50%, transparent 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Section divider */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, oklch(0.80 0.10 85 / 0.3), transparent);
+}
+
+/* Glow effect for cards */
+.honey-glow {
+  box-shadow: 0 0 30px rgba(212, 160, 23, 0.08), 0 0 60px rgba(212, 160, 23, 0.04);
+}
+
+/* Focus ring enhancement */
+*:focus-visible {
+  outline: 2px solid oklch(0.68 0.14 85);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Text balance for better typography */
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Selection color */
+::selection {
+  background: oklch(0.80 0.12 85 / 0.3);
+  color: oklch(0.22 0.02 50);
+}

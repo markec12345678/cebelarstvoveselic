@@ -35,3 +35,69 @@ Stage Summary:
 - Framer Motion animations on all sections
 - Responsive design with mobile-first approach
 - All content is locally authentic (Bela Krajina, Apis mellifera carnica, Eko Sklad, EU regulations)
+
+---
+Task ID: 2
+Agent: QA + Enhancement Review
+Task: QA testing, fix identified issues, add new features and polish styling
+
+Work Log:
+- Reviewed worklog.md and assessed project state
+- Performed QA with agent-browser + VLM analysis on live page
+- Initial QA score: 8/10 (hero section)
+- Footer QA score: 7/10
+
+Issues identified and fixed:
+1. Cookie banner overlapping hero section content - Moved to bottom-right corner, compact design, 3s delayed appearance
+2. Secondary CTA button low contrast - Increased border opacity (0.3-0.4), bg opacity (0.10-0.15), added shadow, hover:text-white
+3. Footer missing social links - Added Facebook + Instagram icons with hover effects
+4. Footer layout too basic - Redesigned to 12-column grid with location badge (coordinates + flag)
+5. Copyright incomplete - Added "Jožef Veselič s.p." full legal name
+6. Language switcher not prominent enough - Redesigned with SI/EN badges and active state highlighting
+7. next.config.ts cross-origin warning - Added allowedDevOrigins for preview domain
+
+New features added:
+1. BackToTop.tsx: Floating button (bottom-left) with smooth scroll, appears after 600px scroll
+2. Newsletter.tsx: Email subscription section with form validation, success state, benefits list
+3. WhatsAppButton.tsx: Floating green button with tooltip popup (bottom-left, below back-to-top)
+4. AnimatedCounter: Number counting animation in About section stats (30+ years badge added)
+5. Certification badges: Eko Sklad, EU Organic, HACCP, Carnica badges in About section
+
+Styling improvements:
+- globals.css: Added bee-float keyframe animation, shimmer effect, section-divider gradient, honey-glow shadow, focus-visible ring, text-balance, selection styling
+- About section: Experience badge overlay on image, decorative floating dot, honey-glow on image card
+- Hero section: Enhanced secondary CTA contrast
+- Footer: Top accent gradient bar, hover dots on links, location badge with GPS coordinates
+- Cookie consent: Redesigned from full-width bar to compact bottom-right card with top accent bar
+
+Post-fix QA score: 9/10 (hero section) -- VLM confirmed: "significant improvement", "cookie banner no longer overlaps", "CTA clarity 10/10"
+
+Stage Summary:
+- QA score improved from 8/10 to 9/10
+- 3 new components: BackToTop, Newsletter, WhatsAppButton
+- Cookie banner redesigned from full-width to compact corner card
+- Footer completely redesigned with social links, location badge, better layout
+- 5 new micro-interactions/visual effects added
+- Build compiles successfully, lint passes clean
+
+Current Project Status / Assessment:
+- The landing page is feature-complete with 12 sections + 3 new utility components
+- Visual quality is rated 9/10 by VLM analysis
+- All code compiles cleanly (bun run build + bun run lint pass)
+- Production build generates correctly
+
+Unresolved Issues / Risks:
+1. Dev server instability -- crashes intermittently during testing (works fine for production build)
+2. No actual backend API for contact form / newsletter (currently simulated with setTimeout)
+3. Social media links are placeholder URLs (facebook.com/cebelarstvoveselic, instagram.com/cebelarstvo_veselic)
+4. Phone number (+386 41 234 567) is placeholder
+
+Priority Recommendations for Next Phase:
+1. Implement real API routes for contact form and newsletter (POST to /api/contact, /api/newsletter)
+2. Add Prisma schema for storing contact form submissions and newsletter subscribers
+3. Generate product-specific images (individual honey jars) instead of single products.jpg
+4. Add dark mode toggle (theme-switcher component)
+5. Add page-level loading skeleton (while JS hydrates)
+6. Create additional podstrani (sub-pages) for individual product detail pages
+7. Add Google Analytics 4 and Facebook Pixel integration scripts
+8. Create actual sitemap.xml and robots.txt with proper directives

@@ -99,7 +99,7 @@ export default function Hero() {
             variant="outline"
             size="lg"
             onClick={scrollToVisit}
-            className="group min-w-[200px] bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white/20 hover:border-white/50 text-base font-semibold px-8 py-6 h-auto rounded-xl transition-all"
+            className="group min-w-[200px] bg-white/15 backdrop-blur-md border-white/40 text-white hover:bg-white/25 hover:border-white/60 hover:text-white text-base font-semibold px-8 py-6 h-auto rounded-xl transition-all shadow-lg shadow-black/10"
           >
             {t.hero.ctaSecondary}
           </Button>
