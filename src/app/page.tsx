@@ -1,0 +1,39 @@
+'use client';
+
+import Navigation from '@/components/sections/Navigation';
+import Hero from '@/components/sections/Hero';
+import About from '@/components/sections/About';
+import Products from '@/components/sections/Products';
+import Process from '@/components/sections/Process';
+import Testimonials from '@/components/sections/Testimonials';
+import Visit from '@/components/sections/Visit';
+import FAQ from '@/components/sections/FAQ';
+import Contact from '@/components/sections/Contact';
+import Footer from '@/components/sections/Footer';
+import CookieConsent from '@/components/sections/CookieConsent';
+
+export default function Home() {
+  return (
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg focus:shadow-lg"
+      >
+        Skip to content
+      </a>
+      <Navigation />
+      <main id="main-content" className="flex-1">
+        <Hero />
+        <About />
+        <Products />
+        <Process />
+        <Testimonials />
+        <Visit />
+        <FAQ />
+        <Contact />
+      </main>
+      <Footer />
+      <CookieConsent />
+    </div>
+  );
+}
