@@ -2,7 +2,7 @@
 
 import { useRef, useState, useMemo, useEffect } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { Mail, ArrowRight, Loader2, CheckCircle, Sparkles, Gift, BookOpen, Users, Shield, ChevronDown, Lock } from 'lucide-react';
+import { Mail, ArrowRight, Loader2, CheckCircle, Sparkles, Gift, BookOpen, Users, Shield, ChevronDown, Lock, Send, Plane } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLangStore } from '@/store/language';
@@ -27,6 +27,35 @@ function AnimatedCounter({ target, isInView }: { target: number; isInView: boole
     return () => clearInterval(interval);
   }, [isInView, target]);
   return <span>{count}</span>;
+}
+
+function FloatingHexagons() {
+  const hexagons = useMemo(() => [
+    { top: '8%', right: '6%', size: 64, duration: 6, delay: 0, rotateRange: 8, opacity: 0.07, strokeWidth: 3 },
+    { bottom: '12%', left: '4%', size: 48, duration: 8, delay: 1, rotateRange: -6, opacity: 0.05, strokeWidth: 3 },
+    { top: '40%', right: '20%', size: 40, duration: 7, delay: 2, rotateRange: 10, opacity: 0.04, strokeWidth: 4 },
+    { top: '20%', left: '15%', size: 56, duration: 9, delay: 0.5, rotateRange: -7, opacity: 0.06, strokeWidth: 2 },
+    { bottom: '30%', right: '10%', size: 36, duration: 5.5, delay: 1.5, rotateRange: 12, opacity: 0.05, strokeWidth: 3 },
+    { top: '65%', left: '30%', size: 32, duration: 7.5, delay: 3, rotateRange: -4, opacity: 0.04, strokeWidth: 2 },
+  ], []);
+
+  return (
+    <>
+      {hexagons.map((hex, i) => (
+        <motion.div
+          key={i}
+          className="absolute pointer-events-none"
+          style={{ top: hex.top, right: hex.right, bottom: hex.bottom, left: hex.left, width: hex.size, height: hex.size, opacity: hex.opacity }}
+          animate={{ y: [0, -12, 0], rotate: [0, hex.rotateRange, 0] }}
+          transition={{ duration: hex.duration, repeat: Infinity, ease: 'easeInOut', delay: hex.delay }}
+        >
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 5L90 27.5V72.5L50 95L10 72.5V27.5L50 5Z" fill="none" stroke="#D4A017" strokeWidth={hex.strokeWidth} />
+          </svg>
+        </motion.div>
+      ))}
+    </>
+  );
 }
 
 function ConfettiParticles() {
@@ -62,6 +91,38 @@ function ConfettiParticles() {
   );
 }
 
+function SuccessCheckmark() {
+  return (
+    <div className="relative w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center mx-auto mb-4">
+      <div className="absolute inset-0 rounded-full bg-green-200/30 ring-ripple" />
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          className="checkmark-svg-animated"
+          d="M8 16L14 22L24 10"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{ color: 'rgb(34, 197, 94)' }}
+        />
+      </svg>
+    </div>
+  );
+}
+
+function HoneyJarBounce() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20, scale: 0.5 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ delay: 0.5, type: 'spring', stiffness: 200, damping: 12 }}
+      className="text-4xl mb-3"
+    >
+      🍯
+    </motion.div>
+  );
+}
+
 export default function Newsletter() {
   const { lang } = useLangStore();
   const t = getTranslations(lang);
@@ -71,6 +132,7 @@ export default function Newsletter() {
   const [submitting, setSubmitting] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
+  const [isHoveringButton, setIsHoveringButton] = useState(false);
 
   const isEmailValid = email.trim() !== '' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const isEmailInvalid = email.trim() !== '' && !isEmailValid;
@@ -115,8 +177,8 @@ export default function Newsletter() {
       : 'Get seasonal news, recipes, and exclusive honey offers — max 2 emails per month.',
     placeholder: lang === 'sl' ? 'vaša@e-pošta.si' : 'your@email.com',
     cta: lang === 'sl' ? 'Naročite se' : 'Subscribe',
-    ctaSubmitting: lang === 'sl' ? 'Naročujem ...' : 'Subscribing ...',
-    success: lang === 'sl' ? 'Naročeni ste!' : 'Subscribed!',
+    ctaSubmitting: lang === 'sl' ? 'Pošiljam...' : 'Sending...',
+    success: lang === 'sl' ? 'Hvala za naročilo!' : 'Thank you for subscribing!',
     privacy: lang === 'sl'
       ? 'Z naročnim se strinjate z našo politiko zasebnosti. Kadarkoli se lahko odjavite.'
       : 'By subscribing you agree to our privacy policy. Unsubscribe anytime.',
@@ -142,9 +204,6 @@ export default function Newsletter() {
         desc: lang === 'sl' ? 'Obiski in delavnice za naročnike' : 'Visits and workshops for subscribers',
       },
     ],
-    subscriberCount: lang === 'sl'
-      ? 'Pridružite se 500+ ljubiteljem medu'
-      : 'Join 500+ honey lovers',
   };
 
   return (
@@ -163,34 +222,8 @@ export default function Newsletter() {
       <div className="absolute top-4 left-8 w-20 h-20 bg-honey-200/30 rounded-full blur-2xl" />
       <div className="absolute bottom-4 right-8 w-32 h-32 bg-amber-200/20 rounded-full blur-3xl" />
 
-      {/* Floating honeycomb shapes */}
-      <motion.div
-        className="absolute top-12 right-12 w-16 h-16 opacity-[0.08] pointer-events-none"
-        animate={{ y: [0, -12, 0], rotate: [0, 8, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-      >
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <path d="M50 5L90 27.5V72.5L50 95L10 72.5V27.5L50 5Z" fill="none" stroke="#D4A017" strokeWidth="3" />
-        </svg>
-      </motion.div>
-      <motion.div
-        className="absolute bottom-16 left-16 w-12 h-12 opacity-[0.06] pointer-events-none"
-        animate={{ y: [0, -8, 0], rotate: [0, -5, 0] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-      >
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <path d="M50 5L90 27.5V72.5L50 95L10 72.5V27.5L50 5Z" fill="none" stroke="#D4A017" strokeWidth="3" />
-        </svg>
-      </motion.div>
-      <motion.div
-        className="absolute top-1/2 right-1/4 w-10 h-10 opacity-[0.05] pointer-events-none"
-        animate={{ y: [0, -6, 0], rotate: [0, 10, 0] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-      >
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <path d="M50 5L90 27.5V72.5L50 95L10 72.5V27.5L50 5Z" fill="none" stroke="#D4A017" strokeWidth="4" />
-        </svg>
-      </motion.div>
+      {/* Floating hexagon particles */}
+      <FloatingHexagons />
 
       <div ref={ref} className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
@@ -214,7 +247,7 @@ export default function Newsletter() {
                   {content.subtitle}
                 </p>
 
-                {/* Benefit cards */}
+                {/* Benefit cards with stagger animation, hover icon rotate, left border accent */}
                 <div className="mt-6 grid grid-cols-2 gap-2.5">
                   {content.benefits.map((benefit, i) => (
                     <motion.div
@@ -222,16 +255,17 @@ export default function Newsletter() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={isInView ? { opacity: 1, y: 0 } : {}}
                       transition={{ duration: 0.4, delay: 0.3 + i * 0.1 }}
-                      className="p-2.5 rounded-lg bg-honey-50/60 dark:bg-honey-900/10 border border-honey-100/60 dark:border-honey-800/20 card-shine relative overflow-hidden"
+                      whileHover={{ scale: 1.02 }}
+                      className="p-2.5 rounded-lg bg-honey-50/60 dark:bg-honey-900/10 border border-honey-100/60 dark:border-honey-800/20 card-shine benefit-card-accent relative overflow-hidden group cursor-default"
                     >
-                      <benefit.icon className="w-3.5 h-3.5 text-honey-500 mb-1.5" />
+                      <benefit.icon className="w-3.5 h-3.5 text-honey-500 mb-1.5 transition-transform duration-500 group-hover:rotate-[360deg]" />
                       <div className="text-xs font-semibold text-foreground">{benefit.title}</div>
                       <div className="text-[10px] text-muted-foreground mt-0.5">{benefit.desc}</div>
                     </motion.div>
                   ))}
                 </div>
 
-                {/* Subscriber count with animated counter */}
+                {/* Subscriber count with animated counter + avatar circles */}
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={isInView ? { opacity: 1 } : {}}
@@ -239,13 +273,18 @@ export default function Newsletter() {
                   className="mt-5 flex items-center gap-2"
                 >
                   <div className="flex -space-x-1.5">
-                    {['from-honey-300 to-honey-500', 'from-amber-400 to-orange-500', 'from-yellow-300 to-amber-500'].map((gradient, i) => (
+                    {[
+                      { gradient: 'from-honey-300 to-honey-500', letter: 'J' },
+                      { gradient: 'from-amber-400 to-orange-500', letter: 'M' },
+                      { gradient: 'from-yellow-300 to-amber-500', letter: 'N' },
+                      { gradient: 'from-honey-200 to-honey-400', letter: 'A' },
+                    ].map((avatar, i) => (
                       <div
                         key={i}
-                        className={`w-5 h-5 rounded-full bg-gradient-to-br ${gradient} ring-2 ring-card flex items-center justify-center`}
+                        className={`w-5 h-5 rounded-full bg-gradient-to-br ${avatar.gradient} ring-2 ring-card flex items-center justify-center`}
                       >
                         <span className="text-[7px] text-white font-bold">
-                          {['J', 'M', 'N'][i]}
+                          {avatar.letter}
                         </span>
                       </div>
                     ))}
@@ -272,10 +311,8 @@ export default function Newsletter() {
                     className="text-center py-8 relative"
                   >
                     <ConfettiParticles />
-                    <div className="relative w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center mx-auto mb-4">
-                      <div className="absolute inset-0 rounded-full bg-green-200/30 ring-ripple" />
-                      <CheckCircle className="relative w-8 h-8 text-green-600 dark:text-green-400" />
-                    </div>
+                    <HoneyJarBounce />
+                    <SuccessCheckmark />
                     <h3 className="text-lg font-bold">{content.success}</h3>
                     <p className="text-sm text-muted-foreground mt-2">
                       {content.privacy}
@@ -303,7 +340,7 @@ export default function Newsletter() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder={content.placeholder}
-                        className="h-12 bg-background border-honey-200 dark:border-honey-800 focus:border-honey-500 focus:ring-honey-500/20 pl-10 pr-10"
+                        className="h-12 bg-background border-honey-200 dark:border-honey-800 focus:border-honey-400 focus:ring-honey-500/20 pl-10 pr-10 input-glow transition-all duration-300"
                         required
                         aria-label="Email"
                       />
@@ -332,30 +369,46 @@ export default function Newsletter() {
                         </div>
                       )}
                     </div>
-                    <Button
-                      type="submit"
-                      disabled={submitting}
-                      className="w-full h-12 bg-gradient-to-r from-honey-500 to-honey-600 hover:from-honey-600 hover:to-honey-700 text-white shadow-md hover:shadow-lg transition-all text-sm font-semibold"
+
+                    {/* Submit button with honeycomb pattern, shine sweep, hover scale, animated Send icon */}
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                     >
-                      {submitting ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          {content.ctaSubmitting}
-                        </>
-                      ) : (
-                        <>
-                          {content.cta}
-                          <ArrowRight className="w-4 h-4 ml-2" />
-                        </>
-                      )}
-                    </Button>
-                    {/* No spam note */}
+                      <button
+                        type="submit"
+                        disabled={submitting}
+                        onMouseEnter={() => setIsHoveringButton(true)}
+                        onMouseLeave={() => setIsHoveringButton(false)}
+                        className="w-full h-12 honeycomb-btn-pattern honey-shine-btn bg-gradient-to-r from-honey-500 to-honey-600 hover:from-honey-600 hover:to-honey-700 text-white shadow-md hover:shadow-lg transition-all text-sm font-semibold rounded-md disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 relative z-10"
+                      >
+                        {submitting ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            {content.ctaSubmitting}
+                          </>
+                        ) : (
+                          <>
+                            {content.cta}
+                            <motion.span
+                              animate={isHoveringButton ? { x: 4, rotate: -15 } : { x: 0, rotate: 0 }}
+                              transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+                            >
+                              <Send className="w-4 h-4" />
+                            </motion.span>
+                          </>
+                        )}
+                      </button>
+                    </motion.div>
+
+                    {/* No spam note with pulsing Lock icon */}
                     <div className="flex items-center justify-center gap-1.5 text-[10px] text-muted-foreground/60">
-                      <Lock className="w-3 h-3" />
+                      <Lock className="w-3 h-3 lock-pulse" />
                       {lang === 'sl'
                         ? 'Brez spam-a, kadarkoli se odjavite'
                         : 'No spam, unsubscribe anytime'}
                     </div>
+
                     {/* Privacy toggle link with popover */}
                     <div className="relative">
                       <button

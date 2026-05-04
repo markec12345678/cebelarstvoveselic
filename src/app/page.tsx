@@ -16,6 +16,8 @@ import StatsBar from '@/components/sections/StatsBar';
 import Testimonials from '@/components/sections/Testimonials';
 import Visit from '@/components/sections/Visit';
 import ImageGallery from '@/components/sections/ImageGallery';
+import BeeFacts from '@/components/sections/BeeFacts';
+import AwardsCertifications from '@/components/sections/AwardsCertifications';
 import Blog from '@/components/sections/Blog';
 import VideoTestimonials from '@/components/sections/VideoTestimonials';
 import HoneyBenefits from '@/components/sections/HoneyBenefits';
@@ -63,6 +65,8 @@ export default function Home() {
         <Blog />
         <VideoTestimonials />
         <HoneyBenefits />
+        <BeeFacts />
+        <AwardsCertifications />
         <FAQ />
         <Newsletter />
         <OrderForm />

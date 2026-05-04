@@ -1,9 +1,18 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { Play, X, Clock, ChevronRight } from 'lucide-react';
+import {
+  Play,
+  X,
+  Clock,
+  ChevronRight,
+  Film,
+  Link as LinkIcon,
+  Facebook,
+  Twitter,
+} from 'lucide-react';
 import { useLangStore } from '@/store/language';
 
 const videos = [
@@ -45,11 +54,25 @@ export default function VideoTestimonials() {
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const [selectedVideo, setSelectedVideo] = useState<number | null>(null);
   const [featuredId, setFeaturedId] = useState(1);
+  const [copied, setCopied] = useState(false);
 
   const featured = videos.find((v) => v.id === featuredId) || videos[0];
   const playlist = videos.filter((v) => v.id !== featuredId);
 
   const t = (sl: string, en: string) => (lang === 'sl' ? sl : en);
+
+  const copyLink = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href + '#videos');
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  }, []);
+
+  const getVideo = (id: number) => videos.find((v) => v.id === id) || videos[0];
 
   return (
     <section
@@ -67,10 +90,16 @@ export default function VideoTestimonials() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-honey-100 dark:bg-honey-900/20 text-honey-700 dark:text-honey-400 rounded-full text-sm font-medium mb-4">
-            <Play className="w-3 h-3" />
-            {t('Video', 'Videos')}
-          </span>
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-honey-100 dark:bg-honey-900/20 text-honey-700 dark:text-honey-400 rounded-full text-sm font-medium">
+              <Play className="w-3 h-3" />
+              {t('Video', 'Videos')}
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-muted text-muted-foreground rounded-full text-xs font-medium">
+              <Film className="w-3 h-3" />
+              {t('3 videi', '3 videos')}
+            </span>
+          </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground">
             {t('Poglejte našo zgodbo v živo', 'Watch Our Story Come Alive')}
           </h2>
@@ -105,10 +134,25 @@ export default function VideoTestimonials() {
               />
               <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors" />
 
-              {/* Play Button */}
+              {/* Play Button with pulse ring */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-20 h-20 rounded-full bg-white/90 dark:bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
-                  <Play className="w-8 h-8 text-foreground ml-1" fill="currentColor" />
+                <div className="relative">
+                  {/* Pulse ring */}
+                  <motion.div
+                    className="absolute inset-0 rounded-full border-2 border-honey-500"
+                    animate={{
+                      scale: [1, 1.3, 1],
+                      opacity: [0.5, 0, 0.5],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: 'easeInOut',
+                    }}
+                  />
+                  <div className="w-20 h-20 rounded-full bg-white/90 dark:bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300 relative z-10">
+                    <Play className="w-8 h-8 text-foreground ml-1" fill="currentColor" />
+                  </div>
                 </div>
               </div>
 
@@ -121,6 +165,11 @@ export default function VideoTestimonials() {
               {/* Featured label */}
               <div className="absolute top-4 left-4 px-3 py-1 bg-honey-500/90 backdrop-blur-sm rounded-lg text-white text-xs font-semibold">
                 {t('Predstavljen', 'Featured')}
+              </div>
+
+              {/* Coming soon ribbon */}
+              <div className="absolute top-4 right-4 px-3 py-1 bg-gradient-to-r from-orange-500 to-red-500/90 backdrop-blur-sm rounded-lg text-white text-[10px] font-bold uppercase tracking-wider">
+                {t('KMALU NA VOLJO', 'COMING SOON')}
               </div>
             </button>
 
@@ -140,17 +189,17 @@ export default function VideoTestimonials() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="lg:col-span-2 flex flex-col gap-4"
           >
-            {playlist.map((video, index) => (
+            {playlist.map((video) => (
               <button
                 key={video.id}
                 onClick={() => {
                   setFeaturedId(video.id);
                   setSelectedVideo(video.id);
                 }}
-                className={`flex gap-4 p-3 rounded-xl border transition-all duration-300 text-left group hover:border-honey-300 dark:hover:border-honey-700 hover:shadow-lg ${
+                className={`flex gap-4 p-3 rounded-xl border transition-all duration-300 text-left group playlist-item-hover ${
                   featuredId === video.id
                     ? 'border-honey-400 dark:border-honey-600 bg-honey-50/50 dark:bg-honey-900/10'
-                    : 'border-border bg-card'
+                    : 'border-border bg-card hover:border-honey-300 dark:hover:border-honey-700 hover:shadow-lg'
                 }`}
               >
                 {/* Thumbnail */}
@@ -163,6 +212,8 @@ export default function VideoTestimonials() {
                     sizes="160px"
                   />
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+                  {/* Gradient sweep overlay on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <div className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center">
                       <Play className="w-3 h-3 text-foreground ml-0.5" fill="currentColor" />
@@ -216,10 +267,19 @@ export default function VideoTestimonials() {
               className="relative bg-card rounded-2xl shadow-2xl max-w-4xl w-full overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
+              {/* Close Button */}
+              <button
+                onClick={() => setSelectedVideo(null)}
+                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/40 text-white flex items-center justify-center hover:bg-black/60 transition-colors z-10"
+                aria-label={t('Zapri', 'Close')}
+              >
+                <X className="w-5 h-5" />
+              </button>
+
               {/* Video Placeholder */}
               <div className="relative aspect-video bg-muted">
                 <Image
-                  src={videos.find((v) => v.id === selectedVideo)?.image || '/images/visit.jpg'}
+                  src={getVideo(selectedVideo).image}
                   alt=""
                   fill
                   className="object-cover opacity-40"
@@ -232,30 +292,117 @@ export default function VideoTestimonials() {
                     {t('Video bo kmalu na voljo', 'Video coming soon')}
                   </p>
                 </div>
+
+                {/* Progress bar mock */}
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-muted-foreground/20">
+                  <div className="h-full bg-gradient-to-r from-honey-400 to-honey-600 progress-animated rounded-r-full" />
+                </div>
               </div>
 
               {/* Video Info */}
               <div className="p-6">
                 <h3 className="text-xl font-bold text-foreground">
                   {lang === 'sl'
-                    ? videos.find((v) => v.id === selectedVideo)?.titleSl
-                    : videos.find((v) => v.id === selectedVideo)?.titleEn}
+                    ? getVideo(selectedVideo).titleSl
+                    : getVideo(selectedVideo).titleEn}
                 </h3>
                 <p className="mt-2 text-muted-foreground text-sm">
                   {lang === 'sl'
-                    ? videos.find((v) => v.id === selectedVideo)?.descSl
-                    : videos.find((v) => v.id === selectedVideo)?.descEn}
+                    ? getVideo(selectedVideo).descSl
+                    : getVideo(selectedVideo).descEn}
                 </p>
-              </div>
 
-              {/* Close Button */}
-              <button
-                onClick={() => setSelectedVideo(null)}
-                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/40 text-white flex items-center justify-center hover:bg-black/60 transition-colors z-10"
-                aria-label={t('Zapri', 'Close')}
-              >
-                <X className="w-5 h-5" />
-              </button>
+                {/* Social share buttons row */}
+                <div className="mt-4 pt-4 border-t flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground mr-1">
+                    {t('Deli', 'Share')}:
+                  </span>
+                  <button
+                    onClick={copyLink}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border text-xs text-muted-foreground hover:bg-honey-50 dark:hover:bg-honey-900/10 hover:text-honey-600 dark:hover:text-honey-400 transition-colors"
+                  >
+                    {copied ? (
+                      <>
+                        <span className="text-green-500 text-xs">✓</span>
+                        {t('Kopirano!', 'Copied!')}
+                      </>
+                    ) : (
+                      <>
+                        <LinkIcon className="w-3.5 h-3.5" />
+                        {t('Kopiraj', 'Copy')}
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => {
+                      window.open(
+                        `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href + '#videos')}`,
+                        '_blank',
+                        'width=600,height=400'
+                      );
+                    }}
+                    className="flex items-center justify-center w-8 h-8 rounded-lg border border-border text-muted-foreground hover:bg-blue-50 dark:hover:bg-blue-900/10 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                    aria-label="Facebook"
+                  >
+                    <Facebook className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      window.open(
+                        `https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href + '#videos')}`,
+                        '_blank',
+                        'width=600,height=400'
+                      );
+                    }}
+                    className="flex items-center justify-center w-8 h-8 rounded-lg border border-border text-muted-foreground hover:bg-sky-50 dark:hover:bg-sky-900/10 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
+                    aria-label="X / Twitter"
+                  >
+                    <Twitter className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                {/* Related Videos */}
+                <div className="mt-6 pt-4 border-t">
+                  <h4 className="text-sm font-semibold text-foreground mb-3">
+                    {t('Podobni videi', 'Related Videos')}
+                  </h4>
+                  <div className="flex flex-col gap-2">
+                    {videos
+                      .filter((v) => v.id !== selectedVideo)
+                      .map((rv) => (
+                        <button
+                          key={rv.id}
+                          onClick={() => setSelectedVideo(rv.id)}
+                          className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors text-left group"
+                        >
+                          <div className="relative w-20 aspect-video rounded-md overflow-hidden flex-shrink-0">
+                            <Image
+                              src={rv.image}
+                              alt=""
+                              fill
+                              className="object-cover"
+                              sizes="80px"
+                            />
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <div className="w-6 h-6 rounded-full bg-white/70 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <Play className="w-2.5 h-2.5 text-foreground ml-0.5" fill="currentColor" />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-medium text-foreground line-clamp-1 group-hover:text-honey-600 dark:group-hover:text-honey-400 transition-colors">
+                              {lang === 'sl' ? rv.titleSl : rv.titleEn}
+                            </p>
+                            <span className="text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                              <Clock className="w-2.5 h-2.5" />
+                              {rv.duration}
+                            </span>
+                          </div>
+                        </button>
+                      ))}
+                  </div>
+                </div>
+              </div>
             </motion.div>
           </motion.div>
         )}

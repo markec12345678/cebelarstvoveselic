@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Globe, Sun, Moon, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -29,6 +29,8 @@ export default function Navigation() {
   const { theme, setTheme } = useTheme();
   const t = getTranslations(lang);
 
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
   const handleScroll = useCallback(() => {
     const scrollY = window.scrollY;
     setScrolled(scrollY > 50);
@@ -37,22 +39,62 @@ export default function Navigation() {
     const docHeight = document.documentElement.scrollHeight - window.innerHeight;
     const progress = docHeight > 0 ? Math.min((scrollY / docHeight) * 100, 100) : 0;
     setScrollProgress(progress);
-
-    // Active section detection
-    const sections = navItems.map((item) => item.key);
-    for (let i = sections.length - 1; i >= 0; i--) {
-      const el = document.getElementById(sections[i]);
-      if (el && el.getBoundingClientRect().top <= 120) {
-        setActiveSection(sections[i]);
-        break;
-      }
-    }
   }, []);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
+
+  // ScrollSpy with IntersectionObserver for active section detection
+  useEffect(() => {
+    // Clean up previous observer
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
+    const sectionIds = navItems.map((item) => item.key);
+    const sectionElements = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter(Boolean) as HTMLElement[];
+
+    if (sectionElements.length === 0) return;
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        // Find the entry with the highest intersection ratio that is intersecting
+        const visibleEntries = entries.filter((entry) => entry.isIntersecting);
+        if (visibleEntries.length === 0) return;
+
+        // Sort by intersection ratio (most visible first) then by position (top first)
+        visibleEntries.sort((a, b) => {
+          const ratioDiff = b.intersectionRatio - a.intersectionRatio;
+          if (Math.abs(ratioDiff) > 0.05) return ratioDiff;
+          return a.boundingClientRect.top - b.boundingClientRect.top;
+        });
+
+        const topEntry = visibleEntries[0];
+        const sectionId = topEntry.target.id;
+        if (sectionId) {
+          setActiveSection(sectionId);
+        }
+      },
+      {
+        rootMargin: '-100px 0px -50% 0px',
+        threshold: [0, 0.25, 0.5],
+      }
+    );
+
+    sectionElements.forEach((el) => {
+      observerRef.current!.observe(el);
+    });
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, []);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -68,9 +110,17 @@ export default function Navigation() {
 
   const handleNavClick = (href: string) => {
     closeMobileMenu();
-    const el = document.querySelector(href);
+    // Extract section ID from href (e.g., '#story' -> 'story')
+    const sectionId = href.replace('#', '');
+    const el = document.getElementById(sectionId);
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+      // Account for fixed header height
+      const headerOffset = 80;
+      const elementPosition = el.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({
+        top: elementPosition - headerOffset,
+        behavior: 'smooth',
+      });
     }
   };
 

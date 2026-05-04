@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Shield, Heart, Zap, Leaf, Moon, Sparkles } from 'lucide-react';
+import { Shield, Heart, Zap, Leaf, Moon, Sparkles, ChevronDown } from 'lucide-react';
 import { useLangStore } from '@/store/language';
 
 const benefitIcons = [Shield, Heart, Zap, Leaf, Moon, Sparkles];
@@ -84,6 +84,15 @@ const benefitGradients = [
   'from-rose-50 to-pink-50 dark:from-rose-950/20 dark:to-pink-900/5',
 ];
 
+const benefitGradientsHover = [
+  'from-honey-100 to-honey-200 dark:from-honey-950/40 dark:to-honey-900/20',
+  'from-forest/10 to-forest/20 dark:from-forest/20 dark:to-forest/10',
+  'from-honey-100 to-amber-100 dark:from-honey-950/30 dark:to-amber-900/10',
+  'from-green-100 to-emerald-100 dark:from-green-950/30 dark:to-emerald-900/10',
+  'from-indigo-100 to-violet-100 dark:from-indigo-950/30 dark:to-violet-900/10',
+  'from-rose-100 to-pink-100 dark:from-rose-950/30 dark:to-pink-900/10',
+];
+
 export default function HoneyBenefits() {
   const lang = useLangStore((s) => s.lang);
   const ref = useRef<HTMLDivElement>(null);
@@ -106,7 +115,7 @@ export default function HoneyBenefits() {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12 sm:mb-16"
+          className="text-center mb-6 sm:mb-10"
         >
           <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-forest/10 dark:bg-forest/20 text-forest dark:text-forest-light rounded-full text-sm font-medium mb-4">
             <Sparkles className="w-3 h-3" />
@@ -123,6 +132,19 @@ export default function HoneyBenefits() {
           </p>
         </motion.div>
 
+        {/* Scroll to explore hint */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="flex flex-col items-center mb-10 sm:mb-14"
+        >
+          <span className="text-xs text-muted-foreground mb-1 scroll-hint inline-flex items-center gap-1">
+            {t('Pomaknite se za več', 'Scroll to explore')}
+          </span>
+          <ChevronDown className="w-4 h-4 text-muted-foreground scroll-hint" />
+        </motion.div>
+
         {/* Benefits Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {items.map((benefit, index) => {
@@ -133,16 +155,37 @@ export default function HoneyBenefits() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className={`group relative rounded-2xl border border-border bg-gradient-to-br ${benefitGradients[index]} p-6 sm:p-8 hover-lift card-border-glow transition-all duration-300`}
+                className={`group relative rounded-2xl border border-border bg-gradient-to-br ${benefitGradients[index]} p-6 sm:p-8 hover-lift card-border-glow transition-all duration-500 hover:shadow-lg hover:bg-gradient-to-br ${benefitGradientsHover[index]}`}
               >
-                {/* Emoji + Icon */}
+                {/* Benefit number indicator */}
+                <div className="absolute -top-3 -left-3 w-7 h-7 rounded-full bg-gradient-to-br from-honey-400 to-honey-600 flex items-center justify-center text-white text-xs font-bold shadow-md z-10">
+                  {index + 1}
+                </div>
+
+                {/* Emoji + Icon with bounce animation */}
                 <div className="flex items-center gap-4 mb-4">
                   <span className="text-4xl" role="img" aria-hidden="true">
                     {benefitEmojis[index]}
                   </span>
-                  <div className="w-12 h-12 rounded-xl bg-card dark:bg-card border border-border flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <motion.div
+                    className="w-12 h-12 rounded-xl bg-card dark:bg-card border border-border flex items-center justify-center group-hover:scale-110 transition-transform duration-300"
+                    animate={
+                      isInView
+                        ? {
+                            y: [0, -5, 0],
+                          }
+                        : {}
+                    }
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      repeatType: 'loop',
+                      delay: index * 0.3,
+                      ease: 'easeInOut',
+                    }}
+                  >
                     <Icon className="w-6 h-6 text-honey-600 dark:text-honey-400" />
-                  </div>
+                  </motion.div>
                 </div>
 
                 {/* Title */}
@@ -150,9 +193,14 @@ export default function HoneyBenefits() {
                   {benefit.title}
                 </h3>
 
-                {/* Description */}
-                <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
+                {/* Description with hover expand */}
+                <p className="text-muted-foreground text-sm sm:text-base leading-relaxed benefit-expand">
                   {benefit.description}
+                </p>
+
+                {/* Source citation */}
+                <p className="text-[10px] text-muted-foreground/60 mt-3 italic">
+                  {t('Vir: EFSA, 2023', 'Source: EFSA, 2023')}
                 </p>
 
                 {/* Decorative corner accent */}
@@ -166,26 +214,30 @@ export default function HoneyBenefits() {
           })}
         </div>
 
-        {/* Bottom CTA */}
+        {/* Bottom CTA with honey drip decoration */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.7 }}
-          className="text-center mt-12"
+          className="text-center mt-12 sm:mt-16"
         >
-          <p className="text-sm text-muted-foreground mb-4">
+          <p className="text-sm text-muted-foreground mb-6">
             {t(
               'Izberite svoj med in začnite z vsakodnevnim uživanjem.',
               'Choose your honey and start enjoying it daily.'
             )}
           </p>
-          <a
-            href="#products"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-honey-500 to-honey-600 text-white font-semibold shadow-lg hover:shadow-xl hover:from-honey-600 hover:to-honey-700 transition-all duration-300 cta-glow"
-          >
-            {t('Izberite med', 'Choose Your Honey')}
-            <span className="text-lg">🍯</span>
-          </a>
+          <div className="honey-drip-decoration inline-block">
+            <a
+              href="#products"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-honey-500 to-honey-600 text-white font-semibold shadow-lg hover:shadow-xl hover:from-honey-600 hover:to-honey-700 transition-all duration-300 cta-glow"
+            >
+              <span className="bg-gradient-to-r from-white to-honey-100 bg-clip-text text-transparent">
+                {t('Izberite med', 'Choose Your Honey')}
+              </span>
+              <span className="text-lg">🍯</span>
+            </a>
+          </div>
         </motion.div>
       </div>
     </section>
