@@ -16,6 +16,9 @@ import StatsBar from '@/components/sections/StatsBar';
 import Testimonials from '@/components/sections/Testimonials';
 import Visit from '@/components/sections/Visit';
 import ImageGallery from '@/components/sections/ImageGallery';
+import Blog from '@/components/sections/Blog';
+import VideoTestimonials from '@/components/sections/VideoTestimonials';
+import HoneyBenefits from '@/components/sections/HoneyBenefits';
 import FAQ from '@/components/sections/FAQ';
 import Newsletter from '@/components/sections/Newsletter';
 import OrderForm from '@/components/sections/OrderForm';
@@ -57,6 +60,9 @@ export default function Home() {
         <Testimonials />
         <Visit />
         <ImageGallery />
+        <Blog />
+        <VideoTestimonials />
+        <HoneyBenefits />
         <FAQ />
         <Newsletter />
         <OrderForm />

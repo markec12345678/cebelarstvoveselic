@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { TreePine, UtensilsCrossed, Users, ArrowRight, Phone, Calendar, Clock, Sun, Flower2 } from 'lucide-react';
+import { TreePine, UtensilsCrossed, Users, ArrowRight, Phone, Calendar, Clock, Sun, Flower2, Car, Accessibility, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLangStore } from '@/store/language';
 import { getTranslations } from '@/lib/i18n';
@@ -103,7 +103,10 @@ export default function Visit() {
 
   return (
     <section id="visit" className="py-20 sm:py-28 lg:py-32 relative overflow-hidden">
+      {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-forest/5 via-background to-honey-50/30" />
+      {/* Honeycomb overlay */}
+      <div className="absolute inset-0 honeycomb-overlay opacity-[0.03] pointer-events-none" />
 
       <div ref={ref} className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -176,6 +179,18 @@ export default function Visit() {
               </div>
             </motion.div>
 
+            {/* Decorative floating map pin SVG */}
+            <motion.div
+              animate={{ y: [0, -8, 0], rotate: [0, 5, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute -bottom-2 left-[15%] z-10 pointer-events-none"
+              aria-hidden="true"
+            >
+              <svg width="40" height="56" viewBox="0 0 40 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 0C8.954 0 0 8.954 0 20c0 14 20 36 20 36s20-22 20-36C40 8.954 31.046 0 20 0z" fill="rgba(212,160,23,0.2)" stroke="rgba(212,160,23,0.4)" strokeWidth="1.5" />
+                <circle cx="20" cy="20" r="8" fill="rgba(212,160,23,0.3)" stroke="rgba(212,160,23,0.5)" strokeWidth="1" />
+              </svg>
+            </motion.div>
             {/* Decorative */}
             <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-gradient-to-br from-forest to-forest-light rounded-2xl -z-10 opacity-10" />
           </motion.div>
@@ -208,15 +223,15 @@ export default function Visit() {
                   initial={{ opacity: 0, x: 20 }}
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.5, delay: 0.4 + i * 0.15 }}
-                  className="flex gap-4 p-4 rounded-xl bg-card border border-border/50 hover:border-honey-200 dark:hover:border-honey-800 transition-colors group"
+                  className="flex gap-4 p-4 rounded-xl bg-card border border-border/50 hover:border-honey-200 dark:hover:border-honey-800 transition-all duration-300 hover:shadow-lg hover:shadow-honey-500/5 hover:-translate-y-1 group card-border-glow"
                 >
                   <motion.div
                     initial={{ scale: 0, rotate: -10 }}
                     animate={isInView ? { scale: 1, rotate: 0 } : {}}
                     transition={{ duration: 0.4, delay: 0.5 + i * 0.15, type: 'spring', stiffness: 200, damping: 15 }}
-                    className="flex-shrink-0 w-12 h-12 rounded-xl bg-honey-100 dark:bg-honey-900/20 flex items-center justify-center group-hover:bg-honey-200 dark:group-hover:bg-honey-900/30 transition-colors"
+                    className="flex-shrink-0 w-12 h-12 rounded-xl bg-honey-100 dark:bg-honey-900/20 flex items-center justify-center group-hover:bg-honey-200 dark:group-hover:bg-honey-900/30 transition-all duration-300"
                   >
-                    <feature.icon className="w-5 h-5 text-honey-600 dark:text-honey-400" />
+                    <feature.icon className="w-5 h-5 text-honey-600 dark:text-honey-400 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-[5deg]" />
                   </motion.div>
                   <div>
                     <h3 className="text-base font-semibold">{feature.title}</h3>
@@ -228,11 +243,23 @@ export default function Visit() {
               ))}
             </div>
 
+            {/* Accessibility & parking badges */}
+            <div className="mt-6 flex flex-wrap gap-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800/30 text-xs font-medium text-green-700 dark:text-green-400 float-badge">
+                <Car className="w-3.5 h-3.5" />
+                {lang === 'sl' ? 'Brezplačno parkiranje' : 'Free parking available'}
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800/30 text-xs font-medium text-blue-700 dark:text-blue-400 float-badge" style={{ animationDelay: '0.5s' }}>
+                <Accessibility className="w-3.5 h-3.5" />
+                {lang === 'sl' ? 'Dostopno za invalidske vozičke' : 'Wheelchair accessible'}
+              </span>
+            </div>
+
             {/* CTAs with calendar icon */}
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
               <Button
                 size="lg"
-                className="group bg-gradient-to-r from-honey-500 to-honey-600 hover:from-honey-600 hover:to-honey-700 text-white shadow-lg"
+                className="group bg-gradient-to-r from-honey-500 via-honey-400 to-honey-600 hover:from-honey-600 hover:to-honey-700 text-white shadow-lg cta-glow"
                 onClick={() =>
                   document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
                 }
@@ -247,6 +274,28 @@ export default function Visit() {
                   {t.visit.ctaSecondary}
                 </a>
               </Button>
+              {/* Book your visit CTA with honey gradient */}
+              <Button
+                size="lg"
+                className="group bg-gradient-to-r from-honey-300 via-honey-400 to-honey-600 hover:from-honey-400 hover:via-honey-500 hover:to-honey-700 text-white shadow-lg cta-glow"
+                onClick={() =>
+                  document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+                }
+              >
+                <MapPin className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+                {lang === 'sl' ? 'Rezerviraj obisk' : 'Book your visit'}
+              </Button>
+            </div>
+
+            {/* Seasonal opening hours highlight */}
+            <div className="mt-6 p-3 rounded-lg bg-honey-50 dark:bg-honey-900/10 border border-honey-200/50 dark:border-honey-800/30">
+              <p className="text-xs font-medium text-honey-700 dark:text-honey-400 flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5" />
+                {lang === 'sl'
+                  ? `Trenutni mesec: ${new Date().toLocaleDateString('sl-SI', { month: 'long' })} — ${season.status}`
+                  : `Current month: ${new Date().toLocaleDateString('en-US', { month: 'long' })} — ${season.status}`
+                }
+              </p>
             </div>
 
             {/* Note */}

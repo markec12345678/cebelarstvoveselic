@@ -45,3 +45,17 @@ model HoneyOrder {
   lang          String   @default("sl")
   createdAt     DateTime @default(now())
 }
+
+model BlogPost {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  excerpt   String
+  content   String
+  image     String   @default("/images/hero.jpg")
+  author    String   @default("Jožef Veselič")
+  category  String
+  published Boolean  @default(true)
+  lang      String   @default("sl")
+  createdAt DateTime @default(now())
+}

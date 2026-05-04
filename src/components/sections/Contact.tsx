@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { Send, Loader2, MapPin, Phone, Mail, Clock, MessageCircle, CheckCircle2, Droplets } from 'lucide-react';
+import { Send, Loader2, MapPin, Phone, Mail, Clock, MessageCircle, CheckCircle2, Droplets, ArrowRight, ExternalLink, Zap, ShoppingBag, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,6 +10,8 @@ import { Label } from '@/components/ui/label';
 import { useLangStore } from '@/store/language';
 import { getTranslations } from '@/lib/i18n';
 import { toast } from 'sonner';
+
+type PreferredContact = 'email' | 'phone' | 'whatsapp';
 
 export default function Contact() {
   const { lang } = useLangStore();
@@ -23,6 +25,8 @@ export default function Contact() {
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [preferredContact, setPreferredContact] = useState<PreferredContact>('email');
+  const [showMapTooltip, setShowMapTooltip] = useState(false);
 
   const MAX_MESSAGE_LENGTH = 500;
 
@@ -49,7 +53,7 @@ export default function Contact() {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, lang }),
+        body: JSON.stringify({ ...form, lang, preferredContact }),
       });
 
       const data = await res.json();
@@ -67,7 +71,7 @@ export default function Contact() {
       setTimeout(() => {
         setShowSuccess(false);
         setShowConfetti(false);
-      }, 4000);
+      }, 6000);
     } catch {
       toast.error(t.contact.error);
     } finally {
@@ -101,6 +105,12 @@ export default function Contact() {
       ? 'ring-2 ring-honey-400/20 border-honey-400 scale-[1.01] transition-all duration-200'
       : 'transition-all duration-200';
 
+  const quickContactButtons = [
+    { icon: Phone, label: lang === 'sl' ? 'Pokličite' : 'Call', href: 'tel:+38641234567', color: 'from-green-500 to-green-600' },
+    { icon: Mail, label: lang === 'sl' ? 'E-pošta' : 'Email', href: 'mailto:info@cebelarstvo-veselic.si', color: 'from-honey-400 to-honey-600' },
+    { icon: MessageCircle, label: 'WhatsApp', href: 'https://wa.me/38641234567', color: 'from-emerald-500 to-emerald-600' },
+  ];
+
   return (
     <section id="contact" className="py-20 sm:py-28 lg:py-32 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-honey-50/50 via-background to-cream-dark/30" />
@@ -130,9 +140,9 @@ export default function Contact() {
             transition={{ duration: 0.4, delay: 0.4 }}
             className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-honey-100 dark:bg-honey-900/20 border border-honey-200 dark:border-honey-800/30"
           >
-            <span className="text-base">🍯</span>
+            <Clock className="w-4 h-4 text-honey-600 dark:text-honey-400" />
             <span className="text-sm font-medium text-honey-800 dark:text-honey-300">
-              {lang === 'sl' ? 'Odgovorimo vam v 2 urah' : 'We typically respond within 2 hours'}
+              {lang === 'sl' ? 'Povprečen odzivni čas: 2 uri' : 'Average response time: 2 hours'}
             </span>
           </motion.div>
         </motion.div>
@@ -143,7 +153,7 @@ export default function Contact() {
             initial={{ opacity: 0, x: -30 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="lg:col-span-3"
+            className="lg:col-span-3 relative"
           >
             {/* Success animation overlay with confetti */}
             <AnimatePresence>
@@ -195,13 +205,13 @@ export default function Contact() {
                     })}
                   </div>
                 )}
-                {/* Success card */}
+                {/* Success card with What's next */}
                 <motion.div
                   initial={{ scale: 0, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.8, opacity: 0 }}
                   transition={{ type: 'spring', stiffness: 200, damping: 15, delay: showConfetti ? 0.5 : 0.1 }}
-                  className="relative z-10 bg-background/90 backdrop-blur-md rounded-2xl p-8 shadow-xl text-center"
+                  className="relative z-10 bg-background/95 backdrop-blur-md rounded-2xl p-8 shadow-xl text-center max-w-md mx-auto"
                 >
                   <div className="relative mx-auto w-20 h-20 mb-4">
                     <div className="absolute inset-0 rounded-full bg-green-100 dark:bg-green-900/20 ring-ripple" />
@@ -214,6 +224,27 @@ export default function Contact() {
                         <CheckCircle2 className="w-10 h-10 text-green-600 dark:text-green-400" />
                       </motion.div>
                     </div>
+                    {/* Honey dip decoration */}
+                    <motion.div
+                      initial={{ y: -10, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 1 }}
+                      className="absolute -bottom-1 left-1/2 -translate-x-1/2"
+                      aria-hidden="true"
+                    >
+                      <svg width="20" height="14" viewBox="0 0 20 14" fill="none">
+                        <path d="M10 0C10 0 6 4 6 7C6 9.2 7.8 11 10 11C12.2 11 14 9.2 14 7C14 4 10 0 10 0Z" fill="rgba(212,160,23,0.6)" />
+                        <motion.path
+                          d="M10 11 L10 14"
+                          stroke="rgba(212,160,23,0.6)"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 0.5, delay: 1.2 }}
+                        />
+                      </svg>
+                    </motion.div>
                   </div>
                   <h3 className="text-lg font-bold text-green-700 dark:text-green-400">
                     {lang === 'sl' ? 'Sporočilo poslano!' : 'Message sent!'}
@@ -221,10 +252,101 @@ export default function Contact() {
                   <p className="text-sm text-muted-foreground mt-1">
                     {lang === 'sl' ? 'Odgovorili vam bomo v 2 urah.' : 'We will respond within 2 hours.'}
                   </p>
+
+                  {/* What's next section */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.5 }}
+                    className="mt-6 pt-5 border-t border-border/50 text-left"
+                  >
+                    <p className="text-sm font-semibold text-foreground mb-3">
+                      {lang === 'sl' ? 'Kaj sledi?' : "What's next?"}
+                    </p>
+                    <ul className="space-y-2">
+                      <li className="flex items-start gap-2 text-xs text-muted-foreground">
+                        <Zap className="w-3.5 h-3.5 text-honey-500 flex-shrink-0 mt-0.5" />
+                        {lang === 'sl'
+                          ? 'Prejeli boste potrdilo na vašo e-pošto'
+                          : 'You will receive a confirmation to your email'}
+                      </li>
+                      <li className="flex items-start gap-2 text-xs text-muted-foreground">
+                        <Clock className="w-3.5 h-3.5 text-honey-500 flex-shrink-0 mt-0.5" />
+                        {lang === 'sl'
+                          ? 'Odgovorimo vam v 2 urah (delovni čas)'
+                          : 'We respond within 2 hours (business hours)'}
+                      </li>
+                      <li className="flex items-start gap-2 text-xs text-muted-foreground">
+                        <ShoppingBag className="w-3.5 h-3.5 text-honey-500 flex-shrink-0 mt-0.5" />
+                        <button
+                          onClick={() => document.getElementById('order')?.scrollIntoView({ behavior: 'smooth' })}
+                          className="hover:text-honey-600 dark:hover:text-honey-400 transition-colors underline underline-offset-2"
+                        >
+                          {lang === 'sl'
+                            ? 'Ali bi radi naročili med? Naročite se tukaj.'
+                            : 'Want to order honey? Place your order here.'}
+                        </button>
+                      </li>
+                      <li className="flex items-start gap-2 text-xs text-muted-foreground">
+                        <Users className="w-3.5 h-3.5 text-honey-500 flex-shrink-0 mt-0.5" />
+                        <button
+                          onClick={() => document.getElementById('visit')?.scrollIntoView({ behavior: 'smooth' })}
+                          className="hover:text-honey-600 dark:hover:text-honey-400 transition-colors underline underline-offset-2"
+                        >
+                          {lang === 'sl'
+                            ? 'Našte si obisk čebeljnjaka.'
+                            : 'Plan a visit to our apiary.'}
+                        </button>
+                      </li>
+                    </ul>
+                  </motion.div>
                 </motion.div>
               </motion.div>
             )}
             </AnimatePresence>
+
+            {/* Quick contact row */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="mb-6 flex flex-wrap gap-3"
+            >
+              {quickContactButtons.map((btn) => {
+                const Icon = btn.icon;
+                return (
+                  <motion.a
+                    key={btn.label}
+                    href={btn.href}
+                    target={btn.href.startsWith('http') ? '_blank' : undefined}
+                    rel={btn.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r text-white shadow-md hover:shadow-lg transition-shadow text-sm font-medium"
+                    style={{ backgroundImage: `linear-gradient(to right, var(--tw-gradient-from), var(--tw-gradient-to))` }}
+                  >
+                    <div className={`bg-gradient-to-r ${btn.color} rounded-lg p-1.5`}>
+                      <Icon className="w-4 h-4 text-white" />
+                    </div>
+                    <span>{btn.label}</span>
+                    <ArrowRight className="w-3.5 h-3.5 opacity-70" />
+                  </motion.a>
+                );
+              })}
+            </motion.div>
+
+            {/* Social proof near form */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : {}}
+              transition={{ duration: 0.4, delay: 0.35 }}
+              className="mb-6 flex items-center gap-2 text-xs text-muted-foreground"
+            >
+              <Clock className="w-3.5 h-3.5 text-honey-500" />
+              {lang === 'sl'
+                ? 'Povprečen čas odgovora: 2 uri'
+                : 'Average response time: 2 hours'}
+            </motion.div>
 
             <form onSubmit={handleSubmit} className="space-y-5" noValidate>
               <div className="grid sm:grid-cols-2 gap-5">
@@ -341,6 +463,34 @@ export default function Contact() {
                 </div>
               </div>
 
+              {/* Preferred contact method */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">
+                  {lang === 'sl' ? 'Želen način stika' : 'Preferred contact method'}
+                </Label>
+                <div className="flex flex-wrap gap-2">
+                  {([
+                    { key: 'email' as const, icon: Mail, label: 'Email' },
+                    { key: 'phone' as const, icon: Phone, label: lang === 'sl' ? 'Telefon' : 'Phone' },
+                    { key: 'whatsapp' as const, icon: MessageCircle, label: 'WhatsApp' },
+                  ]).map((option) => (
+                    <button
+                      key={option.key}
+                      type="button"
+                      onClick={() => setPreferredContact(option.key)}
+                      className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${
+                        preferredContact === option.key
+                          ? 'bg-honey-500 text-white shadow-sm border border-honey-500'
+                          : 'bg-card border border-border/50 text-muted-foreground hover:border-honey-300 hover:text-honey-700 dark:hover:text-honey-400'
+                      }`}
+                    >
+                      <option.icon className="w-3.5 h-3.5" />
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <Button
                 type="submit"
                 disabled={submitting}
@@ -393,7 +543,7 @@ export default function Contact() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="lg:col-span-2 space-y-6"
           >
-            {/* Map - larger with loading skeleton */}
+            {/* Map - larger with loading skeleton and tooltip */}
             <div className="rounded-2xl overflow-hidden shadow-lg h-[280px] bg-muted border relative">
               {/* Shimmer skeleton while map loads */}
               {!mapLoaded && (
@@ -418,6 +568,31 @@ export default function Contact() {
               <div className="absolute bottom-3 left-3 bg-card/90 backdrop-blur-sm rounded-lg px-2.5 py-1.5 shadow-md flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-honey-500" />
                 <span className="text-[11px] font-medium">Čebelarstvo Veselič</span>
+              </div>
+              {/* Map tooltip */}
+              <div
+                className="absolute top-3 left-3 z-10"
+                onMouseEnter={() => setShowMapTooltip(true)}
+                onMouseLeave={() => setShowMapTooltip(false)}
+              >
+                <button
+                  onClick={() => window.open('https://www.google.com/maps/search/?api=1&query=45.6424,15.3231', '_blank')}
+                  className="bg-card/90 backdrop-blur-sm rounded-lg px-2.5 py-1.5 shadow-md flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground hover:text-honey-600 dark:hover:text-honey-400 transition-colors"
+                >
+                  <ExternalLink className="w-3 h-3" />
+                </button>
+                <AnimatePresence>
+                  {showMapTooltip && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 4 }}
+                      className="absolute top-full left-0 mt-1 px-2.5 py-1.5 bg-card border border-border rounded-lg shadow-lg text-[10px] font-medium text-muted-foreground whitespace-nowrap z-20"
+                    >
+                      {lang === 'sl' ? 'Kliknite za Google Maps' : 'Click to open in Google Maps'}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
               {/* Call us FAB */}
               <motion.a

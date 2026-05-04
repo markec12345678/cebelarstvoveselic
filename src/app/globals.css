@@ -893,6 +893,104 @@ html {
 }
 
 /* ============================================
+   ROUND 8: NEW ANIMATIONS & UTILITIES
+   ============================================ */
+
+/* Floating badge animation */
+@keyframes float-badge {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(2deg); }
+}
+
+.float-badge {
+  animation: float-badge 3s ease-in-out infinite;
+}
+
+/* Glow pulse for CTAs */
+@keyframes cta-glow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(212, 160, 23, 0.3), 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(212, 160, 23, 0.5), 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.cta-glow {
+  animation: cta-glow 2.5s ease-in-out infinite;
+}
+
+/* Watermark text */
+.watermark-text {
+  position: absolute;
+  font-size: 8rem;
+  font-weight: 800;
+  line-height: 1;
+  opacity: 0.04;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+/* Gradient separator */
+.gradient-separator {
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgba(212, 160, 23, 0.3) 50%, transparent 100%);
+}
+
+/* Feedback button styles */
+.feedback-btn {
+  transition: all 0.2s ease;
+}
+.feedback-btn:hover {
+  transform: scale(1.15);
+}
+.feedback-btn:active {
+  transform: scale(0.95);
+}
+
+/* Floating label input */
+.floating-label-group {
+  position: relative;
+}
+.floating-label-group label {
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+.floating-label-group input:focus + label,
+.floating-label-group input:not(:placeholder-shown) + label,
+.floating-label-group textarea:focus + label,
+.floating-label-group textarea:not(:placeholder-shown) + label {
+  transform: translateY(-1.5rem) scale(0.85);
+  color: var(--color-honey-500);
+}
+
+/* Smooth card border gradient on hover */
+.card-border-glow {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.card-border-glow:hover {
+  border-color: rgba(212, 160, 23, 0.3);
+  box-shadow: 0 0 20px rgba(212, 160, 23, 0.08), 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+
+/* Dark mode watermark text */
+.dark .watermark-text {
+  opacity: 0.02;
+}
+
+/* Dark mode gradient separator */
+.dark .gradient-separator {
+  background: linear-gradient(90deg, transparent 0%, rgba(212, 160, 23, 0.15) 50%, transparent 100%);
+}
+
+/* Dark mode card border glow */
+.dark .card-border-glow:hover {
+  border-color: rgba(212, 160, 23, 0.2);
+  box-shadow: 0 0 15px rgba(212, 160, 23, 0.05), 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================
    REDUCED MOTION
    ============================================ */
 
@@ -903,7 +1001,7 @@ html {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .bee-float, .fly-bee, .pulse-glow, .breathe, .shimmer, .marquee, .wing-flutter, .sparkle, .float-gentle, .float-delayed, .typing, .drip, .scroll-bounce, .reveal-up, .strike-through, .counter-flip, .badge-ping, .dot-pulse, .gradient-shift, .text-gradient-animated, .magnetic-hover, .honey-drip, .scroll-indicator, .reveal-up {
+  .bee-float, .fly-bee, .pulse-glow, .breathe, .shimmer, .marquee, .wing-flutter, .sparkle, .float-gentle, .float-delayed, .typing, .drip, .scroll-bounce, .reveal-up, .strike-through, .counter-flip, .badge-ping, .dot-pulse, .gradient-shift, .text-gradient-animated, .magnetic-hover, .honey-drip, .scroll-indicator, .reveal-up, .float-badge, .cta-glow {
     animation: none !important;
   }
 }

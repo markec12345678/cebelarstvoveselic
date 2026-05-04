@@ -307,6 +307,47 @@ export interface TranslationStrings {
       description: string;
     }>;
   };
+  video: {
+    sectionTag: string;
+    title: string;
+    subtitle: string;
+    watchVideo: string;
+    playlist: Array<{
+      title: string;
+      duration: string;
+      description: string;
+      thumbnail: string;
+    }>;
+  };
+  benefits: {
+    sectionTag: string;
+    title: string;
+    subtitle: string;
+    items: Array<{
+      icon: string;
+      title: string;
+      description: string;
+    }>;
+  };
+  blog: {
+    sectionTag: string;
+    title: string;
+    subtitle: string;
+    viewAll: string;
+    readMore: string;
+    publishedBy: string;
+    backToBlog: string;
+    categoryLabel: string;
+    posts: Array<{
+      slug: string;
+      title: string;
+      excerpt: string;
+      content: string;
+      image: string;
+      category: string;
+      date: string;
+    }>;
+  };
 }
 
 const translations: Record<Lang, TranslationStrings> = {
@@ -860,6 +901,108 @@ const translations: Record<Lang, TranslationStrings> = {
         },
       ],
     },
+    video: {
+      sectionTag: 'Video',
+      title: 'Poglejte našo zgodbo v živo',
+      subtitle: 'Odkrijte naš čebeljarski svet skozi kratke videoposnetke — od obiskov čebeljaka do poti medu od cveta do kozarca.',
+      watchVideo: 'Ogled videa',
+      playlist: [
+        {
+          title: 'Obisk čebeljaka v Beli krajini',
+          duration: '3:24',
+          description: 'Pridružite se Jožefu na ogledu čebeljaka med cvetanjem akacijev — od odprtja panja do degustacije svežega medu.',
+          thumbnail: '/images/visit.jpg',
+        },
+        {
+          title: 'Od cveta do kozarca: pot medu',
+          duration: '5:12',
+          description: 'Sledite celotnemu postopku pridelave medu — od postavitve panjev na pašnike do stekleničenja.',
+          thumbnail: '/images/process.jpg',
+        },
+        {
+          title: 'Kako prepoznamo pristen med',
+          duration: '4:05',
+          description: 'Naučite se prepoznati razlike med pristnim in ponarejenim medom — testi, na kiih se lahko sami preizkusite.',
+          thumbnail: '/images/about.jpg',
+        },
+      ],
+    },
+    benefits: {
+      sectionTag: 'Zakaj med?',
+      title: 'Šest razlogov za vsakdanji med',
+      subtitle: 'Med ni samo sladilo — je naravno zdravilo s stoletno tradicijo. Odkrijte, zakaj bi ga morali uživati vsak dan.',
+      items: [
+        {
+          icon: '🍯',
+          title: 'Krepitev imunskega sistema',
+          description: 'Med vsebuje antioksidante, encime in antibakterijske lastnosti, ki krepijo naravno imunost. Slovenski gozdni med je posebno bogat s temi spojinami.',
+        },
+        {
+          icon: '🌿',
+          title: 'Olajšanje bolečega grla',
+          description: 'Lipov med se stoletja uporablja v Sloveniji kot tradicionalno zdravilo za kašelj in boleče grlo. Njegova žlahtna aroma in blažilne lastnosti so nedvomno.',
+        },
+        {
+          icon: '💪',
+          title: 'Energija in zmogljivost',
+          description: 'Naravni sladkorji v medu (glukoza + fruktoza) zagotavljajo trajno energijo brez zmršanja, ki ga povzroča rafinirani sladkor. Idealno za športnike.',
+        },
+        {
+          icon: '🫁',
+          title: 'Zdrav prebavni sistem',
+          description: 'Med pomaga pri prebavi, blaži želodčne razdraženosti in lahko pomaga pri blagih prebavnih težavah. Žliček pred obrokom je tradicionalni recept.',
+        },
+        {
+          icon: '😴',
+          title: 'Boljši spanec',
+          description: 'Toplo mleko z medom pred spanjem spodbuja sprostitev in boljšo kakovost spanca. Med pomaga pri uravnavanju proizvodnje melatonina.',
+        },
+        {
+          icon: '🧴',
+          title: 'Nega kože in celjenje ran',
+          description: 'Med ima naravne antibakterijske in celilne lastnosti. V tradicionalni slovenski ljudski medicini se uporablja za opekline in kožne težave.',
+        },
+      ],
+    },
+    blog: {
+      sectionTag: 'Novice & Blog',
+      title: 'Znanje, novice in zgodbe iz čebeljnjaka',
+      subtitle: 'Sledite dogajanju v našem čebeljnjaku, preberite nasvete o medu in spoznajte življenje čebel skozi celo leto.',
+      viewAll: 'Vse objave',
+      readMore: 'Preberi več',
+      publishedBy: 'Objavil',
+      backToBlog: 'Nazaj na blog',
+      categoryLabel: 'Kategorija',
+      posts: [
+        {
+          slug: 'pristen-med',
+          title: 'Kako prepoznamo pristen med',
+          excerpt: 'Na slovenskem tržišču se pojavlja vse več ponarejenega medu. Kako ga prepoznati? Preverite vrednost HMF, vlažnost in kristalizacijo — tri preizkuse, ki jih lahko opravite sami doma.',
+          content: 'Pristen med je eden najbolj nadleženih živil na slovenskem trgu. Po podatkih Urada RS za varstvo potrošnikov se vsako leto odkrijejo številne primer ponarejanja, pri čemer se pogosto uporablja dodajanje sladkorjevih sirupov, hitro segrevanje medu ali mešanje cenejših uvoženih medu s slovenskim. V Čebelarstvu Veselič verjamemo, da se izobraževanje potrošnikov splača — zato vam prinašamo preproste nasvete, s katerimi lahko sami preverite pristnost medu.\n\nPrvi in najbolj zanesljiv preizkus je merjenje vsebnosti hidroksimetilfurfurala, krajše HMF. Ta snov nastaja pri segrevanju medu ali pri dolgotrajnem shranjevanju na toplem. Svež, pristen med ima HMF vrednost pod 15 mg/kg, medtem ko je med, ki je bil segrevan nad 40 °C ali pa je zastarel, vsebuje bistveno več. Laboratorijske analize, ki jih opravimo za vsako pošiljko, vedno kažejo HMF pod 10 mg/kg — kar potrjuje, da naš med ni bil predelan.\n\nDrugi kazalec je vlažnost medu, ki jo merimo z refraktometrom. Pristen med vsebuje manj kot 18 % vode. Če je vlažnost višja, med hitreje kvari ali fermentira. Lahko ga preverite tako, da kapljico medu pustite na papirju — pristen med ne bo zmočil papirja, medtem ko ponesrečen med z visoko vlažnostjo pušča vlažne madeže.\n\nTretji preizkus je kristalizacija — naraven proces, ki dokazuje, da med vsebuje pravo razmerje glukoze in fruktoze. Kristalizirani med je pristen, čeprav mnogi potrošniki to zamenjujejo s znakom slabosti. Različne vrste kristalizirajo različno hitro: akacijev med ostane tekoč mesece, cvetlični se kristalizira v nekaj tednih, kostanjev pa v nekaj dneh. Ponarejeni med z dodanim sladkorjevim sirupom pogosto sploh ne kristalizira ali pa kristalizira neenakomerno.',
+          image: '/images/hero.jpg',
+          category: 'Znanje o medu',
+          date: '15. marec 2025',
+        },
+        {
+          slug: 'cebele-zimo',
+          title: 'Življenje čebel med zimo',
+          excerpt: 'Ko temperature padejo pod 10 °C, se čebele umaknejo v panj in tvorijo zimski krog — neverjeten mehanizem preživetja, pri katerem ohranjajo temperaturo 35 °C v notranjosti klasterja.',
+          content: 'Zima je za čebelje družine najzahtevnejše obdobje v letu. Ko oktober prinese hladnejše dni in nektar izgine s cvetov, se čebele pripravljajo na dolge mesece v zaprtju panja. Samec se v novembru umre — njegova edina naloga, oploditev matice, je končana. Delavke, ki bodo preživele zimo, pa začnejo oblikovati t. i. zimski krog.\n\nZimski krog je neverjeten biološki mehanizem. Čebele se tesno stisnejo okrog matice in tvorijo krog, debel od 5 do 10 cm. Z mišičnimi tremi v prsih generirajo toploto, ki ohranja temperaturo v središču kroga na 34–36 °C — ravno toliko, kot je potrebno za preživetje matice in zaroda. Na zunanjem robu kroga je temperatura nižja, okrog 15–20 °C, zato se čebele nenehno zamenjujejo: tiste na robu se premaknejo v sredino, tiste v sredini pa se premaknejo na rob. Čebele v zimi porabijo približno 20–30 kg medu, odvisno od dolžine zime in velikosti družine.\n\nV Čebelarstvu Veselič zimsko prehrano načrtujemo skrbno. Jeseni ocenimo količino zaloge medu v panjih in po potrebi dopolnimo s posebno zimsko hrano — sladkorno pasto ali posušenim kristaliziranim medu, ki je zmešan s toplo vodo v razmerju 2:1. Pomembno je, da čebele imajo dovolj hrane, a ne preveč — preveč prostora v panju bi otežilo ogrevanje. Panje ovijemo s poliestrskim blagom in zožimo letvico, da zmanjšamo prostor in izboljšamo izolacijo.\n\nSpomladi, ko se temperature dvignejo nad 12 °C, čebele začnejo z obiski čistilnih letov — hitrih izletov pred panjem, s katerimi očistijo prebavni sistem po dolgi zimski stagnaciji. To je znak, da se čebelja družina prebudila in je pripravljena na novo sezono. Čebelar takrat intenzivno pregleduje panje, preveri zaloge hrane in stanje matice ter po potrebi poskrbi za enotne družine.',
+          image: '/images/about.jpg',
+          category: 'Iz čebeljnjaka',
+          date: '28. december 2024',
+        },
+        {
+          slug: 'eko-cebelarstvo-bela-krajina',
+          title: 'Eko čebelarstvo v Beli krajini',
+          excerpt: 'Bela krajina z bukovi gozdovi, kostanjevimi sestoji in čistimi pašniki ponuja idealne pogoje za ekološko čebelarstvo. Preberite, kako pridobimo certifikat Eko Sklad in zakaj je biodiverznost ključna.',
+          content: 'Bela krajina, jugovzhodna regija Slovenije na meji s Hrvaško, je zaradi svoje edinstvene lege in podnebja ena najboljših regij za čebelarstvo v Evropi. Submediteransko podnebje, ki se na stiku z dinarskim svetom prelije v celinski, omogoča dolgo cvetno dobo — od zgodnje pomladi, ko cvetijo češnje in jablane, do pozne jeseni, ko dajejo nektar še zadnje kostanjeve cvetove. Naša čebelarska domačija v Čurelah pri Metliki stoji sredi tega raznolikega cvetja.\n\nEkološka certifikacija ni samo list papirja — je obvezen proces, ki traja vsaj tri leta. V tem času se preverja vse: lokacije panjev (morajo biti oddaljene vsaj 3 km od polj obdelanih s sintetičnimi pesticidi), način zdravljenja čebel (samo dovoljena sredstva: organske kisline, maščobne kisline, essencialna olja), pa tudi higienske razmere v medlarjenju. Kontrolni organi Eko Sklad vsako leto brez najave obiščejo čebeljnjak in vzamejo vzorce medu za laboratorijsko analizo.\n\nBiodiverznost je ključna za zdravje čebeljih družin. Zato na naših pašnikih vzdržujemo divje cvetoče travnike in žive meje, ob reki Kolpi pa smo zasadili čebele prijazna drevja in grmovnice — lipe, robide, bezeg in divje jagode. Sodelujemo z lokalnimi kmeti, ki pridelujejo ekološko, in se zavzemamo za ohranjanje habitata divjih opraševalcev. Verjamemo, da zdrav čebeljnjak ni mogoč brez zdravega okolja.\n\nNaš pristop k ekološkemu čebelarstvu temelji na treh stebrih: spoštovanju do narave, transparentnosti do potrošnikov in nenehnem izboljševanju. Vsaka pošiljka medu nosi QR kodo, s katero stranka preveri lokacijo panja, datum medenja in rezultate laboratorijskih analiz. Tako našim kupcem zagotavljamo, da med, ki ga dobijo, res izvira iz čistih kraskih pašnikov in da je bil obdelan brez kompromisov.',
+          image: '/images/process.jpg',
+          category: 'Trajnostnost',
+          date: '10. oktober 2024',
+        },
+      ],
+    },
   },
   en: {
     nav: {
@@ -1408,6 +1551,108 @@ const translations: Record<Lang, TranslationStrings> = {
           year: '2024',
           title: 'Legacy Continues',
           description: 'Third generation begins learning beekeeping. Online store launched, 6 honey varieties, shipping across the EU. Tradition meets modernity.',
+        },
+      ],
+    },
+    video: {
+      sectionTag: 'Videos',
+      title: 'Watch Our Story Come Alive',
+      subtitle: 'Discover our beekeeping world through short videos — from apiary visits to the journey of honey from flower to jar.',
+      watchVideo: 'Watch Video',
+      playlist: [
+        {
+          title: 'Apiary Visit in Bela Krajina',
+          duration: '3:24',
+          description: 'Join Jožef on a tour of the apiary during acacia bloom — from opening hives to tasting fresh honey.',
+          thumbnail: '/images/visit.jpg',
+        },
+        {
+          title: 'From Flower to Jar: The Journey of Honey',
+          duration: '5:12',
+          description: 'Follow the entire honey production process — from placing hives on pastures to bottling.',
+          thumbnail: '/images/process.jpg',
+        },
+        {
+          title: 'How to Identify Authentic Honey',
+          duration: '4:05',
+          description: 'Learn to tell the difference between real and fake honey — simple tests you can try yourself.',
+          thumbnail: '/images/about.jpg',
+        },
+      ],
+    },
+    benefits: {
+      sectionTag: 'Why Honey?',
+      title: 'Six Reasons for Daily Honey',
+      subtitle: 'Honey is more than a sweetener — it is a natural remedy with centuries of tradition. Discover why you should enjoy it every day.',
+      items: [
+        {
+          icon: '🍯',
+          title: 'Immune System Boost',
+          description: 'Honey contains antioxidants, enzymes, and antibacterial properties that strengthen natural immunity. Slovenian forest honey is especially rich in these compounds.',
+        },
+        {
+          icon: '🌿',
+          title: 'Sore Throat Relief',
+          description: 'Linden honey has been traditionally used for centuries in Slovenia as a natural remedy for coughs and sore throats. Its delicate aroma and soothing properties are undisputed.',
+        },
+        {
+          icon: '💪',
+          title: 'Energy & Performance',
+          description: 'Natural sugars in honey (glucose + fructose) provide sustained energy without the crash of refined sugar. Ideal for athletes.',
+        },
+        {
+          icon: '🫁',
+          title: 'Digestive Health',
+          description: 'Honey aids digestion, soothes stomach irritation, and can help with mild digestive issues. A teaspoon before meals is a traditional remedy.',
+        },
+        {
+          icon: '😴',
+          title: 'Better Sleep',
+          description: 'A warm glass of milk with honey before bed promotes relaxation and better sleep quality. Honey helps regulate melatonin production.',
+        },
+        {
+          icon: '🧴',
+          title: 'Skin & Wound Healing',
+          description: 'Honey has natural antibacterial and wound-healing properties. Used in traditional Slovenian folk medicine for burns and skin conditions.',
+        },
+      ],
+    },
+    blog: {
+      sectionTag: 'News & Blog',
+      title: 'Stories, Tips & Insights from the Apiary',
+      subtitle: 'Follow life in our beehives throughout the year, learn about honey, and discover the fascinating world of bees.',
+      viewAll: 'View All Articles',
+      readMore: 'Read More',
+      publishedBy: 'Published by',
+      backToBlog: 'Back to Blog',
+      categoryLabel: 'Category',
+      posts: [
+        {
+          slug: 'authentic-honey',
+          title: 'How to Identify Authentic Honey',
+          excerpt: 'Adulterated honey is a growing concern on the Slovenian market. Learn how to test for HMF levels, water content, and crystallisation — three simple tests you can do at home.',
+          content: 'Authentic honey is one of the most commonly adulterated foods on the Slovenian market. According to the Slovenian Consumer Protection Office, numerous cases of fraud are discovered each year, often involving the addition of sugar syrups, overheating honey, or mixing cheaper imported honey with local Slovenian honey. At Čebelarstvo Veselič, we believe consumer education is essential — so here are some simple tips to verify the authenticity of honey yourself.\n\nThe first and most reliable test is measuring hydroxymethylfurfural (HMF) content. This compound forms when honey is heated or stored at warm temperatures for extended periods. Fresh, authentic honey has an HMF value below 15 mg/kg, while honey that has been heated above 40 °C or is past its prime contains significantly more. The laboratory analyses we conduct for every shipment consistently show HMF below 10 mg/kg — confirming that our honey has not been processed.\n\nThe second indicator is honey moisture content, measured with a refractometer. Authentic honey contains less than 18 % water. If the moisture is higher, the honey spoils or ferments more quickly. You can test this at home by placing a drop of honey on paper — authentic honey will not soak through, while honey with high moisture content leaves a wet stain.\n\nThe third test is crystallisation — a natural process that proves honey contains the correct ratio of glucose and fructose. Crystallised honey is authentic, even though many consumers mistake this for a sign of poor quality. Different varieties crystallise at different rates: acacia honey stays liquid for months, wildflower honey crystallises within weeks, and chestnut honey crystallises within days. Counterfeit honey with added sugar syrup often does not crystallise at all, or crystallises unevenly.',
+          image: '/images/hero.jpg',
+          category: 'Honey Knowledge',
+          date: '15 March 2025',
+        },
+        {
+          slug: 'bees-survive-winter',
+          title: 'How Bees Survive the Winter',
+          excerpt: 'When temperatures drop below 10 °C, bees retreat into the hive and form a winter cluster — an incredible survival mechanism that maintains 35 °C inside the cluster.',
+          content: 'Winter is the most challenging period of the year for honey bee colonies. When October brings colder days and nectar disappears from flowers, the bees prepare for months of confinement inside the hive. The drones die in November — their sole purpose, mating with the queen, is complete. The worker bees that will survive the winter begin forming what is known as the winter cluster.\n\nThe winter cluster is an incredible biological mechanism. The bees pack tightly around the queen, forming a sphere 5 to 10 cm thick. By vibrating their thoracic muscles, they generate heat that maintains the temperature at the centre of the cluster at 34–36 °C — precisely what is needed for the queen and brood to survive. The outer edge of the cluster is cooler, around 15–20 °C, so the bees constantly rotate: those on the outside move inward, and those in the centre move outward. During winter, a bee colony consumes approximately 20–30 kg of honey, depending on the length of winter and the size of the colony.\n\nAt Čebelarstvo Veselič, we plan winter feeding carefully. In autumn, we assess the honey reserves in each hive and supplement if necessary with special winter feed — sugar paste or crystallised honey mixed with warm water in a 2:1 ratio. It is important that the bees have enough food but not too much — excess space in the hive would make heating more difficult. We wrap the hives with polyester fabric and narrow the entrance to reduce the space and improve insulation.\n\nIn spring, when temperatures rise above 12 °C, the bees begin their cleansing flights — quick excursions in front of the hive to clear their digestive systems after the long winter stagnation. This is a sign that the colony has awakened and is ready for a new season. The beekeeper then intensively inspects the hives, checks food reserves and queen health, and takes care to unite weak colonies if needed.',
+          image: '/images/about.jpg',
+          category: 'From the Apiary',
+          date: '28 December 2024',
+        },
+        {
+          slug: 'organic-beekeeping-bela-krajina',
+          title: 'Organic Beekeeping in Bela Krajina',
+          excerpt: 'Bela Krajina with its beech forests, chestnut groves, and pristine pastures offers ideal conditions for organic beekeeping. Discover how we earned our Eko Sklad certification and why biodiversity matters.',
+          content: 'Bela Krajina, a picturesque region in south-eastern Slovenia on the border with Croatia, is one of the best regions for beekeeping in Europe thanks to its unique location and climate. The sub-Mediterranean climate, which transitions into a continental one at the contact with the Dinaric world, enables a long flowering season — from early spring, when cherry and apple trees blossom, to late autumn, when the last chestnut flowers still provide nectar. Our beekeeping homestead in Čurile near Metlika stands amidst this diverse flora.\n\nOrganic certification is not just a piece of paper — it is a rigorous process that takes at least three years. During this time, everything is verified: hive locations (must be at least 3 km from fields treated with synthetic pesticides), bee treatment methods (only permitted substances: organic acids, fatty acids, essential oils), and hygiene conditions in the honey house. Eko Sklad inspectors visit the apiary unannounced every year and take honey samples for laboratory analysis.\n\nBiodiversity is crucial for the health of bee colonies. That is why we maintain wildflower meadows and hedgerows on our pastures, and have planted bee-friendly trees and shrubs along the Kolpa River — linden, blackberry, elderberry, and wild strawberry. We collaborate with local organic farmers and advocate for the preservation of wild pollinator habitats. We believe that a healthy apiary is impossible without a healthy environment.\n\nOur approach to organic beekeeping is built on three pillars: respect for nature, transparency towards consumers, and continuous improvement. Every shipment of honey carries a QR code that allows the customer to verify the hive location, harvest date, and laboratory analysis results. This way, we assure our customers that the honey they receive truly originates from pristine karst pastures and has been processed without compromise.',
+          image: '/images/process.jpg',
+          category: 'Sustainability',
+          date: '10 October 2024',
         },
       ],
     },
