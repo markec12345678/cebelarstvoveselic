@@ -47,22 +47,15 @@ export default function CookieConsent() {
     setVisible(false);
     setShowSettings(false);
 
-    if (preferences.analytics) {
-      if (typeof window !== 'undefined') {
-        window.dataLayer = window.dataLayer || [];
-        function gtag(...args: unknown[]) {
-          (window as unknown as Record<string, unknown[]>).dataLayer.push(args);
-        }
-        gtag('consent', 'update', { analytics_storage: 'granted' });
-      }
+    if (preferences.analytics && typeof window !== 'undefined') {
+      const gwin = window as unknown as Record<string, unknown[]>;
+      gwin.dataLayer = gwin.dataLayer || [];
+      gwin.dataLayer.push(['consent', 'update', { analytics_storage: 'granted' }]);
     }
-    if (preferences.marketing) {
-      if (typeof window !== 'undefined') {
-        window.dataLayer = window.dataLayer || [];
-        (window as unknown as Record<string, unknown[]>).dataLayer.push([
-          'consent', 'update', { ad_storage: 'granted' },
-        ]);
-      }
+    if (preferences.marketing && typeof window !== 'undefined') {
+      const gwin = window as unknown as Record<string, unknown[]>;
+      gwin.dataLayer = gwin.dataLayer || [];
+      gwin.dataLayer.push(['consent', 'update', { ad_storage: 'granted' }]);
     }
   };
 

@@ -5,6 +5,7 @@ import Navigation from '@/components/sections/Navigation';
 import Hero from '@/components/sections/Hero';
 import About from '@/components/sections/About';
 import Products from '@/components/sections/Products';
+import HoneyComparison from '@/components/sections/HoneyComparison';
 import Process from '@/components/sections/Process';
 import Testimonials from '@/components/sections/Testimonials';
 import Visit from '@/components/sections/Visit';
@@ -12,6 +13,7 @@ import FAQ from '@/components/sections/FAQ';
 import Contact from '@/components/sections/Contact';
 import Newsletter from '@/components/sections/Newsletter';
 import Footer from '@/components/sections/Footer';
+import StatsBar from '@/components/sections/StatsBar';
 import CookieConsent from '@/components/sections/CookieConsent';
 import BackToTop from '@/components/sections/BackToTop';
 import WhatsAppButton from '@/components/sections/WhatsAppButton';
@@ -37,7 +39,9 @@ export default function Home() {
         <Hero />
         <About />
         <Products />
+        <HoneyComparison />
         <Process />
+        <StatsBar />
         <Testimonials />
         <Visit />
         <FAQ />

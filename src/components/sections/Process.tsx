@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { MapPin, HeartPulse, Droplets, Package, Truck } from 'lucide-react';
 import { useLangStore } from '@/store/language';
 import { getTranslations } from '@/lib/i18n';
@@ -19,6 +19,12 @@ export default function Process() {
   const t = getTranslations(lang);
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const stepsRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: stepsRef,
+    offset: ['start end', 'end start'],
+  });
+  const lineHeight = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
 
   return (
     <section id="process" className="py-20 sm:py-28 lg:py-32 relative overflow-hidden bg-gradient-to-b from-background via-honey-50/30 to-background">
@@ -44,25 +50,46 @@ export default function Process() {
           </p>
         </motion.div>
 
-        {/* Image */}
+        {/* Image with Ken Burns effect */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mt-12 rounded-2xl overflow-hidden shadow-xl"
         >
-          <img
-            src="/images/process.jpg"
-            alt="Tradicionalni slovenski panj s poslikanimi paneli v sončni travniški pokrajini Bele krajine"
-            className="w-full h-[300px] sm:h-[400px] lg:h-[450px] object-cover"
-            loading="lazy"
-          />
+          <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[450px] overflow-hidden">
+            <img
+              src="/images/process.jpg"
+              alt="Tradicionalni slovenski panj s poslikanimi paneli v sončni travniški pokrajini Bele krajine"
+              className="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+            />
+            {/* Ken Burns animation overlay */}
+            <motion.div
+              initial={{ scale: 1 }}
+              animate={{ scale: 1.08 }}
+              transition={{ duration: 20, ease: 'linear', repeat: Infinity, repeatType: 'reverse' }}
+              className="absolute inset-0"
+              style={{
+                backgroundImage: 'url(/images/process.jpg)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+            />
+            {/* Gradient overlay for readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
+          </div>
         </motion.div>
 
         {/* Steps */}
-        <div className="mt-14 relative">
-          {/* Vertical line */}
-          <div className="absolute left-6 lg:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-honey-300 via-honey-500 to-honey-300 hidden sm:block" />
+        <div ref={stepsRef} className="mt-14 relative">
+          {/* Animated vertical line (background track) */}
+          <div className="absolute left-6 lg:left-1/2 top-0 bottom-0 w-px bg-border/50 hidden sm:block" />
+          {/* Animated vertical line (foreground fill) */}
+          <motion.div
+            style={{ height: lineHeight }}
+            className="absolute left-6 lg:left-1/2 top-0 w-px bg-gradient-to-b from-honey-400 via-honey-500 to-honey-400 origin-top hidden sm:block"
+          />
 
           <div className="space-y-8 sm:space-y-12">
             {t.process.steps.map((step, i) => {
@@ -79,23 +106,38 @@ export default function Process() {
                     isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'
                   }`}
                 >
-                  {/* Icon circle */}
-                  <div className="absolute left-6 lg:left-1/2 -translate-x-1/2 z-10 hidden sm:flex">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-honey-400 to-honey-600 shadow-lg flex items-center justify-center text-white">
+                  {/* Icon circle with step number */}
+                  <div className="absolute left-6 lg:left-1/2 -translate-x-1/2 z-10 hidden sm:flex group cursor-default">
+                    <motion.div
+                      whileHover={{ scale: 1.15, boxShadow: '0 0 20px rgba(217, 160, 47, 0.4)' }}
+                      className="relative w-12 h-12 rounded-full bg-gradient-to-br from-honey-400 to-honey-600 shadow-lg flex items-center justify-center text-white"
+                    >
                       <Icon className="w-5 h-5" />
+                    </motion.div>
+                    {/* Step number badge */}
+                    <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-forest-800 text-white text-[10px] font-bold flex items-center justify-center border-2 border-background shadow-sm">
+                      {i + 1}
                     </div>
                   </div>
 
-                  {/* Mobile icon */}
-                  <div className="sm:hidden flex-shrink-0">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-honey-400 to-honey-600 shadow-lg flex items-center justify-center text-white">
+                  {/* Mobile icon with step number */}
+                  <div className="sm:hidden flex-shrink-0 relative">
+                    <motion.div
+                      whileHover={{ scale: 1.1, boxShadow: '0 0 16px rgba(217, 160, 47, 0.3)' }}
+                      className="w-10 h-10 rounded-full bg-gradient-to-br from-honey-400 to-honey-600 shadow-lg flex items-center justify-center text-white"
+                    >
                       <Icon className="w-4 h-4" />
+                    </motion.div>
+                    <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-forest-800 text-white text-[9px] font-bold flex items-center justify-center border-2 border-background shadow-sm">
+                      {i + 1}
                     </div>
                   </div>
 
-                  {/* Content */}
-                  <div
-                    className={`flex-1 pl-10 sm:pl-0 ${
+                  {/* Content with hover effect */}
+                  <motion.div
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    transition={{ duration: 0.25 }}
+                    className={`flex-1 pl-10 sm:pl-0 rounded-xl p-4 -m-4 transition-colors duration-300 hover:bg-honey-50/50 dark:hover:bg-honey-950/20 ${
                       isEven
                         ? 'lg:pr-16 lg:text-right'
                         : 'lg:pl-16'
@@ -130,7 +172,7 @@ export default function Process() {
                         {step.detail}
                       </p>
                     </details>
-                  </div>
+                  </motion.div>
 
                   {/* Spacer for alternating layout */}
                   <div className="hidden lg:block flex-1" />

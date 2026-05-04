@@ -1,13 +1,59 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Separator } from '@/components/ui/separator';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Facebook, Instagram, MapPin, Phone, Mail, ArrowUp, ArrowRight, Truck, Shield, CreditCard, Loader2, CheckCircle } from 'lucide-react';
 import { useLangStore } from '@/store/language';
 import { getTranslations } from '@/lib/i18n';
-import { Separator } from '@/components/ui/separator';
-import { Facebook, Instagram, MapPin, Phone, Mail } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function Footer() {
   const { lang, setLang } = useLangStore();
   const t = getTranslations(lang);
+  const [footerEmail, setFooterEmail] = useState('');
+  const [footerSubmitting, setFooterSubmitting] = useState(false);
+  const [footerSubscribed, setFooterSubscribed] = useState(false);
+  const [yearVisible, setYearVisible] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setYearVisible(true), 500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleFooterNewsletter = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!footerEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(footerEmail)) {
+      toast.error(lang === 'sl' ? 'Vnesite veljaven e-poštni naslov.' : 'Please enter a valid email address.');
+      return;
+    }
+    setFooterSubmitting(true);
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: footerEmail, lang }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        toast.error(data.error || 'Error');
+        return;
+      }
+      setFooterSubscribed(true);
+      setFooterEmail('');
+      toast.success(lang === 'sl' ? 'Hvala za naročilo!' : 'Thank you for subscribing!');
+    } catch {
+      toast.error(lang === 'sl' ? 'Prišlo je do napake.' : 'An error occurred.');
+    } finally {
+      setFooterSubmitting(false);
+    }
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <footer className="bg-bark text-white/80 relative" role="contentinfo">
@@ -77,7 +123,7 @@ export default function Footer() {
                 <li key={key}>
                   <a
                     href={`#${key}`}
-                    className="text-sm text-white/50 hover:text-honey-400 transition-colors duration-200 flex items-center gap-1.5 group"
+                    className="text-sm text-white/50 hover:text-honey-400 transition-colors duration-200 flex items-center gap-1.5 group link-slide-underline"
                   >
                     <span className="w-1 h-1 rounded-full bg-honey-600/50 group-hover:bg-honey-400 transition-colors" />
                     {t.nav[key as keyof typeof t.nav]}
@@ -93,25 +139,40 @@ export default function Footer() {
               {t.footer.legal}
             </h3>
             <ul className="space-y-3">
-              <li>
-                <a href="#" className="text-sm text-white/50 hover:text-honey-400 transition-colors flex items-center gap-1.5 group">
-                  <span className="w-1 h-1 rounded-full bg-honey-600/50 group-hover:bg-honey-400 transition-colors" />
-                  {t.footer.privacy}
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-sm text-white/50 hover:text-honey-400 transition-colors flex items-center gap-1.5 group">
-                  <span className="w-1 h-1 rounded-full bg-honey-600/50 group-hover:bg-honey-400 transition-colors" />
-                  {t.footer.terms}
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-sm text-white/50 hover:text-honey-400 transition-colors flex items-center gap-1.5 group">
-                  <span className="w-1 h-1 rounded-full bg-honey-600/50 group-hover:bg-honey-400 transition-colors" />
-                  {t.footer.cookies}
-                </a>
-              </li>
+              {['privacy', 'terms', 'cookies'].map((key) => {
+                const labels: Record<string, string> = {
+                  privacy: t.footer.privacy,
+                  terms: t.footer.terms,
+                  cookies: t.footer.cookies,
+                };
+                return (
+                  <li key={key}>
+                    <a href="#" className="text-sm text-white/50 hover:text-honey-400 transition-colors flex items-center gap-1.5 group link-slide-underline">
+                      <span className="w-1 h-1 rounded-full bg-honey-600/50 group-hover:bg-honey-400 transition-colors" />
+                      {labels[key]}
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
+
+            {/* Payment & Shipping icons */}
+            <div className="mt-6">
+              <p className="text-[10px] text-white/30 uppercase tracking-widest mb-2.5">
+                {lang === 'sl' ? 'Zaupanja vredno' : 'Trusted'}
+              </p>
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-md bg-white/5 flex items-center justify-center" title="SSL Secure">
+                  <Shield className="w-3.5 h-3.5 text-white/30" />
+                </div>
+                <div className="w-8 h-8 rounded-md bg-white/5 flex items-center justify-center" title="Secure Payment">
+                  <CreditCard className="w-3.5 h-3.5 text-white/30" />
+                </div>
+                <div className="w-8 h-8 rounded-md bg-white/5 flex items-center justify-center" title="Fast Shipping">
+                  <Truck className="w-3.5 h-3.5 text-white/30" />
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Contact */}
@@ -146,6 +207,43 @@ export default function Footer() {
                 <span className="text-[11px] text-white/30">45.6424° N, 15.3231° E</span>
               </div>
             </div>
+
+            {/* Newsletter mini-form */}
+            <div className="mt-5">
+              <p className="text-xs text-white/40 mb-2">
+                {lang === 'sl' ? 'Newsletter:' : 'Newsletter:'}
+              </p>
+              {footerSubscribed ? (
+                <div className="flex items-center gap-2 text-xs text-green-400">
+                  <CheckCircle className="w-3.5 h-3.5" />
+                  <span>{lang === 'sl' ? 'Naročeni!' : 'Subscribed!'}</span>
+                </div>
+              ) : (
+                <form onSubmit={handleFooterNewsletter} className="flex gap-1.5">
+                  <Input
+                    type="email"
+                    value={footerEmail}
+                    onChange={(e) => setFooterEmail(e.target.value)}
+                    placeholder={lang === 'sl' ? 'vaša@e-pošta.si' : 'your@email.com'}
+                    className="h-8 text-xs bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-honey-500/50 focus:ring-honey-500/10 flex-1"
+                    required
+                    aria-label="Newsletter email"
+                  />
+                  <Button
+                    type="submit"
+                    disabled={footerSubmitting}
+                    size="sm"
+                    className="h-8 px-3 bg-honey-500/80 hover:bg-honey-500 text-white text-xs"
+                  >
+                    {footerSubmitting ? (
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                    ) : (
+                      <ArrowRight className="w-3 h-3" />
+                    )}
+                  </Button>
+                </form>
+              )}
+            </div>
           </div>
         </div>
 
@@ -153,32 +251,50 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/30">
-          <p>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: yearVisible ? 1 : 0 }}
+            transition={{ duration: 1 }}
+          >
             © {new Date().getFullYear()} Čebelarstvo Veselič, Jožef Veselič s.p. · {t.footer.rights}
-          </p>
-          <div className="flex items-center gap-2">
+          </motion.p>
+          <div className="flex items-center gap-3">
+            {/* Back to top */}
             <button
-              onClick={() => setLang('sl')}
-              className={`px-2.5 py-1 rounded-md text-xs transition-all duration-200 ${
-                lang === 'sl'
-                  ? 'bg-honey-500/15 text-honey-400 font-medium'
-                  : 'hover:text-white/50 hover:bg-white/5'
-              }`}
-              aria-label="Slovenščina"
+              onClick={scrollToTop}
+              className="flex items-center gap-1 text-white/30 hover:text-honey-400 transition-colors group"
+              aria-label={lang === 'sl' ? 'Nazaj na vrh' : 'Back to top'}
             >
-              SI
+              <ArrowUp className="w-3 h-3 group-hover:-translate-y-0.5 transition-transform" />
+              <span className="text-xs">
+                {lang === 'sl' ? 'Na vrh' : 'Back to top'}
+              </span>
             </button>
-            <button
-              onClick={() => setLang('en')}
-              className={`px-2.5 py-1 rounded-md text-xs transition-all duration-200 ${
-                lang === 'en'
-                  ? 'bg-honey-500/15 text-honey-400 font-medium'
-                  : 'hover:text-white/50 hover:bg-white/5'
-              }`}
-              aria-label="English"
-            >
-              EN
-            </button>
+            <span className="text-white/10">|</span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setLang('sl')}
+                className={`px-2.5 py-1 rounded-md text-xs transition-all duration-200 ${
+                  lang === 'sl'
+                    ? 'bg-honey-500/15 text-honey-400 font-medium'
+                    : 'hover:text-white/50 hover:bg-white/5'
+                }`}
+                aria-label="Slovenščina"
+              >
+                SI
+              </button>
+              <button
+                onClick={() => setLang('en')}
+                className={`px-2.5 py-1 rounded-md text-xs transition-all duration-200 ${
+                  lang === 'en'
+                    ? 'bg-honey-500/15 text-honey-400 font-medium'
+                    : 'hover:text-white/50 hover:bg-white/5'
+                }`}
+                aria-label="English"
+              >
+                EN
+              </button>
+            </div>
           </div>
         </div>
       </div>

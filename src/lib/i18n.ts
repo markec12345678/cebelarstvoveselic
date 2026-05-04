@@ -155,6 +155,44 @@ export interface TranslationStrings {
     badge: string;
     message: string;
   };
+  comparison: {
+    sectionTag: string;
+    title: string;
+    subtitle: string;
+    headers: {
+      taste: string;
+      color: string;
+      origin: string;
+      use: string;
+      crystalSpeed: string;
+      price: string;
+    };
+    sortLabels: {
+      sortByTaste: string;
+      sortByPrice: string;
+      sortByColor: string;
+      resetSort: string;
+    };
+    crystalSpeed: {
+      slow: string;
+      medium: string;
+      fast: string;
+    };
+  };
+  stats: {
+    years: string;
+    yearsLabel: string;
+    hives: string;
+    hivesLabel: string;
+    varieties: string;
+    varietiesLabel: string;
+    organic: string;
+    organicLabel: string;
+    rating: string;
+    ratingLabel: string;
+    reviews: string;
+    reviewsLabel: string;
+  };
 }
 
 const translations: Record<Lang, TranslationStrings> = {
@@ -466,6 +504,44 @@ const translations: Record<Lang, TranslationStrings> = {
       badge: 'Sezonska razpoložljivost',
       message: 'Nekatere sorte so zaradi vremenskih razmer trenutno omejene. Kontaktirajte nas za trenutno razpoložljivost.',
     },
+    comparison: {
+      sectionTag: 'Primerjava sort',
+      title: 'Kateri med je pravi za vas?',
+      subtitle: 'Primerjajte vse šest sort medu po okusu, barvi, izvoru, uporabi in hitrosti kristalizacije. Najdite svoj idealni med.',
+      headers: {
+        taste: 'Okus',
+        color: 'Barva',
+        origin: 'Izvor',
+        use: 'Uporaba',
+        crystalSpeed: 'Kristalizacija',
+        price: 'Cena',
+      },
+      sortLabels: {
+        sortByTaste: 'Po sladkosti',
+        sortByPrice: 'Po ceni',
+        sortByColor: 'Po temnosti',
+        resetSort: 'Privzeto',
+      },
+      crystalSpeed: {
+        slow: 'Počasi',
+        medium: 'Zmerno',
+        fast: 'Hitro',
+      },
+    },
+    stats: {
+      years: '30',
+      yearsLabel: 'let izkušenj',
+      hives: '100',
+      hivesLabel: 'čebeljih panjev',
+      varieties: '6',
+      varietiesLabel: 'vrst medu',
+      organic: '100',
+      organicLabel: '% ekološko',
+      rating: '4.9',
+      ratingLabel: 'povprečna ocena',
+      reviews: '127',
+      reviewsLabel: 'odgovorov strank',
+    },
   },
   en: {
     nav: {
@@ -774,6 +850,44 @@ const translations: Record<Lang, TranslationStrings> = {
     seasonal: {
       badge: 'Seasonal Availability',
       message: 'Some varieties are currently limited due to weather conditions. Contact us for current availability.',
+    },
+    comparison: {
+      sectionTag: 'Variety Comparison',
+      title: 'Which Honey is Right for You?',
+      subtitle: 'Compare all six honey varieties by taste, colour, origin, use case, and crystallisation speed. Find your perfect honey.',
+      headers: {
+        taste: 'Taste',
+        color: 'Colour',
+        origin: 'Origin',
+        use: 'Best Use',
+        crystalSpeed: 'Crystallisation',
+        price: 'Price',
+      },
+      sortLabels: {
+        sortByTaste: 'By Sweetness',
+        sortByPrice: 'By Price',
+        sortByColor: 'By Darkness',
+        resetSort: 'Default',
+      },
+      crystalSpeed: {
+        slow: 'Slow',
+        medium: 'Medium',
+        fast: 'Fast',
+      },
+    },
+    stats: {
+      years: '30',
+      yearsLabel: 'Years of Experience',
+      hives: '100',
+      hivesLabel: 'Beehives',
+      varieties: '6',
+      varietiesLabel: 'Honey Varieties',
+      organic: '100',
+      organicLabel: '% Organic',
+      rating: '4.9',
+      ratingLabel: 'Average Rating',
+      reviews: '127',
+      reviewsLabel: 'Customer Reviews',
     },
   },
 };

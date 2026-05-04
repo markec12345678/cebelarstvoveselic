@@ -268,3 +268,215 @@ html {
   background: oklch(0.80 0.12 85 / 0.3);
   color: oklch(0.22 0.02 50);
 }
+
+/* ============================================
+   NEW ANIMATIONS & UTILITIES
+   ============================================ */
+
+/* Scroll progress bar - thin honey bar at top of nav */
+.scroll-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #F5D76E 0%, #D4A017 50%, #B8860B 100%);
+  border-radius: 0 2px 2px 0;
+  transition: width 0.1s linear;
+  z-index: 100;
+  will-change: width;
+}
+
+/* Glass card utility */
+.glass-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1rem;
+}
+
+/* Honey shimmer effect */
+@keyframes honey-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.honey-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(212, 160, 23, 0.15) 25%,
+    rgba(245, 215, 110, 0.25) 50%,
+    rgba(212, 160, 23, 0.15) 75%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: honey-shimmer 3s ease-in-out infinite;
+}
+
+/* Honey-colored text shadow */
+.text-shadow-honey {
+  text-shadow:
+    0 0 20px rgba(212, 160, 23, 0.3),
+    0 0 40px rgba(212, 160, 23, 0.15),
+    0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Pulse glow for CTA buttons */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 20px rgba(212, 160, 23, 0.3),
+      0 0 40px rgba(212, 160, 23, 0.15),
+      0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 30px rgba(212, 160, 23, 0.5),
+      0 0 60px rgba(212, 160, 23, 0.25),
+      0 0 80px rgba(212, 160, 23, 0.1),
+      0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2.5s ease-in-out infinite;
+}
+
+/* Floating honeycomb decoration */
+@keyframes float-hex {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.12;
+  }
+  25% {
+    transform: translateY(-18px) rotate(8deg);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translateY(-6px) rotate(-4deg);
+    opacity: 0.15;
+  }
+  75% {
+    transform: translateY(-22px) rotate(5deg);
+    opacity: 0.22;
+  }
+}
+
+/* Flying bee animation */
+@keyframes fly-bee {
+  0% {
+    transform: translate(-10%, 20%) rotate(-5deg);
+  }
+  15% {
+    transform: translate(15%, -15%) rotate(3deg);
+  }
+  30% {
+    transform: translate(35%, 10%) rotate(-2deg);
+  }
+  45% {
+    transform: translate(55%, -20%) rotate(4deg);
+  }
+  60% {
+    transform: translate(75%, 5%) rotate(-3deg);
+  }
+  75% {
+    transform: translate(90%, -12%) rotate(2deg);
+  }
+  90% {
+    transform: translate(105%, 8%) rotate(-4deg);
+  }
+  100% {
+    transform: translate(120%, 20%) rotate(-5deg);
+  }
+}
+
+.fly-bee {
+  animation: fly-bee 18s linear infinite;
+  will-change: transform;
+}
+
+/* Wing flutter for bee */
+@keyframes wing-flutter {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.4); }
+}
+
+.wing-flutter {
+  animation: wing-flutter 0.08s linear infinite;
+  transform-origin: center bottom;
+}
+
+/* Honeycomb pattern overlay for images */
+.honeycomb-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg width='28' height='49' viewBox='0 0 28 49' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23D4A017' fill-opacity='0.15'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Link underline slide animation */
+.link-slide-underline {
+  position: relative;
+}
+
+.link-slide-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, #D4A017, #F5D76E);
+  transition: width 0.3s ease;
+}
+
+.link-slide-underline:hover::after {
+  width: 100%;
+}
+
+/* Confetti burst animation */
+@keyframes confetti-burst {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-120px) scale(0.3) rotate(720deg);
+  }
+}
+
+.confetti-particle {
+  position: absolute;
+  animation: confetti-burst 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Checkmark draw animation */
+@keyframes checkmark-draw {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.checkmark-animated {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: checkmark-draw 0.6s ease-out 0.3s forwards;
+}
+
+/* Ring scale-in animation */
+@keyframes ring-scale {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+.ring-ripple {
+  animation: ring-scale 0.8s ease-out;
+}
