@@ -20,7 +20,7 @@ const videos = [
   {
     id: 1,
     slug: 'obisk-cebeljaka',
-    image: '/images/visit.jpg',
+    image: '/images/video-apiary.jpg',
     duration: '3:24',
     titleSl: 'Obisk čebeljaka v Beli krajini',
     titleEn: 'Apiary Visit in Bela Krajina',
@@ -30,7 +30,7 @@ const videos = [
   {
     id: 2,
     slug: 'od-cveta-do-kozarca',
-    image: '/images/process.jpg',
+    image: '/images/video-process.jpg',
     duration: '5:12',
     titleSl: 'Od cveta do kozarca: pot medu',
     titleEn: 'From Flower to Jar: The Journey of Honey',
@@ -40,7 +40,7 @@ const videos = [
   {
     id: 3,
     slug: 'prepoznavanje-pristnega-meda',
-    image: '/images/about.jpg',
+    image: '/images/video-testing.jpg',
     duration: '4:05',
     titleSl: 'Kako prepoznamo pristen med',
     titleEn: 'How to Identify Authentic Honey',

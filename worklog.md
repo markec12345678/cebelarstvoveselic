@@ -782,3 +782,41 @@ Verification:
 - bun run lint: clean (0 errors, 0 warnings)
 - TypeScript (npx tsc --noEmit): clean for src/
 - Dev server: compiles successfully (989ms)
+
+---
+Task ID: 10
+Agent: Main
+Task: Replace all duplicate/repeating images with unique images across all components
+
+Work Log:
+- Audited all image references across the codebase (70+ references in src/)
+- Identified the problem: 5 core images (hero, about, process, visit, contact) were reused across 30+ contexts
+- Generated 16 new unique AI images using z-ai image CLI:
+  - 4 recipe images: recipe-salad.jpg, recipe-smoothie.jpg, recipe-chicken.jpg, recipe-tea.jpg (1024x1024)
+  - 3 blog images: blog-authentic.jpg, blog-winter.jpg, blog-organic.jpg (1344x768)
+  - 3 video thumbnail images: video-apiary.jpg, video-process.jpg, video-testing.jpg (1344x768)
+  - 6 gallery images: gallery-apiary.jpg, gallery-farm.jpg, gallery-honey.jpg, gallery-extraction.jpg, gallery-visit.jpg, gallery-homestead.jpg (1344x768)
+- Updated src/lib/i18n.ts: 20 image references changed (recipes ×4 SLO+EN, blog ×3 SLO+EN, video ×3 SLO+EN)
+- Updated src/components/sections/VideoTestimonials.tsx: 3 thumbnail references
+- Updated src/components/sections/ImageGallery.tsx: 6 gallery image references
+- Fixed file corruption from a multi-edit that merged lines in the SLO video section
+
+After update, each core image is now used by exactly ONE section:
+- hero.jpg → Hero.tsx + layout.tsx (SEO only)
+- about.jpg → About.tsx only
+- process.jpg → Process.tsx only
+- visit.jpg → Visit.tsx only
+- contact.jpg → Contact.tsx only
+- products.jpg → no longer referenced (orphaned, safe to delete)
+
+Total images: 28 (12 original + 16 new)
+
+Verification:
+- bun run lint: 0 errors
+- TypeScript (npx tsc --noEmit): clean for src/ (4 errors in non-src files: examples/, skills/)
+- Dev server: HTTP 200
+
+Stage Summary:
+- All duplicate image references eliminated — every section now has unique, context-appropriate images
+- Recipes have food photography, blog posts have thematic images, videos have relevant thumbnails, gallery has diverse beekeeping scenes
+- Cron job created (ID: 129485) for continuous 15-minute development reviews

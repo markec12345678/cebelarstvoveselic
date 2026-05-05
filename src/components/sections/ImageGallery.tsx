@@ -8,12 +8,12 @@ import { getTranslations } from '@/lib/i18n';
 import { useLangStore } from '@/store/language';
 
 const galleryImages = [
-  { src: '/images/hero.jpg', alt: 'Čebeljnjak v Beli krajini', label: 'Apiary' },
-  { src: '/images/about.jpg', alt: 'Čebelarstvo Veselič', label: 'Farm' },
-  { src: '/images/products.jpg', alt: 'Vrste medu', label: 'Honey' },
-  { src: '/images/process.jpg', alt: 'Postopek medenja', label: 'Process' },
-  { src: '/images/visit.jpg', alt: 'Obisk čebeljaka', label: 'Visit' },
-  { src: '/images/contact.jpg', alt: 'Čebelarska domačija', label: 'Home' },
+  { src: '/images/gallery-apiary.jpg', alt: 'Čebeljnjak v Beli krajini', label: 'Apiary' },
+  { src: '/images/gallery-farm.jpg', alt: 'Čebelarska domačija Veselič', label: 'Farm' },
+  { src: '/images/gallery-honey.jpg', alt: 'Vrste medu', label: 'Honey' },
+  { src: '/images/gallery-extraction.jpg', alt: 'Postopek medenja', label: 'Process' },
+  { src: '/images/gallery-visit.jpg', alt: 'Obisk čebeljaka', label: 'Visit' },
+  { src: '/images/gallery-homestead.jpg', alt: 'Pokrajina Bela krajina', label: 'Home' },
 ];
 
 export default function ImageGallery() {
