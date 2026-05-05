@@ -1,5 +1,8 @@
 import type { MetadataRoute } from 'next'
 
+// Ta vrstica je ključna za uspeh 'npm run build' pri uporabi 'output: export'
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date()
 
@@ -10,5 +13,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 1.0,
     },
+    // Tukaj lahko kasneje dodaš še ostale podstrani (npr. /trgovina, /obiski)
   ]
 }

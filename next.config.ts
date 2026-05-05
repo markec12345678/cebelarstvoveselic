@@ -1,13 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
-  allowedDevOrigins: [
-    "https://preview-chat-4fad9021-f41d-4fd5-a795-557debd5adb0.space-z.ai",
-  ],
+  output: "export",
+  images: {
+    unoptimized: true,
+  },
   typescript: {
     ignoreBuildErrors: true,
   },
+  // Odstranili smo 'eslint' sekcijo, ki je metala napako
   reactStrictMode: false,
 };
 
