@@ -108,20 +108,20 @@ export default function Navigation() {
     };
   }, [mobileOpen]);
 
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const offset = 80; // nav height
+      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  };
+
   const handleNavClick = (href: string) => {
     closeMobileMenu();
     // Extract section ID from href (e.g., '#story' -> 'story')
     const sectionId = href.replace('#', '');
-    const el = document.getElementById(sectionId);
-    if (el) {
-      // Account for fixed header height
-      const headerOffset = 80;
-      const elementPosition = el.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({
-        top: elementPosition - headerOffset,
-        behavior: 'smooth',
-      });
-    }
+    scrollToSection(sectionId);
   };
 
   const closeMobileMenu = () => {

@@ -37,6 +37,7 @@ export default function Footer() {
   const [footerSubscribed, setFooterSubscribed] = useState(false);
   const [yearVisible, setYearVisible] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [scrollPercent, setScrollPercent] = useState(0);
 
   useEffect(() => {
     const timer = setTimeout(() => setYearVisible(true), 500);
@@ -44,7 +45,12 @@ export default function Footer() {
   }, []);
 
   useEffect(() => {
-    const handleScroll = () => setShowScrollTop(window.scrollY > 400);
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400);
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docHeight > 0 ? Math.min(Math.round((window.scrollY / docHeight) * 100), 100) : 0;
+      setScrollPercent(pct);
+    };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -91,6 +97,14 @@ export default function Footer() {
 
   return (
     <footer className="bg-bark text-white/80 relative" role="contentinfo">
+      {/* Footer wave SVG divider at top */}
+      <div className="footer-wave">
+        <svg viewBox="0 0 1440 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-[30px]">
+          <path d="M0,20 C240,40 480,0 720,20 C960,40 1200,0 1440,20 L1440,40 L0,40 Z" fill="#3E2723" />
+          <path d="M0,25 C360,10 720,35 1080,15 C1260,25 1380,10 1440,25" fill="none" stroke="rgba(212,160,23,0.15)" strokeWidth="1" />
+        </svg>
+      </div>
+
       {/* Animated border at top */}
       <div className="animated-border h-[3px]" />
 
@@ -168,29 +182,35 @@ export default function Footer() {
               {t.footer.brandDesc}
             </p>
 
-            {/* Social media with hover scale + color transition */}
+            {/* Social media with hover scale + color transition + tooltip */}
             <div className="mt-5 flex items-center gap-2">
               <motion.a
                 href="https://facebook.com/cebelarstvoveselic"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-9 h-9 rounded-lg bg-white/5 hover:bg-blue-500/20 flex items-center justify-center text-white/40 hover:text-blue-400 transition-all duration-200"
+                className="w-9 h-9 rounded-lg bg-white/5 hover:bg-blue-500/20 flex items-center justify-center text-white/40 hover:text-blue-400 transition-all duration-200 relative group"
                 aria-label="Facebook"
                 whileHover={{ scale: 1.15, y: -2 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <Facebook className="w-4 h-4" />
+                <span className="absolute -top-9 left-1/2 -translate-x-1/2 px-2 py-1 rounded-md bg-black/80 text-[10px] text-white/80 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-20">
+                  {lang === 'sl' ? '2.3K sledilcev' : '2.3K followers'}
+                </span>
               </motion.a>
               <motion.a
                 href="https://instagram.com/cebelarstvo_veselic"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-9 h-9 rounded-lg bg-white/5 hover:bg-pink-500/20 flex items-center justify-center text-white/40 hover:text-pink-400 transition-all duration-200"
+                className="w-9 h-9 rounded-lg bg-white/5 hover:bg-pink-500/20 flex items-center justify-center text-white/40 hover:text-pink-400 transition-all duration-200 relative group"
                 aria-label="Instagram"
                 whileHover={{ scale: 1.15, y: -2 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <Instagram className="w-4 h-4" />
+                <span className="absolute -top-9 left-1/2 -translate-x-1/2 px-2 py-1 rounded-md bg-black/80 text-[10px] text-white/80 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-20">
+                  {lang === 'sl' ? '1.8K sledilcev' : '1.8K followers'}
+                </span>
               </motion.a>
             </div>
 
@@ -246,13 +266,13 @@ export default function Footer() {
                 {lang === 'sl' ? 'Zaupanja vredno' : 'Trusted'}
               </p>
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-md bg-white/5 flex items-center justify-center" title="SSL Secure">
+                <div className="w-8 h-8 rounded-md bg-white/5 flex items-center justify-center payment-icon-hover" title="SSL Secure">
                   <Shield className="w-3.5 h-3.5 text-white/30" />
                 </div>
-                <div className="w-8 h-8 rounded-md bg-white/5 flex items-center justify-center" title="Secure Payment">
+                <div className="w-8 h-8 rounded-md bg-white/5 flex items-center justify-center payment-icon-hover" title="Secure Payment">
                   <CreditCard className="w-3.5 h-3.5 text-white/30" />
                 </div>
-                <div className="w-8 h-8 rounded-md bg-white/5 flex items-center justify-center" title="Fast Shipping">
+                <div className="w-8 h-8 rounded-md bg-white/5 flex items-center justify-center payment-icon-hover" title="Fast Shipping">
                   <Truck className="w-3.5 h-3.5 text-white/30" />
                 </div>
               </div>
@@ -309,7 +329,7 @@ export default function Footer() {
                     value={footerEmail}
                     onChange={(e) => setFooterEmail(e.target.value)}
                     placeholder={lang === 'sl' ? 'vaša@e-pošta.si' : 'your@email.com'}
-                    className="h-9 text-xs bg-white/5 border-white/10 text-white placeholder:text-white/20 focus:border-honey-500 focus:ring-2 focus:ring-honey-500/20 flex-1 transition-all duration-200"
+                    className="h-9 text-xs bg-white/5 border-white/10 text-white placeholder:text-white/20 border-2 honey-border-animated focus:ring-2 focus:ring-honey-500/20 flex-1 transition-all duration-200"
                     required
                     aria-label="Newsletter email"
                   />
@@ -360,7 +380,7 @@ export default function Footer() {
               ))}
             </select>
             <span className="text-white/10">|</span>
-            {/* Back to top animated arrow */}
+            {/* Back to top animated arrow with scroll percentage */}
             <AnimatePresence>
               {showScrollTop && (
                 <motion.button
@@ -377,8 +397,9 @@ export default function Footer() {
                   >
                     <ChevronUp className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
                   </motion.div>
-                  <span className="text-xs">
-                    {lang === 'sl' ? 'Na vrh' : 'Back to top'}
+                  <span className="text-xs flex items-center gap-1">
+                    {lang === 'sl' ? 'Na vrh' : 'Top'}
+                    <span className="scroll-percent">{scrollPercent}%</span>
                   </span>
                 </motion.button>
               )}

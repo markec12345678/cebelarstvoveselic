@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { MapPin, Palette, ChefHat, Star, Droplets, Plus, Eye } from 'lucide-react';
+import { MapPin, Palette, ChefHat, Star, Droplets, Plus, Minus, Eye, ShoppingBag } from 'lucide-react';
 import { useLangStore } from '@/store/language';
 import { getTranslations } from '@/lib/i18n';
 
@@ -25,6 +25,9 @@ const honeyColors = [
   'from-amber-950 to-stone-900',
 ];
 
+// Color intensity categories: 'light', 'medium', 'dark'
+const colorCategories = ['light', 'light', 'medium', 'medium', 'dark', 'dark'] as const;
+
 const honeyImages = [
   '/images/honey/acacia.jpg',
   '/images/honey/linden.jpg',
@@ -32,6 +35,18 @@ const honeyImages = [
   '/images/honey/wildflower.jpg',
   '/images/honey/forest.jpg',
   '/images/honey/fir.jpg',
+];
+
+const filterTabs = ['All', 'Light', 'Medium', 'Dark'] as const;
+
+// Fake review data
+const reviewData = [
+  { rating: 4.9, reviews: 128 },
+  { rating: 4.8, reviews: 95 },
+  { rating: 5.0, reviews: 67 },
+  { rating: 4.9, reviews: 142 },
+  { rating: 4.8, reviews: 89 },
+  { rating: 4.9, reviews: 53 },
 ];
 
 export default function Products() {
@@ -42,10 +57,30 @@ export default function Products() {
   const [selectedProduct, setSelectedProduct] = useState<number | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [dialogTab, setDialogTab] = useState<'desc' | 'origin' | 'usage'>('desc');
+  const [activeFilter, setActiveFilter] = useState<string>('All');
+
+  // Card-level quantity state
+  const [cardQuantities, setCardQuantities] = useState<Record<number, number>>({});
 
   const selected = selectedProduct !== null ? t.products.items[selectedProduct] : null;
 
-  // Parse price for quantity calculation
+  const updateCardQty = (index: number, delta: number) => {
+    setCardQuantities((prev) => {
+      const current = prev[index] || 0;
+      const next = Math.max(0, Math.min(10, current + delta));
+      if (next === 0) {
+        const { [index]: _, ...rest } = prev;
+        return rest;
+      }
+      return { ...prev, [index]: next };
+    });
+  };
+
+  // Filter products by color intensity
+  const filteredIndices = activeFilter === 'All'
+    ? t.products.items.map((_, i) => i)
+    : t.products.items.map((_, i) => i).filter((i) => colorCategories[i] === activeFilter.toLowerCase());
+
   const parsePrice = (priceStr: string) => {
     const cleaned = priceStr.replace(/[^0-9,]/g, '').replace(',', '.');
     const num = parseFloat(cleaned);
@@ -64,6 +99,11 @@ export default function Products() {
     setQuantity(1);
     setDialogTab('desc');
     setSelectedProduct(index);
+  };
+
+  const handleAddToCart = (e: React.MouseEvent, index: number) => {
+    e.stopPropagation();
+    setCardQuantities((prev) => ({ ...prev, [index]: (prev[index] || 0) + 1 }));
   };
 
   return (
@@ -90,12 +130,35 @@ export default function Products() {
           </p>
         </motion.div>
 
+        {/* Filter tabs */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mt-8 flex items-center justify-center gap-2 flex-wrap"
+        >
+          {filterTabs.map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveFilter(tab)}
+              className={`filter-pill px-4 py-2 rounded-full text-sm font-medium text-muted-foreground ${
+                activeFilter === tab ? 'filter-pill-active' : 'bg-card'
+              }`}
+            >
+              {tab === 'All' ? (lang === 'sl' ? 'Vse' : 'All') :
+               tab === 'Light' ? (lang === 'sl' ? 'Svetlo' : 'Light') :
+               tab === 'Medium' ? (lang === 'sl' ? 'Srednje' : 'Medium') :
+               (lang === 'sl' ? 'Temno' : 'Dark')}
+            </button>
+          ))}
+        </motion.div>
+
         {/* Seasonal notice */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-8 max-w-2xl mx-auto"
+          className="mt-6 max-w-2xl mx-auto"
         >
           <div className="flex items-center gap-3 p-3 rounded-xl bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/30">
             <div className="flex-shrink-0 w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/20 flex items-center justify-center">
@@ -113,128 +176,212 @@ export default function Products() {
         </motion.div>
 
         {/* Product grid */}
-        <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {t.products.items.map((product, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30, rotate: i % 2 === 0 ? -1.5 : 1.5 }}
-              animate={isInView ? { opacity: 1, y: 0, rotate: 0 } : {}}
-              transition={{
-                type: 'spring',
-                stiffness: 200,
-                damping: 20,
-                delay: 0.15 + i * 0.08,
-              }}
-            >
-              <Card
-                className="product-card card-shine group cursor-pointer border-border/50 hover:border-honey-300 dark:hover:border-honey-700 overflow-hidden h-full relative hover:shadow-[0_0_20px_rgba(212,160,23,0.15)] transition-all duration-300"
-                onClick={() => { setSelectedProduct(i); setQuantity(1); setDialogTab('desc'); }}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => { if (e.key === 'Enter') { setSelectedProduct(i); setQuantity(1); setDialogTab('desc'); } }}
-                aria-label={`${product.name} — ${product.price}`}
+        <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          {filteredIndices.map((i) => {
+            const product = t.products.items[i];
+            const qty = cardQuantities[i] || 0;
+            const review = reviewData[i];
+
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30, rotate: i % 2 === 0 ? -1.5 : 1.5 }}
+                animate={isInView ? { opacity: 1, y: 0, rotate: 0 } : {}}
+                transition={{
+                  type: 'spring',
+                  stiffness: 200,
+                  damping: 20,
+                  delay: 0.15 + i * 0.08,
+                }}
               >
-                {/* Product image */}
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={honeyImages[i]}
-                    alt={`${product.name} — Čebelarstvo Veselič`}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
-                  {/* Honey color bar */}
-                  <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${honeyColors[i]}`} />
-                  {/* Badge overlay */}
-                  {product.badge && (
-                    <Badge
-                      className="absolute top-3 left-3 bg-white/90 dark:bg-black/60 backdrop-blur-sm text-xs font-semibold border-0 shadow-sm"
+                <Card
+                  className="product-card card-shine group cursor-pointer border-border/50 hover:border-honey-300 dark:hover:border-honey-700 overflow-hidden h-full relative hover:shadow-[0_0_24px_rgba(212,160,23,0.2)] transition-all duration-300"
+                  onClick={() => { setSelectedProduct(i); setQuantity(1); setDialogTab('desc'); }}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === 'Enter') { setSelectedProduct(i); setQuantity(1); setDialogTab('desc'); } }}
+                  aria-label={`${product.name} — ${product.price}`}
+                >
+                  {/* Product image */}
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={honeyImages[i]}
+                      alt={`${product.name} — Čebelarstvo Veselič`}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+                    {/* Honey color bar */}
+                    <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${honeyColors[i]}`} />
+                    {/* Badge overlay */}
+                    {product.badge && (
+                      <Badge
+                        className="absolute top-3 left-3 bg-white/90 dark:bg-black/60 backdrop-blur-sm text-xs font-semibold border-0 shadow-sm"
+                      >
+                        {product.badge}
+                      </Badge>
+                    )}
+                    {/* "On Sale" flash badge on product 2 (Chestnut) */}
+                    {i === 2 && (
+                      <motion.div
+                        className="absolute top-3 right-3 flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-500 text-white text-[10px] font-bold uppercase tracking-wider shadow-md sale-badge z-10"
+                        animate={{ scale: [1, 1.05, 1] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      >
+                        <span>-10%</span>
+                      </motion.div>
+                    )}
+                    {/* "New Arrival" tag on product 4 (Forest) */}
+                    {i === 4 && (
+                      <motion.div
+                        className="absolute top-3 right-3 flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500 text-white text-[10px] font-bold uppercase tracking-wider shadow-md z-10"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.5 }}
+                      >
+                        {lang === 'sl' ? 'Novo!' : 'New!'}
+                      </motion.div>
+                    )}
+                    {/* "Most Popular" ribbon with floating animation */}
+                    {i === 0 && (
+                      <motion.div
+                        className="absolute top-3 right-[-32px] w-[120px] text-center overflow-hidden"
+                        animate={{ y: [0, -3, 0] }}
+                        transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                      >
+                        <div className="bg-gradient-to-r from-honey-500 to-honey-600 text-white text-[10px] font-bold uppercase tracking-wider py-1 rotate-45 shadow-md">
+                          {lang === 'sl' ? '⭐ Najbolj priljubljen' : '⭐ Most Popular'}
+                        </div>
+                      </motion.div>
+                    )}
+                    {/* Quick View eye button */}
+                    <motion.button
+                      className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/80 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 hover:scale-110"
+                      whileHover={{ scale: 1.15 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={(e) => { e.stopPropagation(); setSelectedProduct(i); setQuantity(1); setDialogTab('desc'); }}
+                      aria-label={lang === 'sl' ? 'Hitri pogled' : 'Quick view'}
                     >
-                      {product.badge}
-                    </Badge>
-                  )}
-                  {/* "Most Popular" ribbon with floating animation */}
-                  {i === 0 && (
-                    <motion.div
-                      className="absolute top-3 right-[-32px] w-[120px] text-center overflow-hidden"
-                      animate={{ y: [0, -3, 0] }}
-                      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                      <Eye className="w-4 h-4 text-honey-700 dark:text-honey-400" />
+                    </motion.button>
+                    {/* Add to Cart mini button */}
+                    <motion.button
+                      className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-gradient-to-br from-honey-400 to-honey-600 flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 hover:scale-110"
+                      whileHover={{ scale: 1.15 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={(e) => handleAddToCart(e, i)}
+                      aria-label={lang === 'sl' ? 'V košarico' : 'Add to cart'}
                     >
-                      <div className="bg-gradient-to-r from-honey-500 to-honey-600 text-white text-[10px] font-bold uppercase tracking-wider py-1 rotate-45 shadow-md">
-                        {lang === 'sl' ? '⭐ Najbolj priljubljen' : '⭐ Most Popular'}
-                      </div>
-                    </motion.div>
-                  )}
-                  {/* Quick View eye button */}
-                  <motion.button
-                    className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/80 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 hover:scale-110"
-                    whileHover={{ scale: 1.15 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={(e) => { e.stopPropagation(); setSelectedProduct(i); setQuantity(1); setDialogTab('desc'); }}
-                    aria-label={lang === 'sl' ? 'Hitri pogled' : 'Quick view'}
-                  >
-                    <Eye className="w-4 h-4 text-honey-700 dark:text-honey-400" />
-                  </motion.button>
-                  {/* Quick Add button overlay */}
-                  <motion.button
-                    className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-gradient-to-br from-honey-400 to-honey-600 flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 hover:scale-110"
-                    whileHover={{ scale: 1.15 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={(e) => handleQuickAdd(e, i)}
-                    aria-label={lang === 'sl' ? 'Hitro dodaj' : 'Quick add'}
-                  >
-                    <Plus className="w-5 h-5 text-white" />
-                  </motion.button>
-                </div>
-
-                <CardContent className="p-5 flex flex-col h-full">
-                  {/* Name + Price row */}
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-lg font-bold tracking-tight group-hover:text-honey-700 dark:group-hover:text-honey-400 transition-colors">
-                      {product.name}
-                    </h3>
-                    <motion.span
-                      className="text-base font-bold honey-text-gradient flex-shrink-0"
-                      animate={isInView ? {
-                        scale: [1, 1.12, 1],
-                        transition: { duration: 0.5, delay: 0.3 + i * 0.08 },
-                      } : {}}
-                    >
-                      {product.price}
-                    </motion.span>
+                      <ShoppingBag className="w-4 h-4 text-white" />
+                    </motion.button>
                   </div>
 
-                  {/* Color indicator */}
-                  <div className="flex items-center gap-2 mt-1">
-                    <div className={`w-4 h-4 rounded-full bg-gradient-to-br ${honeyColors[i]} shadow-sm`} />
-                    <span className="text-xs text-muted-foreground">{product.color}</span>
-                  </div>
-
-                  {/* Description */}
-                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed line-clamp-3 flex-1">
-                    {product.description}
-                  </p>
-
-                  {/* Footer */}
-                  <div className="mt-4 pt-4 border-t border-border/50 flex items-center justify-between">
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <MapPin className="w-3 h-3" />
-                      {product.origin}
+                  <CardContent className="p-5 flex flex-col h-full">
+                    {/* Name + Price row */}
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="text-lg font-bold tracking-tight group-hover:text-honey-700 dark:group-hover:text-honey-400 transition-colors">
+                        {product.name}
+                      </h3>
+                      <motion.span
+                        className="text-base font-bold honey-text-gradient flex-shrink-0"
+                        animate={isInView ? {
+                          scale: [1, 1.12, 1],
+                          transition: { duration: 0.5, delay: 0.3 + i * 0.08 },
+                        } : {}}
+                      >
+                        {product.price}
+                      </motion.span>
                     </div>
-                    <motion.span
-                      className="text-lg font-bold honey-text-gradient"
-                      animate={isInView ? {
-                        scale: [1, 1.1, 1],
-                        transition: { duration: 0.5, delay: 0.4 + i * 0.08 },
-                      } : {}}
-                    >
-                      {product.price}
-                    </motion.span>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+
+                    {/* Color indicator */}
+                    <div className="flex items-center gap-2 mt-1">
+                      <div className={`w-4 h-4 rounded-full bg-gradient-to-br ${honeyColors[i]} shadow-sm`} />
+                      <span className="text-xs text-muted-foreground">{product.color}</span>
+                    </div>
+
+                    {/* Star rating */}
+                    <div className="flex items-center gap-1 mt-2">
+                      <div className="flex items-center">
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <Star
+                            key={s}
+                            className={`w-3.5 h-3.5 ${
+                              s <= Math.floor(review.rating)
+                                ? 'text-honey-400 fill-honey-400'
+                                : s - 0.5 <= review.rating
+                                  ? 'text-honey-400 fill-honey-200'
+                                  : 'text-muted-foreground/30'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-xs font-medium text-muted-foreground">
+                        {review.rating}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground/60">
+                        ({review.reviews})
+                      </span>
+                    </div>
+
+                    {/* Description */}
+                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-3 flex-1">
+                      {product.description}
+                    </p>
+
+                    {/* Quantity selector */}
+                    <div className="flex items-center gap-2 mt-3">
+                      <div
+                        className="flex items-center border border-border rounded-lg bg-background"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <button
+                          onClick={() => updateCardQty(i, -1)}
+                          className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-l-lg transition-colors text-sm"
+                          aria-label={lang === 'sl' ? 'Zmanjšaj količino' : 'Decrease'}
+                        >
+                          <Minus className="w-3 h-3" />
+                        </button>
+                        <span className="w-7 text-center text-xs font-semibold tabular-nums">{qty}</span>
+                        <button
+                          onClick={() => updateCardQty(i, 1)}
+                          className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-r-lg transition-colors text-sm"
+                          aria-label={lang === 'sl' ? 'Povečaj količino' : 'Increase'}
+                        >
+                          <Plus className="w-3 h-3" />
+                        </button>
+                      </div>
+                      {qty > 0 && (
+                        <motion.span
+                          initial={{ opacity: 0, x: -5 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          className="text-xs font-medium text-honey-600 dark:text-honey-400"
+                        >
+                          = {(parsePrice(product.price) * qty).toFixed(2).replace('.', ',')} €
+                        </motion.span>
+                      )}
+                    </div>
+
+                    {/* Footer */}
+                    <div className="mt-3 pt-3 border-t border-border/50 flex items-center justify-between">
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <MapPin className="w-3 h-3" />
+                        {product.origin}
+                      </div>
+                      <motion.span
+                        className="text-lg font-bold honey-text-gradient"
+                        animate={isInView ? {
+                          scale: [1, 1.1, 1],
+                          transition: { duration: 0.5, delay: 0.4 + i * 0.08 },
+                        } : {}}
+                      >
+                        {product.price}
+                      </motion.span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* Bundle offer */}

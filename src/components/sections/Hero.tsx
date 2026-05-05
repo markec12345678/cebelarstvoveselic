@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ChevronDown, ArrowRight, ShieldCheck, MapPin, Flower2, MousePointer2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -203,14 +203,19 @@ function MouseScrollIndicator({ onClick, label }: { onClick: () => void; label: 
 export default function Hero() {
   const { lang } = useLangStore();
   const t = getTranslations(lang);
+  const sectionRef = useRef<HTMLElement>(null);
 
-  const scrollToProducts = () => {
-    document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const offset = 80;
+      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
   };
 
-  const scrollToVisit = () => {
-    document.getElementById('visit')?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const scrollToProducts = () => scrollToSection('products');
+  const scrollToVisit = () => scrollToSection('visit');
 
   // Parallax scroll tracking
   const { scrollY } = useScroll();
@@ -218,6 +223,21 @@ export default function Hero() {
   const heroImageScale = useTransform(scrollY, [0, 800], [1, 1.1]);
   const heroContentOpacity = useTransform(scrollY, [0, 500], [1, 0]);
   const heroContentY = useTransform(scrollY, [0, 500], [0, -60]);
+
+  // Hero scroll progress (0-100 as user scrolls through hero)
+  const [heroProgress, setHeroProgress] = useState(0);
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!sectionRef.current) return;
+      const rect = sectionRef.current.getBoundingClientRect();
+      const heroHeight = sectionRef.current.offsetHeight;
+      const scrolled = Math.max(0, -rect.top);
+      const progress = Math.min((scrolled / heroHeight) * 100, 100);
+      setHeroProgress(progress);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Staggered word animation for title
   const titleWords = useMemo(() => t.hero.title.split(' '), [t.hero.title]);
@@ -271,7 +291,7 @@ export default function Hero() {
   ];
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden" id="hero">
+    <section ref={sectionRef} className="relative min-h-screen flex items-center justify-center overflow-hidden" id="hero">
       {/* Background image with parallax */}
       <motion.div
         className="absolute inset-0"
@@ -398,7 +418,7 @@ export default function Hero() {
               key={i}
               variants={wordVariants}
               className={`inline-block mr-[0.3em] ${
-                i === highlightIndex ? 'text-honey-300' : ''
+                i === highlightIndex ? 'gradient-text-animated' : ''
               }`}
             >
               {word}
@@ -429,7 +449,7 @@ export default function Hero() {
             <Button
               size="lg"
               onClick={scrollToProducts}
-              className="relative group min-w-[200px] bg-gradient-to-r from-honey-400 to-honey-500 hover:from-honey-500 hover:to-honey-600 text-white shadow-xl shadow-honey-900/30 text-base font-semibold px-8 py-6 h-auto rounded-xl transition-all hover:shadow-2xl hover:shadow-honey-900/40 hover:scale-[1.02]"
+              className="bounce-idle ripple-effect relative group min-w-[200px] bg-gradient-to-r from-honey-400 to-honey-500 hover:from-honey-500 hover:to-honey-600 text-white shadow-xl shadow-honey-900/30 text-base font-semibold px-8 py-6 h-auto rounded-xl transition-all hover:shadow-2xl hover:shadow-honey-900/40 hover:scale-[1.02]"
             >
               {t.hero.cta}
               <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -504,7 +524,28 @@ export default function Hero() {
       </motion.div>
 
       {/* ============================================
-          Gradient Wave Divider at bottom
+          Hero scroll progress indicator
+          ============================================ */}
+      <div className="hero-scroll-progress" style={{ width: `${heroProgress}%` }} />
+
+      {/* ============================================
+          CSS Floating Hexagon Particles
+          ============================================ */}
+      <div className="hex-particle" style={{ top: '18%', left: '12%' }}>
+        <svg width="40" height="40" viewBox="0 0 100 100" fill="none"><path d="M50 5L91 27.5V72.5L50 95L9 72.5V27.5L50 5Z" stroke="rgba(245,215,110,0.2)" strokeWidth="2" fill="rgba(245,215,110,0.03)"/></svg>
+      </div>
+      <div className="hex-particle" style={{ top: '65%', right: '15%' }}>
+        <svg width="30" height="30" viewBox="0 0 100 100" fill="none"><path d="M50 5L91 27.5V72.5L50 95L9 72.5V27.5L50 5Z" stroke="rgba(212,160,23,0.18)" strokeWidth="2" fill="rgba(212,160,23,0.03)"/></svg>
+      </div>
+      <div className="hex-particle" style={{ top: '35%', left: '80%' }}>
+        <svg width="24" height="24" viewBox="0 0 100 100" fill="none"><path d="M50 5L91 27.5V72.5L50 95L9 72.5V27.5L50 5Z" stroke="rgba(184,134,11,0.15)" strokeWidth="2" fill="rgba(184,134,11,0.02)"/></svg>
+      </div>
+      <div className="hex-particle" style={{ bottom: '25%', left: '6%' }}>
+        <svg width="36" height="36" viewBox="0 0 100 100" fill="none"><path d="M50 5L91 27.5V72.5L50 95L9 72.5V27.5L50 5Z" stroke="rgba(245,215,110,0.16)" strokeWidth="2" fill="rgba(245,215,110,0.02)"/></svg>
+      </div>
+
+      {/* ============================================
+          Gradient Wave Divider at bottom (3 layers)
           ============================================ */}
       <div className="absolute bottom-0 left-0 right-0 z-[3] pointer-events-none">
         <svg

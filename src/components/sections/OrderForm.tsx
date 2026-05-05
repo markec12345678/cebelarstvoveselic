@@ -214,9 +214,18 @@ export default function OrderForm() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ type: 'spring', stiffness: 200, damping: 12, delay: 0.2 }}
-                    className="w-20 h-20 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center mx-auto mb-6"
+                    className="w-20 h-20 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center mx-auto mb-4"
                   >
                     <CheckCircle className="w-10 h-10 text-green-600 dark:text-green-400" />
+                  </motion.div>
+                  {/* Honey jar celebration animation */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                    className="jar-bounce text-5xl mb-3"
+                  >
+                    🍯
                   </motion.div>
                   <h3 className="text-2xl font-bold mb-2">{o.orderSuccess}</h3>
                   <p className="text-sm text-muted-foreground mb-1">{o.orderNumber}</p>
@@ -257,11 +266,13 @@ export default function OrderForm() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              {/* Step indicator */}
+              {/* Step indicator with animated connector */}
               <div className="flex items-center justify-center gap-2 mb-8">
                 <StepDot stepLabel={o.selectProducts} current={step === 'products' ? 0 : step === 'details' ? 1 : 2} />
-                <div className="w-8 h-px bg-border" />
-                <StepDot stepLabel={o.customerDetails} current={step === 'products' ? 0 : step === 'details' ? 1 : 2} />
+                <div className="step-connector">
+                  <div className="step-connector-fill" style={{ width: step === 'details' ? '100%' : '0%' }} />
+                </div>
+                <StepDot stepLabel={o.customerDetails} current={step === 'products' ? -1 : step === 'details' ? 0 : 1} />
               </div>
 
               <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
@@ -332,18 +343,24 @@ export default function OrderForm() {
 }
 
 function StepDot({ current, stepLabel }: { current: number; stepLabel: string }) {
+  const isActive = current >= 0;
+  const isDone = current > 0;
   return (
     <div className="flex items-center gap-2">
       <div
-        className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
-          current === 0
-            ? 'bg-honey-500 text-white'
-            : current === 1
-              ? 'bg-honey-500 text-white'
-              : 'bg-muted text-muted-foreground'
+        className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ${
+          isActive
+            ? 'bg-honey-500 text-white shadow-md shadow-honey-500/30'
+            : 'bg-muted text-muted-foreground'
         }`}
       >
-        {current === 0 ? 1 : 2}
+        {isDone ? (
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        ) : (
+          1
+        )}
       </div>
       <span className="text-xs font-medium text-muted-foreground hidden sm:block">{stepLabel}</span>
     </div>
@@ -415,7 +432,13 @@ function ProductsGrid({
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-sm sm:text-base leading-tight truncate">
+                  <div className="flex items-center gap-1.5">
+                    <div className="stock-dot" />
+                    <span className="text-[10px] text-green-600 dark:text-green-400 font-medium">
+                      {lang === 'sl' ? 'Zaloga' : 'In Stock'}
+                    </span>
+                  </div>
+                  <h3 className="font-semibold text-sm sm:text-base leading-tight truncate mt-1">
                     {lang === 'en' ? product.nameEn : product.name}
                   </h3>
                   {product.badge && (
@@ -703,7 +726,7 @@ function OrderSummaryCard({
   stepDown: () => void;
 }) {
   return (
-    <Card className="border-honey-200/60 dark:border-honey-800/30">
+    <Card className="border-honey-200/60 dark:border-honey-800/30 summary-border-pulse">
       <CardContent className="p-5">
         <h3 className="font-semibold text-base mb-4 flex items-center gap-2">
           <Package className="w-4 h-4 text-honey-500" />
